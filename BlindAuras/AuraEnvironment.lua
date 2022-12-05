@@ -290,13 +290,13 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
         end
       end
       -- Finally, run the init function if supplied
-      local actions = data.actions.init
-      if(actions and actions.do_custom and actions.custom) then
-        local func = Private.customActionsFunctions[id]["init"]
-        if func then
-          xpcall(func, Private.GetErrorHandlerId(id, "init"))
-        end
-      end
+      -- local actions = data.actions.init
+      -- if(actions and actions.do_custom and actions.custom) then
+      --   local func = Private.customActionsFunctions[id]["init"]
+      --   if func then
+      --     xpcall(func, Private.GetErrorHandlerId(id, "init"))
+      --   end
+      -- end
     end
   end
 end

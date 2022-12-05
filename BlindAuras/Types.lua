@@ -803,7 +803,7 @@ Private.sound_condition_types = {
 Private.trigger_require_types = {
   any = L["Any Triggers"],
   all = L["All Triggers"],
-  custom = L["Custom Function"]
+  custom = L["Custom Function (disabled)"]
 }
 
 Private.trigger_require_types_one = {

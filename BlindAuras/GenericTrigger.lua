@@ -1308,44 +1308,44 @@ function GenericTrigger.Add(data, region)
             end
           end
         else -- CUSTOM
-          triggerFunc = BlindAuras.LoadFunction("return "..(trigger.custom or ""));
+          -- triggerFunc = BlindAuras.LoadFunction("return "..(trigger.custom or ""));
           if (trigger.custom_type == "stateupdate") then
-            tsuConditionVariables = BlindAuras.LoadFunction("return function() return \n" .. (trigger.customVariables or "") .. "\n end");
-            if not tsuConditionVariables then
+            -- tsuConditionVariables = BlindAuras.LoadFunction("return function() return \n" .. (trigger.customVariables or "") .. "\n end");
+            -- if not tsuConditionVariables then
               tsuConditionVariables = function() end
-            end
+            -- end
           end
 
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
-            untriggerFunc = BlindAuras.LoadFunction("return "..(untrigger.custom or ""));
-            if (not untriggerFunc) then
+            -- untriggerFunc = BlindAuras.LoadFunction("return "..(untrigger.custom or ""));
+            -- if (not untriggerFunc) then
               untriggerFunc = trueFunction;
-            end
+            -- end
           end
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
-            durationFunc = BlindAuras.LoadFunction("return "..trigger.customDuration);
+            -- durationFunc = BlindAuras.LoadFunction("return "..trigger.customDuration);
           end
           if(trigger.custom_type ~= "stateupdate") then
             overlayFuncs = {};
             for i = 1, 7 do
               local property = "customOverlay" .. i;
               if (trigger[property] and trigger[property] ~= "") then
-                overlayFuncs[i] = BlindAuras.LoadFunction("return ".. trigger[property]);
+                -- overlayFuncs[i] = BlindAuras.LoadFunction("return ".. trigger[property]);
               end
             end
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customName and trigger.customName ~= "") then
-            nameFunc = BlindAuras.LoadFunction("return "..trigger.customName);
+            -- nameFunc = BlindAuras.LoadFunction("return "..trigger.customName);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customIcon and trigger.customIcon ~= "") then
-            iconFunc = BlindAuras.LoadFunction("return "..trigger.customIcon);
+            -- iconFunc = BlindAuras.LoadFunction("return "..trigger.customIcon);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customTexture and trigger.customTexture ~= "") then
-            textureFunc = BlindAuras.LoadFunction("return "..trigger.customTexture);
+            -- textureFunc = BlindAuras.LoadFunction("return "..trigger.customTexture);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customStacks and trigger.customStacks ~= "") then
-            stacksFunc = BlindAuras.LoadFunction("return "..trigger.customStacks);
+            -- stacksFunc = BlindAuras.LoadFunction("return "..trigger.customStacks);
           end
 
           if((trigger.custom_type == "status" or trigger.custom_type == "stateupdate") and trigger.check == "update") then

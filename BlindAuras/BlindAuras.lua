@@ -2836,10 +2836,10 @@ local function pAdd(data, simpleChange)
       local loadForOptionsFuncStr = ConstructFunction(load_prototype, data.load, true);
       local loadFunc = BlindAuras.LoadFunction(loadFuncStr);
       local loadForOptionsFunc = BlindAuras.LoadFunction(loadForOptionsFuncStr);
-      local triggerLogicFunc;
-      if data.triggers.disjunctive == "custom" then
-        triggerLogicFunc = BlindAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""));
-      end
+      local triggerLogicFunc = function() end;
+      -- if data.triggers.disjunctive == "custom" then
+      --   triggerLogicFunc = BlindAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""));
+      -- end
 
       LoadCustomActionFunctions(data);
       Private.LoadConditionPropertyFunctions(data);
@@ -3367,14 +3367,14 @@ function Private.PerformActions(data, when, region)
     end
   end
 
-  if(actions.do_custom and actions.custom) then
-    local func = Private.customActionsFunctions[data.id][when]
-    if func then
-      Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
-      xpcall(func, Private.GetErrorHandlerId(data.id, L["Custom Action"]));
-      Private.ActivateAuraEnvironment(nil);
-    end
-  end
+  -- if(actions.do_custom and actions.custom) then
+  --   local func = Private.customActionsFunctions[data.id][when]
+  --   if func then
+  --     Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
+  --     xpcall(func, Private.GetErrorHandlerId(data.id, L["Custom Action"]));
+  --     Private.ActivateAuraEnvironment(nil);
+  --   end
+  -- end
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   if actions.do_glow then

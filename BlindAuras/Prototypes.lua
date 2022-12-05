@@ -1756,7 +1756,7 @@ Private.event_categories = {
     default = "Chat Message"
   },
   custom = {
-    name = L["Custom"],
+    name = L["Custom (disabled)"],
   }
 }
 
