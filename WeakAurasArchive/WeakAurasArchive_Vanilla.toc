@@ -1,9 +1,9 @@
 ## Interface: 11403
-## Title: WeakAuras Archive
+## Title: BlindAuras Archive
 ## Author: The WeakAuras Team
 ## Version: @project-version@
 ## LoadOnDemand: 1
-## SavedVariables: WeakAurasArchive
-## Dependencies: WeakAuras
+## SavedVariables: BlindAurasArchive
+## Dependencies: BlindAuras
 
-WeakAurasArchive.lua
+BlindAurasArchive.lua

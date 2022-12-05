@@ -1,6 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 do
     local function subSupports(regionType)
@@ -22,7 +22,7 @@ do
         region.parent = parent
     end
 
-    WeakAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    BlindAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
 end
 
 -- Foreground for aurabar
@@ -52,5 +52,5 @@ do
         region.parent = parent
     end
 
-    WeakAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    BlindAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
 end

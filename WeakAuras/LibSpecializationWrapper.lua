@@ -1,5 +1,5 @@
-if not WeakAuras.IsLibsOK() then return end
-if not WeakAuras.IsRetail() then return end
+if not BlindAuras.IsLibsOK() then return end
+if not BlindAuras.IsRetail() then return end
 local AddonName, Private = ...
 
 local LibSpec = LibStub("LibSpecialization")
@@ -25,14 +25,14 @@ if LibSpec then
     if IsInRaid() then
       local max = GetNumGroupMembers()
       for i = 1, max do
-        local name = GetUnitName(WeakAuras.raidUnits[i], true)
-        nameToUnitMap[name] = WeakAuras.raidUnits[i]
+        local name = GetUnitName(BlindAuras.raidUnits[i], true)
+        nameToUnitMap[name] = BlindAuras.raidUnits[i]
       end
     else
       local max = GetNumSubgroupMembers()
       for i = 1, max do
-        local name = GetUnitName(WeakAuras.partyUnits[i], true)
-        nameToUnitMap[name] = WeakAuras.partyUnits[i]
+        local name = GetUnitName(BlindAuras.partyUnits[i], true)
+        nameToUnitMap[name] = BlindAuras.partyUnits[i]
       end
     end
 
@@ -58,7 +58,7 @@ if LibSpec then
     end
   end
 
-  LibSpec:Register("WeakAuras", LibSpecCallback)
+  LibSpec:Register("BlindAuras", LibSpecCallback)
 
   function Private.LibSpecWrapper.Register(f)
     tinsert(subscribers, f)
@@ -82,4 +82,4 @@ else -- non retail
 end
 
 -- Export for GenericTrigger
-WeakAuras.SpecForUnit = Private.LibSpecWrapper.SpecForUnit
+BlindAuras.SpecForUnit = Private.LibSpecWrapper.SpecForUnit

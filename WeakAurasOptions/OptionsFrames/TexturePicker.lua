@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -10,8 +10,8 @@ local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local function CompareValues(a, b)
   if type(a) ~= type(b) then
@@ -66,8 +66,8 @@ local function SetAll(baseObject, path, property, value)
     local object = valueFromPath(child, path)
       if object then
         object[property] = value
-        WeakAuras.Add(child)
-        WeakAuras.UpdateThumbnail(child)
+        BlindAuras.Add(child)
+        BlindAuras.UpdateThumbnail(child)
       end
   end
 end
@@ -101,7 +101,7 @@ local function ConstructTexturePicker(frame)
   local function texturePickerGroupSelected(widget, event, uniquevalue)
     scroll:ReleaseChildren();
     for texturePath, textureName in pairs(group.textures[uniquevalue]) do
-      local textureWidget = AceGUI:Create("WeakAurasTextureButton");
+      local textureWidget = AceGUI:Create("BlindAurasTextureButton");
       if (group.SetTextureFunc) then
         group.SetTextureFunc(textureWidget, texturePath, textureName);
       else
@@ -229,7 +229,7 @@ local function ConstructTexturePicker(frame)
   function group.Close()
     frame.window = "default";
     frame:UpdateFrameVisible()
-    WeakAuras.FillOptions()
+    BlindAuras.FillOptions()
   end
 
   function group.CancelClose()
@@ -238,8 +238,8 @@ local function ConstructTexturePicker(frame)
       local childObject = valueFromPath(child, group.path)
       if childObject then
         childObject[group.properties.texture] = group.givenPath[child.id]
-        WeakAuras.Add(child);
-        WeakAuras.UpdateThumbnail(child);
+        BlindAuras.Add(child);
+        BlindAuras.UpdateThumbnail(child);
       end
     end
     group.Close();

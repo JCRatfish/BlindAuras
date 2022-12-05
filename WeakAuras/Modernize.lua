@@ -1,18 +1,18 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function Private.Modernize(data)
   if (not data.internalVersion or data.internalVersion < 2) then
-    WeakAuras.prettyPrint(string.format("Data for '%s' is too old, can't modernize.", data.id))
+    BlindAuras.prettyPrint(string.format("Data for '%s' is too old, can't modernize.", data.id))
     data.internalVersion = 2;
   end
 
   -- Version 3 was introduced April 2018 in Legion
   if (data.internalVersion < 3) then
     if (data.parent) then
-      local parentData = WeakAuras.GetData(data.parent);
+      local parentData = BlindAuras.GetData(data.parent);
       if(parentData and parentData.regionType == "dynamicgroup") then
         -- Version 3 allowed for offsets for dynamic groups, before that they were ignored
         -- Thus reset them in the V2 to V3 upgrade
@@ -1099,7 +1099,7 @@ function Private.Modernize(data)
         if newType then
           triggerData.trigger.type = newType
         else
-          WeakAuras.prettyPrint("Unknown trigger type found in, please report: ", data.id, triggerData.trigger.event)
+          BlindAuras.prettyPrint("Unknown trigger type found in, please report: ", data.id, triggerData.trigger.event)
         end
       end
     end
@@ -1377,7 +1377,7 @@ function Private.Modernize(data)
       end
     end
     if broken then
-      WeakAuras.prettyPrint(L["Trying to repair broken conditions in %s likely caused by a WeakAuras bug."]:format(data.id))
+      BlindAuras.prettyPrint(L["Trying to repair broken conditions in %s likely caused by a BlindAuras bug."]:format(data.id))
     end
   end
 
@@ -1474,5 +1474,5 @@ function Private.Modernize(data)
     end
   end
 
-  data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
+  data.internalVersion = max(data.internalVersion or 0, BlindAuras.InternalVersion());
 end

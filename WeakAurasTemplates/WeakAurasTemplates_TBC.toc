@@ -1,17 +1,17 @@
 ## Interface: 20504
-## Title: WeakAuras Templates
+## Title: BlindAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
-## Notes: Templates for WeakAuras
+## Notes: Templates for BlindAuras
 ## X-Category: Interface Enhancements
-## Globe-Main: WeakAuras
+## Globe-Main: BlindAuras
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
-## Dependencies: WeakAuras, WeakAurasOptions
+## Dependencies: BlindAuras, BlindAurasOptions
 
 locales.xml
 
 TriggerTemplates.lua
 TriggerTemplatesDataBCC.lua
 
-AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
+AceGUI-Widgets\AceGUIContainer-BlindAurasTemplateGroup.lua

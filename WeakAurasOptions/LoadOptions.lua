@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
 local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
@@ -12,9 +12,9 @@ local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("load")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("load")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("load", getAll)
 
-local ValidateNumeric = WeakAuras.ValidateNumeric;
+local ValidateNumeric = BlindAuras.ValidateNumeric;
 
-local spellCache = WeakAuras.spellCache;
+local spellCache = BlindAuras.spellCache;
 
 local function CorrectSpellName(input)
   local inputId = tonumber(input);
@@ -25,7 +25,7 @@ local function CorrectSpellName(input)
     else
       return nil;
     end
-  elseif WeakAuras.IsClassic() and input then
+  elseif BlindAuras.IsClassic() and input then
     local _, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
@@ -40,7 +40,7 @@ local function CorrectSpellName(input)
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
-    elseif WeakAuras.IsRetail() then
+    elseif BlindAuras.IsRetail() then
       for tier = 1, MAX_TALENT_TIERS do
         for column = 1, NUM_TALENT_COLUMNS do
           local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
@@ -79,7 +79,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
   else
-    error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
+    error("Improper argument to BlindAuras.ConstructOptions - trigger number not in range");
   end
   local options = {};
   local order = startorder or 10;
@@ -105,8 +105,8 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     if (name and arg.type == "collapse") then
       options["summary_" .. arg.name] = {
         type = "execute",
-        control = "WeakAurasExpandSmall",
-        width = WeakAuras.doubleWidth,
+        control = "BlindAurasExpandSmall",
+        width = BlindAuras.doubleWidth,
         name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
         order = order,
         image = function()
@@ -137,7 +137,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         -- Ensure new line for non-toggle options
         options["spacer_"..name] = {
           type = "description",
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           name = "",
           order = order,
           hidden = hidden,
@@ -147,7 +147,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       if(arg.type == "tristate" or arg.type == "tristatestring") then
         options["use_"..name] = {
           type = "toggle",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = function(input)
             local value = trigger["use_"..realname];
             if(value == nil) then return arg.display;
@@ -172,12 +172,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 trigger["use_"..realname] = false
               end
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end,
           hidden = hidden,
@@ -186,7 +186,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       elseif(arg.type == "multiselect") then
         options["use_"..name] = {
           type = "toggle",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = arg.display,
           desc = function()
             if arg.multiNoSingle then return arg.desc end
@@ -239,12 +239,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 end
               end
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end,
           hidden = hidden,
@@ -253,14 +253,14 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       elseif (arg.type == "description") then
         options["description_space_"..name] = {
           type = "description",
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           name = "",
           order = order,
           hidden = hidden,
         }
         options["description_title_"..name] = {
           type = "description",
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -269,7 +269,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
         options["description_"..name] = {
           type = "description",
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           name = arg.text,
           order = order,
           hidden = hidden,
@@ -278,7 +278,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       else
         options["use_"..name] = {
           type = "toggle",
-          width = arg.width or WeakAuras.normalWidth,
+          width = arg.width or BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -286,22 +286,22 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           get = function() return trigger["use_"..realname]; end,
           set = function(info, v)
             trigger["use_"..realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
       end
       if(arg.type == "toggle" or arg.type == "tristate") then
-        options["use_"..name].width = arg.width or WeakAuras.doubleWidth;
+        options["use_"..name].width = arg.width or BlindAuras.doubleWidth;
       end
       if(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
         if not arg.showExactOption then
-          options["use_"..name].width = arg.width or WeakAuras.normalWidth - 0.1;
+          options["use_"..name].width = arg.width or BlindAuras.normalWidth - 0.1;
         end
       end
 
@@ -322,7 +322,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if (not arg.noOperator) then
           options[name.."_operator"] = {
             type = "select",
-            width = WeakAuras.halfWidth,
+            width = BlindAuras.halfWidth,
             name = L["Operator"],
             order = order,
             hidden = hidden,
@@ -331,21 +331,21 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
             set = function(info, v)
               trigger[realname.."_operator"] = v;
-              WeakAuras.Add(data);
+              BlindAuras.Add(data);
               if (reloadOptions) then
-                WeakAuras.ClearAndUpdateOptions(data.id)
+                BlindAuras.ClearAndUpdateOptions(data.id)
               end
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-              WeakAuras.UpdateThumbnail(data);
+              BlindAuras.UpdateThumbnail(data);
               OptionsPrivate.SortDisplayButtons(nil, true);
             end
           };
           if(arg.required and not triggertype) then
             options[name.."_operator"].set = function(info, v)
               trigger[realname.."_operator"] = v;
-              WeakAuras.Add(data);
+              BlindAuras.Add(data);
               if (reloadOptions) then
-                WeakAuras.ClearAndUpdateOptions(data.id)
+                BlindAuras.ClearAndUpdateOptions(data.id)
               end
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               OptionsPrivate.SortDisplayButtons(nil, true);
@@ -355,7 +355,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         end
         options[name] = {
           type = "input",
-          width = arg.noOperator and WeakAuras.normalWidth or WeakAuras.halfWidth,
+          width = arg.noOperator and BlindAuras.normalWidth or BlindAuras.halfWidth,
           validate = ValidateNumeric,
           name = arg.display,
           order = order,
@@ -365,21 +365,21 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             OptionsPrivate.SortDisplayButtons(nil, true);
@@ -389,7 +389,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       elseif(arg.type == "string" or arg.type == "tristatestring") then
         options[name] = {
           type = "input",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -397,12 +397,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           desc = arg.desc,
           set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
@@ -418,9 +418,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             OptionsPrivate.SortDisplayButtons(nil, true);
@@ -430,7 +430,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       elseif(arg.type == "longstring") then
         options[name.."_operator"] = {
           type = "select",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = L["Operator"],
           order = order,
           hidden = hidden,
@@ -439,21 +439,21 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
           set = function(info, v)
             trigger[realname.."_operator"] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
           options[name.."_operator"].set = function(info, v)
             trigger[realname.."_operator"] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             OptionsPrivate.SortDisplayButtons(nil, true);
@@ -462,7 +462,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
         options[name] = {
           type = "input",
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -471,21 +471,21 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           get = function() return trigger["use_"..realname] and trigger[realname] or nil; end,
           set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             OptionsPrivate.SortDisplayButtons(nil, true);
@@ -496,7 +496,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if (arg.showExactOption) then
           options["exact"..name] = {
             type = "toggle",
-            width = WeakAuras.normalWidth - 0.1,
+            width = BlindAuras.normalWidth - 0.1,
             name = L["Exact Spell Match"],
             order = order,
             hidden = hidden,
@@ -505,9 +505,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             set = function(info, v)
               trigger["use_exact_"..realname] = v;
-              WeakAuras.Add(data);
+              BlindAuras.Add(data);
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-              WeakAuras.UpdateThumbnail(data);
+              BlindAuras.UpdateThumbnail(data);
               OptionsPrivate.SortDisplayButtons(nil, true);
             end,
           };
@@ -540,7 +540,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
         options[name] = {
           type = "input",
-          width = arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+          width = arg.showExactOption and BlindAuras.doubleWidth or BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -589,19 +589,19 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           set = function(info, v)
             local fixedInput = v;
             if(arg.type == "aura") then
-              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
+              fixedInput = BlindAuras.spellCache.CorrectAuraName(v);
             elseif(arg.type == "spell") then
               fixedInput = CorrectSpellName(v);
             elseif(arg.type == "item") then
               fixedInput = CorrectItemName(v);
             end
             trigger[realname] = fixedInput;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
@@ -614,12 +614,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           if OptionsPrivate.Private[arg.values] then
             values = OptionsPrivate.Private[arg.values]
           else
-            values = WeakAuras[arg.values];
+            values = BlindAuras[arg.values];
           end
         end
         options[name] = {
           type = "select",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
@@ -650,12 +650,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger["use_specific_"..realname] = nil;
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
@@ -667,12 +667,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger["use_specific_"..realname] = nil;
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         end
@@ -683,7 +683,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.type == "unit") then
           options["use_specific_"..name] = {
             type = "toggle",
-            width = WeakAuras.normalWidth,
+            width = BlindAuras.normalWidth,
             name = L["Specific Unit"],
             order = order,
             hidden = function() return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
@@ -691,13 +691,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             set = function(info, v)
               trigger["use_specific_"..realname] = nil;
               options[name].set(info, "player");
-              WeakAuras.Add(data)
+              BlindAuras.Add(data)
             end
           }
           order = order + 1;
           options["specific_"..name] = {
             type = "input",
-            width = WeakAuras.normalWidth,
+            width = BlindAuras.normalWidth,
             name = L["Specific Unit"],
             desc = L["Can be a UID (e.g., party1)."],
             order = order,
@@ -705,9 +705,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             get = function() return trigger[realname] end,
             set = function(info, v)
               trigger[realname] = v;
-              WeakAuras.Add(data);
+              BlindAuras.Add(data);
               if (reloadOptions) then
-                WeakAuras.ClearAndUpdateOptions(data.id)
+                BlindAuras.ClearAndUpdateOptions(data.id)
               end
             end
           };
@@ -721,12 +721,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           if OptionsPrivate.Private[arg.values] then
             values = OptionsPrivate.Private[arg.values]
           else
-            values = WeakAuras[arg.values];
+            values = BlindAuras[arg.values];
           end
         end
         options[name] = {
           type = "select",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           values = values,
@@ -739,24 +739,24 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           set = function(info, v)
             trigger[realname] = trigger[realname] or {};
             trigger[realname].single = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname].single = v;
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         end
@@ -768,14 +768,14 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             type = "select",
             values = arg.extraOption.values,
             order = order,
-            width = WeakAuras.normalWidth,
+            width = BlindAuras.normalWidth,
             hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
             get = function(info, v)
               return trigger[realname .. "_extraOption"] or 0
             end,
             set = function(info, v)
               trigger[realname .. "_extraOption"] = v
-              WeakAuras.Add(data)
+              BlindAuras.Add(data)
               OptionsPrivate.Private.ScanForLoads({[data.id] = true})
               OptionsPrivate.SortDisplayButtons(nil, true)
             end
@@ -786,7 +786,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         options["multiselect_"..name] = {
           type = "multiselect",
           name = arg.display,
-          width = WeakAuras.doubleWidth,
+          width = BlindAuras.doubleWidth,
           order = order,
           hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           values = values,
@@ -806,12 +806,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger[realname].multi[v] = true;
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         };
@@ -822,12 +822,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger[realname].multi[v] = true;
             end
-            WeakAuras.Add(data);
+            BlindAuras.Add(data);
             if (reloadOptions) then
-              WeakAuras.ClearAndUpdateOptions(data.id)
+              BlindAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.UpdateThumbnail(data);
+            BlindAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
           end
         end
@@ -840,7 +840,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   if prototype.timedrequired then
     options.unevent = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Hide"],
       order = order,
       values = OptionsPrivate.Private.timedeventend_types,
@@ -855,7 +855,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
 
     options.duration = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Duration (s)"],
       order = order,
       get = function()
@@ -863,7 +863,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       end,
       set = function(info, v)
         trigger.duration = v
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
       end,
     }
     order = order + 1;
@@ -873,7 +873,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     options[name .. "anchor"] = {
       type = "description",
       name = "",
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       order = order + 0.5,
       arg = {
         expanderName = triggernum .. "#" .. tostring(prototype) .. "#"  .. name
@@ -893,8 +893,8 @@ function OptionsPrivate.GetLoadOptions(data)
     get = function(info) return data.load[info[#info]] end,
     set = function(info, v)
         data.load[info[#info]] = (v ~= "" and v) or nil;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.Private.ScanForLoads({[data.id] = true});
         OptionsPrivate.SortDisplayButtons(nil, true);
       end,
@@ -913,8 +913,8 @@ function OptionsPrivate.GetLoadOptions(data)
       load.set = function(info, ...)
         setAll(data, info, ...);
         if(type(data.id) == "string") then
-          WeakAuras.Add(data);
-          WeakAuras.UpdateThumbnail(data);
+          BlindAuras.Add(data);
+          BlindAuras.UpdateThumbnail(data);
           OptionsPrivate.ResetMoverSizer();
         end
       end

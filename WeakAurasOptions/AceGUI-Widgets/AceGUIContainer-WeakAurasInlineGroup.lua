@@ -1,11 +1,11 @@
 --[[-----------------------------------------------------------------------------
-WeakAurasInlineGroup based on InlineGroup Container
+BlindAurasInlineGroup based on InlineGroup Container
 Simple container widget that has the same API as a InlineGroup, without actually
 showing any borders or a title.
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasInlineGroup", 2
+local Type, Version = "BlindAurasInlineGroup", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 

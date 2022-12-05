@@ -1,12 +1,12 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local texture_data = WeakAuras.StopMotion.texture_data;
-local L = WeakAuras.L;
+local texture_data = BlindAuras.StopMotion.texture_data;
+local L = BlindAuras.L;
 
 local default = {
-    foregroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
-    backgroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
+    foregroundTexture = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\stopmotion",
+    backgroundTexture = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\stopmotion",
     desaturateBackground = false,
     desaturateForeground = false,
     sameTexture = true,
@@ -85,7 +85,7 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+BlindAuras.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
     local frame = CreateFrame("Frame", nil, UIParent);
@@ -102,7 +102,7 @@ local function create(parent)
     frame.foreground = foreground;
     foreground:SetAllPoints(frame);
 
-    WeakAuras.regionPrototype.create(frame);
+    BlindAuras.regionPrototype.create(frame);
 
     return frame;
 end
@@ -127,7 +127,7 @@ local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)
   pcall(function() texture:SetTexCoord(left, right, top, bottom) end)
 end
 
-WeakAuras.setTile = setTile;
+BlindAuras.setTile = setTile;
 
 local function SetFrameViaAtlas(self, texture, frame)
   local frameScaleW = 1
@@ -151,7 +151,7 @@ local function SetFrameViaFrames(self, texture, frame)
 end
 
 local function modify(parent, region, data)
-    WeakAuras.regionPrototype.modify(parent, region, data);
+    BlindAuras.regionPrototype.modify(parent, region, data);
     region.foreground = region.foreground or {}
     region.background = region.background or {}
     local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
@@ -485,4 +485,4 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("stopmotion", create, modify, default, properties, validate);
+BlindAuras.RegisterRegionType("stopmotion", create, modify, default, properties, validate);

@@ -1,10 +1,10 @@
 --[[-----------------------------------------------------------------------------
 Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local Type, Version = "WeakAurasExpandSmall", 3
+local Type, Version = "BlindAurasExpandSmall", 3
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -61,10 +61,10 @@ local methods = {
     local image = self.image
     if path == "collapsed" then
       self:SetExpandedState(false)
-      path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\gear"
+      path = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\gear"
     elseif path == "expanded" then
       self:SetExpandedState(true)
-      path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\geardown"
+      path = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\geardown"
     else
       self:SetExpandedState(false)
     end
@@ -199,21 +199,21 @@ local function Constructor()
 
   local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
   highlight:SetAllPoints(frame)
-  highlight:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  highlight:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White")
   highlight:SetVertexColor(0.2, 0.4, 0.8, 0.2)
   highlight:SetBlendMode("ADD")
 
   local expandedHighlight = frame:CreateTexture(nil, "BACKGROUND")
   expandedHighlight:SetPoint("TOPLEFT", frame, -2, 0)
   expandedHighlight:SetPoint("BOTTOMRIGHT", frame, 0, 0)
-  expandedHighlight:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  expandedHighlight:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White")
   expandedHighlight:SetVertexColor(1, 0.8, 0, 0.1)
   expandedHighlight:SetBlendMode("ADD")
 
   local expandedBackground = frame:CreateTexture(nil, "BACKGROUND")
   expandedBackground:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -1, -1)
   expandedBackground:SetWidth(128)
-  expandedBackground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient")
+  expandedBackground:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_AlphaGradient")
   expandedBackground:SetVertexColor(1, 0.8, 0, 0.15)
   expandedBackground:SetBlendMode("ADD")
 

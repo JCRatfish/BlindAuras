@@ -1,13 +1,13 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
-local defaultFont = WeakAuras.defaultFont
-local defaultFontSize = WeakAuras.defaultFontSize
+local defaultFont = BlindAuras.defaultFont
+local defaultFontSize = BlindAuras.defaultFontSize
 
 local default = function(parentType)
   if parentType == "icon" then
@@ -216,7 +216,7 @@ local function modify(parent, region, parentData, data, first)
     text:SetFont(STANDARD_TEXT_FONT, data.text_fontSize, data.text_fontType);
   end
   if text:GetFont() then
-    text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text));
+    text:SetText(BlindAuras.ReplaceRaidMarkerSymbols(data.text_text));
   end
 
   text:SetTextHeight(data.text_fontSize);
@@ -253,7 +253,7 @@ local function modify(parent, region, parentData, data, first)
     end
 
     if containsCustomText and parentData.customText and parentData.customText ~= "" then
-      parent.customTextFunc = WeakAuras.LoadFunction("return "..parentData.customText)
+      parent.customTextFunc = BlindAuras.LoadFunction("return "..parentData.customText)
     else
       parent.customTextFunc = nil
     end
@@ -275,7 +275,7 @@ local function modify(parent, region, parentData, data, first)
       textStr = Private.ReplacePlaceHolders(textStr, parent, nil, false, formatters)
 
       if text:GetFont() then
-        text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))
+        text:SetText(BlindAuras.ReplaceRaidMarkerSymbols(textStr))
       end
       region:UpdateAnchorOnTextChange()
     end
@@ -342,7 +342,7 @@ local function modify(parent, region, parentData, data, first)
     if text:GetFont() then
       local textStr = data.text_text
       textStr = textStr:gsub("\\n", "\n");
-      text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))
+      text:SetText(BlindAuras.ReplaceRaidMarkerSymbols(textStr))
     end
   end
 
@@ -518,4 +518,4 @@ local function supports(regionType)
          or regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subtext", L["Text"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
+BlindAuras.RegisterSubRegionType("subtext", L["Text"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);

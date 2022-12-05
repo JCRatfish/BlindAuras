@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -9,13 +9,13 @@ local GetTime, CreateFrame = GetTime, CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local debugLog
 
 local function ConstructDebugLog(frame)
-  local group = AceGUI:Create("WeakAurasInlineGroup");
+  local group = AceGUI:Create("BlindAurasInlineGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);

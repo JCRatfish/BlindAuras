@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 
@@ -8,8 +8,8 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local moversizer
 local mover
@@ -41,11 +41,11 @@ local function moveOnePxl(direction)
       elseif direction == "right" then
         data.xOffset = data.xOffset + 1
       end
-      WeakAuras.Add(data, nil, true)
-      WeakAuras.UpdateThumbnail(data)
+      BlindAuras.Add(data, nil, true)
+      BlindAuras.UpdateThumbnail(data)
       OptionsPrivate.ResetMoverSizer()
       OptionsPrivate.Private.AddParents(data)
-      WeakAuras.FillOptions()
+      BlindAuras.FillOptions()
     end
   end
 end
@@ -112,7 +112,7 @@ local function ConstructMover(frame)
   arrow:SetPoint("CENTER", frame, "CENTER")
   arrow:SetFrameStrata("HIGH")
   local arrowTexture = arrow:CreateTexture()
-  arrowTexture:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\offscreen.tga")
+  arrowTexture:SetTexture("Interface\\Addons\\BlindAuras\\Media\\Textures\\offscreen.tga")
   arrowTexture:SetSize(128, 128)
   arrowTexture:SetPoint("CENTER", arrow, "CENTER")
   arrowTexture:SetVertexColor(0.8, 0.8, 0.2)
@@ -166,7 +166,7 @@ local function ConstructSizer(frame)
   texTR2:SetPoint("BOTTOMLEFT", topright, "LEFT")
 
   topright.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texTR1:Show()
@@ -198,7 +198,7 @@ local function ConstructSizer(frame)
   texBR2:SetPoint("TOPLEFT", bottomright, "LEFT")
 
   bottomright.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texBR1:Show()
@@ -230,7 +230,7 @@ local function ConstructSizer(frame)
   texBL2:SetPoint("TOPRIGHT", bottomleft, "RIGHT")
 
   bottomleft.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texBL1:Show()
@@ -262,7 +262,7 @@ local function ConstructSizer(frame)
   texTL2:SetPoint("BOTTOMRIGHT", topleft, "RIGHT")
 
   topleft.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texTL1:Show()
@@ -288,7 +288,7 @@ local function ConstructSizer(frame)
   texT:SetPoint("BOTTOMLEFT", topleft, "LEFT", 3, 0)
 
   top.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texT:Show()
@@ -310,7 +310,7 @@ local function ConstructSizer(frame)
   texR:SetPoint("TOPLEFT", topright, "TOP", 0, -3)
 
   right.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texR:Show()
@@ -333,7 +333,7 @@ local function ConstructSizer(frame)
   texB:SetPoint("TOPRIGHT", bottomright, "RIGHT", -3, 0)
 
   bottom.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texB:Show()
@@ -356,7 +356,7 @@ local function ConstructSizer(frame)
   texL:SetPoint("TOPRIGHT", topleft, "TOP", 0, -3)
 
   left.Highlight = function()
-    if WeakAurasOptionsSaved.lockPositions then
+    if BlindAurasOptionsSaved.lockPositions then
       return
     end
     texL:Show()
@@ -381,7 +381,7 @@ local function BuildAlignLines(mover)
     skipIds[child.id] = true
   end
 
-  for k, v in pairs(WeakAuras.displayButtons) do
+  for k, v in pairs(BlindAuras.displayButtons) do
     local region = v.view.region
     if not skipIds[k] and v.view.visibility ~= 0 and region then
       local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
@@ -537,7 +537,7 @@ local function ConstructMoverSizer(parent)
 
     local db = OptionsPrivate.savedVars.db
     mover.startMoving = function()
-      if WeakAurasOptionsSaved.lockPositions then
+      if BlindAurasOptionsSaved.lockPositions then
         return
       end
       OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
@@ -569,8 +569,8 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                    or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+      local align = (BlindAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                    or (not BlindAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
 
       if align and (mover.alignXFrom or mover.alignYFrom) then
         if mover.alignXFrom == "LEFT" then
@@ -635,8 +635,8 @@ local function ConstructMoverSizer(parent)
         data.yOffset = dY / scale
       end
       region:ResetPosition()
-      WeakAuras.Add(data, nil, true)
-      WeakAuras.UpdateThumbnail(data)
+      BlindAuras.Add(data, nil, true)
+      BlindAuras.UpdateThumbnail(data)
       local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
       mover:ClearAllPoints()
@@ -650,8 +650,8 @@ local function ConstructMoverSizer(parent)
         mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale)
       end
       OptionsPrivate.Private.AddParents(data)
-      WeakAuras.FillOptions()
-      OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+      BlindAuras.FillOptions()
+      OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, BlindAuras.regions[data.id].region, false, nil, true)
       -- hide alignment lines
       frame.lineY:Hide()
       frame.lineX:Hide()
@@ -672,7 +672,7 @@ local function ConstructMoverSizer(parent)
 
     if region:IsResizable() then
       frame.startSizing = function(point)
-        if WeakAurasOptionsSaved.lockPositions then
+        if BlindAurasOptionsSaved.lockPositions then
           return
         end
         mover.isMoving = true
@@ -706,9 +706,9 @@ local function ConstructMoverSizer(parent)
             end
           end
           region:ResetPosition()
-          WeakAuras.Add(data, nil, true)
+          BlindAuras.Add(data, nil, true)
           frame:ScaleCorners(region:GetWidth(), region:GetHeight())
-          WeakAuras.FillOptions()
+          BlindAuras.FillOptions()
         end)
 
         mover.align = BuildAlignLines(mover)
@@ -722,8 +722,8 @@ local function ConstructMoverSizer(parent)
         local width = region:GetWidth()
         local height = region:GetHeight()
 
-        local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                      or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+        local align = (BlindAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                      or (not BlindAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
 
         if not IsControlKeyDown() then
           if point:find("RIGHT") then
@@ -753,9 +753,9 @@ local function ConstructMoverSizer(parent)
         data.height = height
 
         region:ResetPosition()
-        WeakAuras.Add(data, nil, true)
+        BlindAuras.Add(data, nil, true)
         OptionsPrivate.Private.AddParents(data)
-        WeakAuras.UpdateThumbnail(data)
+        BlindAuras.UpdateThumbnail(data)
 
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())
         local xOff, yOff
@@ -774,8 +774,8 @@ local function ConstructMoverSizer(parent)
         end
         frame.text:Hide()
         frame:SetScript("OnUpdate", nil)
-        WeakAuras.FillOptions()
-        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+        BlindAuras.FillOptions()
+        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, BlindAuras.regions[data.id].region, false, nil, true)
         -- hide alignment lines
         frame.lineY:Hide()
         frame.lineX:Hide()
@@ -856,8 +856,8 @@ local function ConstructMoverSizer(parent)
       self.currentAlpha = newAlpha
     end
 
-    local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                  or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+    local align = (BlindAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
+                  or (not BlindAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
     if align then
       self.alignGoalAlpha = 1
     else

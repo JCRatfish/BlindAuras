@@ -1,19 +1,19 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras
+local BlindAuras = BlindAuras
 
 local histRepo, migrationRepo
 local function loadHistory()
   if not histRepo then
-    histRepo = WeakAuras.LoadFromArchive("Repository", "history")
+    histRepo = BlindAuras.LoadFromArchive("Repository", "history")
   end
   return histRepo
 end
 
 local function loadMigrations()
   if not migrationRepo then
-    migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")
+    migrationRepo = BlindAuras.LoadFromArchive("Repository", "migration")
   end
   return migrationRepo
 end
@@ -57,7 +57,7 @@ end
 function Private.RestoreFromHistory(uid)
   local _, histData = GetHistory(uid, true)
   if histData then
-    WeakAuras.Add(histData)
+    BlindAuras.Add(histData)
   end
 end
 

@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function GetCustomTriggerOptions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
@@ -27,7 +27,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       type = "select",
       name = L["Event Type"],
       order = 7,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       values = OptionsPrivate.Private.custom_trigger_types,
       hidden = function() return not (trigger.type == "custom") end,
       get = function()
@@ -35,15 +35,15 @@ local function GetCustomTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.custom_type = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ClearAndUpdateOptions(data.id);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
+        BlindAuras.ClearAndUpdateOptions(data.id);
       end
     },
     check = {
       type = "select",
       name = L["Check On..."],
-      width = WeakAuras.doubleWidth / 3,
+      width = BlindAuras.doubleWidth / 3,
       order = 8,
       values = OptionsPrivate.Private.check_types,
       hidden = function() return not (trigger.type == "custom"
@@ -53,14 +53,14 @@ local function GetCustomTriggerOptions(data, triggernum)
       get = function() return trigger.check end,
       set = function(info, v)
         trigger.check = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     check2 = {
       type = "select",
       name = L["Check On..."],
       order = 9,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       values = OptionsPrivate.Private.check_types,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
@@ -69,12 +69,12 @@ local function GetCustomTriggerOptions(data, triggernum)
       get = function() return trigger.check end,
       set = function(info, v)
         trigger.check = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     events = {
       type = "input",
-      width = WeakAuras.doubleWidth * 2 / 3,
+      width = BlindAuras.doubleWidth * 2 / 3,
       name = L["Event(s)"],
       desc = L["Custom trigger status tooltip"],
       order = 8.1,
@@ -84,27 +84,27 @@ local function GetCustomTriggerOptions(data, triggernum)
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     events2 = {
       type = "input",
       name = L["Event(s)"],
       desc = L["Custom trigger event tooltip"],
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 9.1,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     event_customError = {
       type = "description",
       name = function()
         local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
-        for _, event in pairs(WeakAuras.split(events)) do
+        for _, event in pairs(BlindAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
             if not trueEvent then
@@ -133,7 +133,7 @@ local function GetCustomTriggerOptions(data, triggernum)
         end
         return ""
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 9.201,
       hidden = function()
         if not (
@@ -145,7 +145,7 @@ local function GetCustomTriggerOptions(data, triggernum)
           return true
         end
         local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
-        for _, event in pairs(WeakAuras.split(events)) do
+        for _, event in pairs(BlindAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
             if not trueEvent then
@@ -177,7 +177,7 @@ local function GetCustomTriggerOptions(data, triggernum)
     -- texteditor below
     custom_hide = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Hide"],
       order = 12,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
@@ -185,25 +185,25 @@ local function GetCustomTriggerOptions(data, triggernum)
       get = function() trigger.custom_hide = trigger.custom_hide or "timed"; return trigger.custom_hide end,
       set = function(info, v)
         trigger.custom_hide = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     custom_hide2 = {
       type = "select",
       name = L["Hide"],
       order = 12,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
       values = OptionsPrivate.Private.eventend_types,
       get = function() return trigger.custom_hide end,
       set = function(info, v)
         trigger.custom_hide = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     dynamicDuration = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Dynamic Duration"],
       order = 12.5,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
@@ -212,13 +212,13 @@ local function GetCustomTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.dynamicDuration = v;
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id);
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id);
       end
     },
     duration = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Duration (s)"],
       order = 13,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
@@ -227,15 +227,15 @@ local function GetCustomTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.duration = v
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     },
     addOverlayFunction = {
       type = "execute",
       name = L["Add Overlay"],
       order = 17.9,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       hidden = function()
         if (trigger.type ~= "custom") then
           return true;
@@ -258,19 +258,19 @@ local function GetCustomTriggerOptions(data, triggernum)
             break;
           end
         end
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     }
   };
 
   local function extraSetFunction()
-    WeakAuras.UpdateThumbnail(data);
+    BlindAuras.UpdateThumbnail(data);
   end
 
   local function extraSetFunctionReload()
     extraSetFunction();
-    WeakAuras.ClearAndUpdateOptions(data.id);
+    BlindAuras.ClearAndUpdateOptions(data.id);
   end
 
   local function hideCustomTrigger()
@@ -364,9 +364,9 @@ local function GetCustomTriggerOptions(data, triggernum)
       for j = i, 7 do
         trigger["customOverlay" .. j] = trigger["customOverlay" .. (j +1)];
       end
-      WeakAuras.Add(data);
-      WeakAuras.ClearAndUpdateOptions(data.id)
-      WeakAuras.FillOptions()
+      BlindAuras.Add(data);
+      BlindAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.FillOptions()
     end
 
     local extraFunctions = {
@@ -409,7 +409,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       type = "select",
       name = "",
       order = 7.1,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = function()
         return subtypes
       end,
@@ -418,49 +418,49 @@ local function GetGenericTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.event = v
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end,
-      control = "WeakAurasSortedDropdown",
+      control = "BlindAurasSortedDropdown",
     }
   end
 
   OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, triggernum, not needsTypeSelection)
   OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
 
-  local combatLogCategory = WeakAuras.GetTriggerCategoryFor("Combat Log")
+  local combatLogCategory = BlindAuras.GetTriggerCategoryFor("Combat Log")
   local combatLogOptions =
   {
     subeventPrefix = {
       type = "select",
       name = L["Message Prefix"],
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 8,
       values = OptionsPrivate.Private.subevent_prefix_types,
-      control = "WeakAurasSortedDropdown",
+      control = "BlindAurasSortedDropdown",
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log"); end,
       get = function(info)
         return trigger.subeventPrefix
       end,
       set = function(info, v)
         trigger.subeventPrefix = v
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
       end
     },
     subeventSuffix = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Message Suffix"],
       order = 9,
       values = OptionsPrivate.Private.subevent_suffix_types,
-      control = "WeakAurasSortedDropdown",
+      control = "BlindAurasSortedDropdown",
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
         return trigger.subeventSuffix
       end,
       set = function(info, v)
         trigger.subeventSuffix = v
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
       end
     },
     spacer_suffix = {
@@ -482,7 +482,7 @@ local function GetGenericTriggerOptions(data, triggernum)
         Mixin(prototypeOptions, combatLogOptions);
       end
     else
-      print("|cFF8800FFWeakAuras|r: No prototype for", trigger.event);
+      print("|cFF8800FFBlindAuras|r: No prototype for", trigger.event);
     end
     if (prototypeOptions) then
       Mixin(options, prototypeOptions);
@@ -495,4 +495,4 @@ local function GetGenericTriggerOptions(data, triggernum)
   }
 end
 
-WeakAuras.RegisterTriggerSystemOptions(WeakAuras.genericTriggerTypes, GetGenericTriggerOptions);
+BlindAuras.RegisterTriggerSystemOptions(BlindAuras.genericTriggerTypes, GetGenericTriggerOptions);

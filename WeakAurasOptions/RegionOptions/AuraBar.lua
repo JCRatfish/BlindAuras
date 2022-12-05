@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 -- Create region options table
 local function createOptions(id, data)
@@ -15,13 +15,13 @@ local function createOptions(id, data)
       type = "select",
       dialogControl = "LSM30_Statusbar",
       order = 1,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Bar Texture"],
       values = AceGUIWidgetLSMlists.statusbar
     },
     orientation = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Orientation"],
       order = 25,
       values = OptionsPrivate.Private.orientation_types,
@@ -62,27 +62,27 @@ local function createOptions(id, data)
         end
 
         data.orientation = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     inverse = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Inverse"],
       order = 35
     },
     smoothProgress = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Smooth Progress"],
       desc = L["Animates progress changes"],
       order = 37
     },
     useTooltip = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 38
@@ -94,21 +94,21 @@ local function createOptions(id, data)
     },
     barColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Bar Color"],
       hasAlpha = true,
       order = 39.1
     },
     backgroundColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Background Color"],
       hasAlpha = true,
       order = 39.2
     },
     alpha = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Bar Alpha"],
       order = 39.3,
       min = 0,
@@ -123,13 +123,13 @@ local function createOptions(id, data)
     },
     icon = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show Icon"],
       order = 40.2,
     },
     icon_side = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Icon Position"],
       values = OptionsPrivate.Private.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
@@ -137,7 +137,7 @@ local function createOptions(id, data)
     },
     icon_side2 = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Icon Position"],
       values = OptionsPrivate.Private.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
@@ -147,13 +147,13 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.icon_side = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
       end
     },
     iconSource = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Source"],
       order = 40.4,
       values = OptionsPrivate.Private.IconSources(data),
@@ -161,7 +161,7 @@ local function createOptions(id, data)
     },
     displayIcon = {
       type = "input",
-      width = WeakAuras.normalWidth - 0.15,
+      width = BlindAuras.normalWidth - 0.15,
       name = L["Fallback"],
       disabled = function() return not data.icon end,
       order = 40.5,
@@ -170,8 +170,8 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.displayIcon = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
       end,
       hidden = function() return not data.icon end,
     },
@@ -191,20 +191,20 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
       hidden = function() return not data.icon end,
     },
     desaturate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 40.8,
       hidden = function() return not data.icon end,
     },
     icon_color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 40.9,
@@ -212,7 +212,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Zoom"],
       order = 40.91,
       min = 0,
@@ -228,7 +228,7 @@ local function createOptions(id, data)
     },
     spark = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show Spark"],
       order = 43
     },
@@ -236,7 +236,7 @@ local function createOptions(id, data)
       type = "input",
       name = L["Spark Texture"],
       order = 44,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },
@@ -258,12 +258,12 @@ local function createOptions(id, data)
       hidden = function() return not data.spark end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     sparkDesaturate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 44.2,
       disabled = function() return not data.spark end,
@@ -272,7 +272,7 @@ local function createOptions(id, data)
     spaceSpark = {
       type = "execute",
       name = "",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 44.3,
       image = function() return "", 0, 0 end,
       disabled = function() return not data.spark end,
@@ -280,7 +280,7 @@ local function createOptions(id, data)
     },
     sparkColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 44.4,
@@ -289,7 +289,7 @@ local function createOptions(id, data)
     },
     sparkBlendMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Blend Mode"],
       order = 44.5,
       values = OptionsPrivate.Private.blend_types,
@@ -298,7 +298,7 @@ local function createOptions(id, data)
     },
     sparkWidth = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Width"],
       order = 44.6,
       min = 1,
@@ -309,7 +309,7 @@ local function createOptions(id, data)
     },
     sparkHeight = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Height"],
       order = 44.7,
       min = 1,
@@ -320,7 +320,7 @@ local function createOptions(id, data)
     },
     sparkOffsetX = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Offset"],
       order = 44.8,
       min = -screenWidth,
@@ -331,7 +331,7 @@ local function createOptions(id, data)
     },
     sparkOffsetY = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Offset"],
       order = 44.9,
       min = -screenHeight,
@@ -342,7 +342,7 @@ local function createOptions(id, data)
     },
     sparkRotationMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.spark_rotation_types,
       name = L["Rotation Mode"],
       order = 45,
@@ -351,7 +351,7 @@ local function createOptions(id, data)
     },
     sparkRotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -362,7 +362,7 @@ local function createOptions(id, data)
     },
     sparkMirror = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Mirror"],
       order = 45.2,
       disabled = function() return not data.spark end,
@@ -370,7 +370,7 @@ local function createOptions(id, data)
     },
     sparkHidden = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.spark_hide_types,
       name = L["Hide on"],
       order = 45.3,
@@ -384,7 +384,7 @@ local function createOptions(id, data)
     },
   };
 
-  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 36.5);
+  options = BlindAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 36.5);
 
   local overlayInfo = OptionsPrivate.Private.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
@@ -398,7 +398,7 @@ local function createOptions(id, data)
       options["overlaytexture" .. id] = {
         type = "select",
         dialogControl = "LSM30_Statusbar",
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         name = string.format(L["%s Texture"], display),
         values = AceGUIWidgetLSMlists.statusbar,
         order = 58.1 + index,
@@ -407,7 +407,7 @@ local function createOptions(id, data)
             data.overlaysTexture = {};
           end
           data.overlaysTexture[id] = texture;
-          WeakAuras.Add(data);
+          BlindAuras.Add(data);
         end,
         get = function()
           if data.overlaysTexture and data.overlaysTexture[id] then
@@ -417,7 +417,7 @@ local function createOptions(id, data)
       }
       options["overlaycolor" .. id] = {
         type = "color",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         name = string.format(L["%s Color"], display),
         hasAlpha = true,
         order = 58.2 + index,
@@ -432,7 +432,7 @@ local function createOptions(id, data)
             data.overlays = {};
           end
           data.overlays[id] = { r, g, b, a};
-          WeakAuras.Add(data);
+          BlindAuras.Add(data);
         end
       }
       index = index + 0.01
@@ -440,7 +440,7 @@ local function createOptions(id, data)
 
     options["overlayclip"] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Clip Overlays"],
       order = 58.3 + index;
     }
@@ -607,14 +607,14 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
       end
 
       if iconPath and iconPath ~= "" then
-        WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
+        BlindAuras.SetTextureOrAtlas(self.icon, iconPath)
       else
-        WeakAuras.SetTextureOrAtlas(self.icon, "Interface\\Icons\\INV_Misc_QuestionMark")
+        BlindAuras.SetTextureOrAtlas(self.icon, "Interface\\Icons\\INV_Misc_QuestionMark")
       end
     end
 
     if data then
-      local _, icon = WeakAuras.GetNameAndIcon(data)
+      local _, icon = BlindAuras.GetNameAndIcon(data)
       borderframe:SetIcon(icon)
     end
 
@@ -797,5 +797,5 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
--- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors);
+-- Register new region type options with BlindAuras
+BlindAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors);

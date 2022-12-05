@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 -- Calculate bounding box
 local function getRect(data)
@@ -58,7 +58,7 @@ local function createDistributeAlignOptions(id, data)
   return {
     align_h = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Horizontal Align"],
       order = 10,
       values = OptionsPrivate.Private.align_types,
@@ -68,7 +68,7 @@ local function createDistributeAlignOptions(id, data)
         end
         local alignedCenter, alignedRight, alignedLeft = "CENTER", "RIGHT", "LEFT";
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local left, _, right = getRect(childData);
             local center = (left + right) / 2;
@@ -87,8 +87,8 @@ local function createDistributeAlignOptions(id, data)
       end,
       set = function(info, v)
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v == "CENTER") then
               if(childData.selfPoint:find("LEFT")) then
@@ -115,16 +115,16 @@ local function createDistributeAlignOptions(id, data)
                 childData.xOffset = 0 - (getWidth(childData, childRegion) / 2);
               end
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     align_v = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Vertical Align"],
       order = 15,
       values = OptionsPrivate.Private.rotated_align_types,
@@ -134,7 +134,7 @@ local function createDistributeAlignOptions(id, data)
         end
         local alignedCenter, alignedBottom, alignedTop = "CENTER", "RIGHT", "LEFT";
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local _, bottom, _, top = getRect(childData);
             local center = (bottom + top) / 2;
@@ -153,8 +153,8 @@ local function createDistributeAlignOptions(id, data)
       end,
       set = function(info, v)
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v == "CENTER") then
               if(childData.selfPoint:find("BOTTOM")) then
@@ -181,16 +181,16 @@ local function createDistributeAlignOptions(id, data)
                 childData.yOffset = 0 - (getHeight(childData, childRegion) / 2);
               end
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     distribute_h = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Distribute Horizontally"],
       order = 20,
       softMin = -100,
@@ -203,7 +203,7 @@ local function createDistributeAlignOptions(id, data)
         local spaced;
         local previousData;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local left, _, right = getRect(childData);
             if not(previousData) then
@@ -241,8 +241,8 @@ local function createDistributeAlignOptions(id, data)
       set = function(info, v)
         local xOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v > 0) then
               if(childData.selfPoint:find("LEFT")) then
@@ -263,17 +263,17 @@ local function createDistributeAlignOptions(id, data)
               end
               xOffset = xOffset + v;
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
 
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     distribute_v = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Distribute Vertically"],
       order = 25,
       softMin = -100,
@@ -286,7 +286,7 @@ local function createDistributeAlignOptions(id, data)
         local spaced;
         local previousData;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local _, bottom, _, top = getRect(childData);
             if not(previousData) then
@@ -324,8 +324,8 @@ local function createDistributeAlignOptions(id, data)
       set = function(info, v)
         local yOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v > 0) then
               if(childData.selfPoint:find("BOTTOM")) then
@@ -346,17 +346,17 @@ local function createDistributeAlignOptions(id, data)
               end
               yOffset = yOffset + v;
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
 
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     space_h = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Space Horizontally"],
       order = 30,
       softMin = -100,
@@ -369,7 +369,7 @@ local function createDistributeAlignOptions(id, data)
         local spaced;
         local previousData;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local left, _, right = getRect(childData);
             if not(previousData) then
@@ -407,8 +407,8 @@ local function createDistributeAlignOptions(id, data)
       set = function(info, v)
         local xOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v >= 0) then
               if(childData.selfPoint:find("LEFT")) then
@@ -429,17 +429,17 @@ local function createDistributeAlignOptions(id, data)
               end
               xOffset = xOffset + v - getWidth(childData, childRegion);
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
 
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
     space_v = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Space Vertically"],
       order = 35,
       softMin = -100,
@@ -452,7 +452,7 @@ local function createDistributeAlignOptions(id, data)
         local spaced;
         local previousData;
         for _, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
+          local childData = BlindAuras.GetData(childId);
           if(childData) then
             local _, bottom, _, top = getRect(childData);
             if not(previousData) then
@@ -490,8 +490,8 @@ local function createDistributeAlignOptions(id, data)
       set = function(info, v)
         local yOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          local childRegion = WeakAuras.GetRegion(childId)
+          local childData = BlindAuras.GetData(childId);
+          local childRegion = BlindAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v >= 0) then
               if(childData.selfPoint:find("BOTTOM")) then
@@ -512,11 +512,11 @@ local function createDistributeAlignOptions(id, data)
               end
               yOffset = yOffset + v - getHeight(childData, childRegion);
             end
-            WeakAuras.Add(childData);
+            BlindAuras.Add(childData);
           end
         end
 
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     }
@@ -531,7 +531,7 @@ local function createOptions(id, data)
     __order = 1,
     groupIcon = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Group Icon"],
       desc = L["Set Thumbnail Icon"],
       order = 0.50,
@@ -540,8 +540,8 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.groupIcon = v
-        WeakAuras.Add(data)
-        WeakAuras.UpdateThumbnail(data)
+        BlindAuras.Add(data)
+        BlindAuras.UpdateThumbnail(data)
       end
     },
     chooseIcon = {
@@ -554,13 +554,13 @@ local function createOptions(id, data)
        end,
        imageWidth = 24,
        imageHeight = 24,
-       control = "WeakAurasIcon",
-       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+       control = "BlindAurasIcon",
+       image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     -- Alignment/Distribute options are added below
     scale = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Group Scale"],
       order = 45,
       min = 0.05,
@@ -576,7 +576,7 @@ local function createOptions(id, data)
         data.xOffset = data.xOffset/(1-change)
         data.yOffset = data.yOffset/(1-change)
         data.scale = v
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -590,7 +590,7 @@ local function createOptions(id, data)
   local hasSubGroups = false
   local hasDynamicSubGroup = false
   for index, childId in pairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
+    local childData = BlindAuras.GetData(childId);
     if childData.controlledChildren then
       hasSubGroups = true
     end
@@ -669,7 +669,7 @@ end
 local function modifyThumbnail(parent, frame, data)
   function frame:SetIcon()
     if data.groupIcon then
-      local success = WeakAuras.SetTextureOrAtlas(frame.icon, data.groupIcon)
+      local success = BlindAuras.SetTextureOrAtlas(frame.icon, data.groupIcon)
       if success then
         if frame.defaultIcon then
           frame.defaultIcon:Hide()
@@ -698,5 +698,5 @@ local function createIcon()
   return thumbnail
 end
 
--- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);
+-- Register new region type options with BlindAuras
+BlindAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);

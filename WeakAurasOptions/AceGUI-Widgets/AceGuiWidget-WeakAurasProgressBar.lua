@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 --[[-----------------------------------------------------------------------------
 Progress Bar Widget
 A simple progress bar
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasProgressBar", 2
+local Type, Version = "BlindAurasProgressBar", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -32,8 +32,8 @@ local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
   local foreground = frame:CreateTexture(nil, "ARTWORK")
   local background = frame:CreateTexture(nil, "ARTWORK")
-  foreground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
-  background:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  foreground:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White")
+  background:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White")
   background:SetVertexColor(0.5, 0.5, 0.5)
   foreground:SetDrawLayer("ARTWORK", 0);
   background:SetDrawLayer("ARTWORK", -1);

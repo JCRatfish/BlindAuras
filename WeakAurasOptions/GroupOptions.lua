@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
-local regionOptions = WeakAuras.regionOptions;
+local L = BlindAuras.L
+local regionOptions = BlindAuras.regionOptions;
 local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 
@@ -52,8 +52,8 @@ function OptionsPrivate.GetGroupOptions(data)
       else
         base[property] = (v ~= "" and v) or nil;
       end
-      WeakAuras.Add(data);
-      WeakAuras.UpdateThumbnail(data);
+      BlindAuras.Add(data);
+      BlindAuras.UpdateThumbnail(data);
       OptionsPrivate.ResetMoverSizer();
     end,
     hidden = function() return false end,

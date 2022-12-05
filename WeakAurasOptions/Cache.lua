@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -7,10 +7,10 @@ local pairs, error, coroutine = pairs, error, coroutine
 -- WoW APIs
 local GetSpellInfo, IsSpellKnown = GetSpellInfo, IsSpellKnown
 
-local WeakAuras = WeakAuras
+local BlindAuras = BlindAuras
 
 local spellCache = {}
-WeakAuras.spellCache = spellCache
+BlindAuras.spellCache = spellCache
 
 local cache
 local metaData
@@ -20,7 +20,7 @@ local bestIcon = {}
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
 function spellCache.Build()
   if not cache  then
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+    error("spellCache has not been loaded. Call BlindAuras.spellCache.Load(...) first.")
   end
 
   if not metaData.needsRebuild then
@@ -52,7 +52,7 @@ function spellCache.Build()
       coroutine.yield()
     end
 
-    if WeakAuras.IsRetail() then
+    if BlindAuras.IsRetail() then
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do
@@ -70,11 +70,11 @@ function spellCache.Build()
       end
     end
 
-    -- Updates the icon cache with whatever icons WeakAuras core has actually used.
+    -- Updates the icon cache with whatever icons BlindAuras core has actually used.
     -- This helps keep name<->icon matches relevant.
-    for name, icons in pairs(WeakAurasSaved.dynamicIconCache) do
-      if WeakAurasSaved.dynamicIconCache[name] then
-        for spellId, icon in pairs(WeakAurasSaved.dynamicIconCache[name]) do
+    for name, icons in pairs(BlindAurasSaved.dynamicIconCache) do
+      if BlindAurasSaved.dynamicIconCache[name] then
+        for spellId, icon in pairs(BlindAurasSaved.dynamicIconCache[name]) do
           spellCache.AddIcon(name, spellId, icon)
         end
       end
@@ -111,7 +111,7 @@ function spellCache.GetIcon(name)
     bestIcon[name] = bestMatch
     return bestIcon[name]
   else
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+    error("spellCache has not been loaded. Call BlindAuras.spellCache.Load(...) first.")
   end
 end
 
@@ -131,7 +131,7 @@ end
 
 function spellCache.AddIcon(name, id, icon)
   if not cache then
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+    error("spellCache has not been loaded. Call BlindAuras.spellCache.Load(...) first.")
     return
   end
 
@@ -149,7 +149,7 @@ function spellCache.Get()
   if cache then
     return cache
   else
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+    error("spellCache has not been loaded. Call BlindAuras.spellCache.Load(...) first.")
   end
 end
 
@@ -159,7 +159,7 @@ function spellCache.Load(data)
 
   local _, build = GetBuildInfo();
   local locale = GetLocale();
-  local version = WeakAuras.versionString
+  local version = BlindAuras.versionString
 
   local num = 0;
   for i,v in pairs(cache) do
@@ -229,10 +229,10 @@ end
 
 function spellCache.CorrectAuraName(input)
   if (not cache) then
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+    error("spellCache has not been loaded. Call BlindAuras.spellCache.Load(...) first.")
   end
 
-  local spellId = WeakAuras.SafeToNumber(input);
+  local spellId = BlindAuras.SafeToNumber(input);
   if(spellId) then
     local name, _, icon = GetSpellInfo(spellId);
     if(name) then

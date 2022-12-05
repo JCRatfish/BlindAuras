@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
@@ -8,7 +8,7 @@ if MSQ then
     MSQ = nil
   end
 end
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local default = function(parentType)
   local options = {
@@ -356,7 +356,7 @@ local function modify(parent, region, parentData, data, first)
 end
 
 -- This is used by the templates to add glow
-function WeakAuras.getDefaultGlow(regionType)
+function BlindAuras.getDefaultGlow(regionType)
   if regionType == "aurabar" then
     return {
       ["type"] = "subglow",
@@ -418,4 +418,4 @@ local function addDefaultsForNewAura(data)
   end
 end
 
-WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
+BlindAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);

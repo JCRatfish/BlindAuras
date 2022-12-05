@@ -5,8 +5,8 @@ local AddonName, TemplatePrivate = ...
 local AceGUI = LibStub("AceGUI-3.0");
 local floor, ceil, tinsert = floor, ceil, tinsert;
 local CreateFrame, UnitClass, UnitRace, GetSpecialization = CreateFrame, UnitClass, UnitRace, GetSpecialization;
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L
 
 AceGUI:RegisterLayout("WATemplateTriggerLayoutFlyout", function(content, children)
   local width = content.width or content:GetWidth() or 0
@@ -54,7 +54,7 @@ local function changes(property, regionType)
       value = true,
       property = "sub."..subregionPos..".glow"
     };
-  elseif WeakAuras.regionTypes[regionType].default[property] == nil then
+  elseif BlindAuras.regionTypes[regionType].default[property] == nil then
     return nil;
   elseif property == "cooldownSwipe" then
     return {
@@ -297,7 +297,7 @@ end
 local function createDurationTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Combat Log"),
+      type = BlindAuras.GetTriggerCategoryFor("Combat Log"),
       event = "Combat Log",
       subeventSuffix = "_CAST_SUCCESS",
       use_sourceUnit = true,
@@ -312,7 +312,7 @@ end
 local function createTotemTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Totem"),
+      type = BlindAuras.GetTriggerCategoryFor("Totem"),
       event = "Totem",
       use_totemName = item.totemNumber == nil,
       totemName = GetSpellInfo(item.spell),
@@ -327,7 +327,7 @@ end
 local function createPowerTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Power"),
+      type = BlindAuras.GetTriggerCategoryFor("Power"),
       event = "Power",
       use_unit = true,
       unit = "player",
@@ -341,7 +341,7 @@ end
 local function createHealthTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Health"),
+      type = BlindAuras.GetTriggerCategoryFor("Health"),
       event = "Health",
       unit = "player",
       use_unit = true,
@@ -355,7 +355,7 @@ end
 local function createCastTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Cast"),
+      type = BlindAuras.GetTriggerCategoryFor("Cast"),
       event = "Cast",
       use_unit = true,
       unit = item.unit or "player",
@@ -366,7 +366,7 @@ end
 local function createAbilityTrigger(triggers, position, item, genericShowOn)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Cooldown Progress (Spell)"),
+      type = BlindAuras.GetTriggerCategoryFor("Cooldown Progress (Spell)"),
       event = "Cooldown Progress (Spell)",
       spellName = item.spell,
       use_genericShowOn = true,
@@ -382,7 +382,7 @@ end
 local function createItemTrigger(triggers, position, item, genericShowOn)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Cooldown Progress (Item)"),
+      type = BlindAuras.GetTriggerCategoryFor("Cooldown Progress (Item)"),
       event = "Cooldown Progress (Item)",
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
@@ -394,7 +394,7 @@ end
 local function createOverlayGlowTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Spell Activation Overlay"),
+      type = BlindAuras.GetTriggerCategoryFor("Spell Activation Overlay"),
       event = "Spell Activation Overlay",
       spellName = item.spell,
     }
@@ -404,7 +404,7 @@ end
 local function createWeaponEnchantTrigger(triggers, position, item, showOn)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Weapon Enchant"),
+      type = BlindAuras.GetTriggerCategoryFor("Weapon Enchant"),
       event = "Weapon Enchant",
       use_enchant = true,
       enchant = tostring(item.enchant),
@@ -417,7 +417,7 @@ end
 local function createQueuedActionTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Queued Action"),
+      type = BlindAuras.GetTriggerCategoryFor("Queued Action"),
       event = "Queued Action",
       spellName = item.spell
     }
@@ -502,7 +502,7 @@ local function subTypesFor(item, regionType)
       local t1 = thumbnail:CreateTexture(nil, "ARTWORK");
       t1:SetTexture(134376);
       t1:SetAllPoints(thumbnail);
-      WeakAuras.ShowOverlayGlow(thumbnail); -- where to call HideOverlayGlow() ?
+      BlindAuras.ShowOverlayGlow(thumbnail); -- where to call HideOverlayGlow() ?
       return thumbnail;
     end, -- 571554
     charges = function()
@@ -524,7 +524,7 @@ local function subTypesFor(item, regionType)
   local dataGlow = {}
   if regionType == "aurabar" then
     dataGlow.subRegions = {
-      [1] = WeakAuras.getDefaultGlow(regionType)
+      [1] = BlindAuras.getDefaultGlow(regionType)
     }
   end
   if (item.type == "ability") then
@@ -1204,7 +1204,7 @@ local function subTypesFor(item, regionType)
   return fallbacks
 end
 
-function WeakAuras.CreateTemplateView(Private, frame)
+function BlindAuras.CreateTemplateView(Private, frame)
   TemplatePrivate.Private = Private
 
   local newView = AceGUI:Create("InlineGroup");
@@ -1222,7 +1222,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   local function createNewId(prefix)
     local new_id = prefix or "New";
     local num = 2;
-    while(WeakAuras.GetData(new_id)) do
+    while(BlindAuras.GetData(new_id)) do
       new_id = prefix .. " " .. num;
       num = num + 1;
     end
@@ -1340,7 +1340,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   local createButtons;
 
   local function createRegionButton(regionType, regionData, selectedItem)
-    local button = AceGUI:Create("WeakAurasNewButton");
+    local button = AceGUI:Create("BlindAurasNewButton");
     button:SetTitle(regionData.displayName);
     if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
       button:SetIcon(regionData.templateIcon);
@@ -1357,11 +1357,11 @@ function WeakAuras.CreateTemplateView(Private, frame)
   end
 
   local function createRegionFlyout(regionType, regionData)
-    local group = AceGUI:Create("WeakAurasTemplateGroup");
+    local group = AceGUI:Create("BlindAurasTemplateGroup");
     group:SetFullWidth(true);
     group:SetLayout("WATemplateTriggerLayoutFlyout");
     for _, item in ipairs(regionData.templates) do
-      local templateButton = AceGUI:Create("WeakAurasNewButton");
+      local templateButton = AceGUI:Create("BlindAurasNewButton");
       if (item.icon) then
         templateButton:SetIcon(item.icon);
       else
@@ -1372,8 +1372,8 @@ function WeakAuras.CreateTemplateView(Private, frame)
       templateButton:SetDescription(item.description);
       templateButton:SetClick(function()
         newView.data = CopyTable(item.data);
-        WeakAuras.validate(newView.data, WeakAuras.data_stub);
-        newView.data.internalVersion = WeakAuras.InternalVersion();
+        BlindAuras.validate(newView.data, BlindAuras.data_stub);
+        newView.data.internalVersion = BlindAuras.InternalVersion();
         newView.data.regionType = regionType;
         createButtons();
       end);
@@ -1420,14 +1420,14 @@ function WeakAuras.CreateTemplateView(Private, frame)
   end
 
   local function createTriggerFlyout(section, fullWidth)
-    local group = AceGUI:Create("WeakAurasTemplateGroup");
+    local group = AceGUI:Create("BlindAurasTemplateGroup");
     group:SetFullWidth(true);
     newView.chosenItemBatch = {};
     newView.chosenItemButtonsBatch = {};
     group:SetLayout("WATemplateTriggerLayoutFlyout");
     if (section) then
       for j, item in sortedPairs(section, createSortFunctionFor(section)) do
-        local button = AceGUI:Create("WeakAurasNewButton");
+        local button = AceGUI:Create("BlindAurasNewButton");
         button:SetTitle(item.title);
         button:SetDescription(item.description);
         if (fullWidth) then
@@ -1473,16 +1473,16 @@ function WeakAuras.CreateTemplateView(Private, frame)
               else
                 replaceTrigger(newView.data, item, subType);
                 replaceCondition(newView.data, item, subType);
-                newView.data.id = WeakAuras.FindUnusedId(item.title);
+                newView.data.id = BlindAuras.FindUnusedId(item.title);
                 newView.data.load = {};
                 if (item.load) then
                   newView.data.load = CopyTable(item.load);
                 end
                 if (subType.data) then
-                  WeakAuras.DeepMixin(newView.data, subType.data)
+                  BlindAuras.DeepMixin(newView.data, subType.data)
                 end
                 newView:CancelClose();
-                WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
+                BlindAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
               end
             else
               -- create trigger type selection
@@ -1499,13 +1499,13 @@ function WeakAuras.CreateTemplateView(Private, frame)
 
   local function createTriggerTypeButtons()
     local item = newView.chosenItem;
-    local group = AceGUI:Create("WeakAurasTemplateGroup");
+    local group = AceGUI:Create("BlindAurasTemplateGroup");
     group:SetFullWidth(true);
     local subTypes = subTypesFor(item, newView.data.regionType);
     local subTypesButtons = {}
     local lastButton
     for k, subType in pairs(subTypes) do
-      local button = AceGUI:Create("WeakAurasNewButton");
+      local button = AceGUI:Create("BlindAurasNewButton");
       subTypesButtons[k] = button;
       button:SetTitle(subType.title);
       button:SetDescription(subType.description);
@@ -1534,16 +1534,16 @@ function WeakAuras.CreateTemplateView(Private, frame)
         else
           replaceTrigger(newView.data, item, subType);
           replaceCondition(newView.data, item, subType);
-          newView.data.id = WeakAuras.FindUnusedId(item.title);
+          newView.data.id = BlindAuras.FindUnusedId(item.title);
           newView.data.load = {};
           if (item.load) then
             newView.data.load = CopyTable(item.load);
           end
           if (subType.data) then
-            WeakAuras.DeepMixin(newView.data, subType.data)
+            BlindAuras.DeepMixin(newView.data, subType.data)
           end
           newView:CancelClose();
-          WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
+          BlindAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
         end
       end);
       if newView.batchStep then
@@ -1560,7 +1560,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   end
 
   local function createTriggerButton(section, selectedItem, fullWidth)
-    local button = AceGUI:Create("WeakAurasNewButton");
+    local button = AceGUI:Create("BlindAurasNewButton");
     button:SetTitle(section.title);
     button:SetDescription(section.description);
     if (section.icon) then
@@ -1591,16 +1591,16 @@ function WeakAuras.CreateTemplateView(Private, frame)
       replaceTrigger(data, item, subType);
       replaceCondition(data, item, subType);
       newView:CancelClose();
-      WeakAuras.Add(data);
-      WeakAuras.ClearAndUpdateOptions(data.id)
-      WeakAuras.FillOptions()
-      WeakAuras.NewDisplayButton(data);
-      WeakAuras.UpdateThumbnail(data);
+      BlindAuras.Add(data);
+      BlindAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.FillOptions()
+      BlindAuras.NewDisplayButton(data);
+      BlindAuras.UpdateThumbnail(data);
     end
     for child in TemplatePrivate.Private.TraverseLeafsOrAura(data) do
       handle(child, item, subType);
     end
-    WeakAuras.ClearAndUpdateOptions(data.id)
+    BlindAuras.ClearAndUpdateOptions(data.id)
   end
 
   local function addTriggers(data, item, subType)
@@ -1609,20 +1609,20 @@ function WeakAuras.CreateTemplateView(Private, frame)
       addTrigger(data, item, subType);
       addCondition(data, item, subType, prevNumTriggers);
       newView:CancelClose();
-      WeakAuras.Add(data);
-      WeakAuras.ClearAndUpdateOptions(data.id)
-      WeakAuras.FillOptions()
-      WeakAuras.NewDisplayButton(data);
-      WeakAuras.UpdateThumbnail(data);
+      BlindAuras.Add(data);
+      BlindAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.FillOptions()
+      BlindAuras.NewDisplayButton(data);
+      BlindAuras.UpdateThumbnail(data);
     end
     for child in TemplatePrivate.Private.TraverseLeafsOrAura(data) do
       handle(child, item, subType);
     end
-    WeakAuras.ClearAndUpdateOptions(data.id)
+    BlindAuras.ClearAndUpdateOptions(data.id)
   end
 
   local function createLastPage()
-    local replaceButton = AceGUI:Create("WeakAurasNewButton");
+    local replaceButton = AceGUI:Create("BlindAurasNewButton");
     replaceButton:SetTitle(L["Replace Triggers"]);
     replaceButton:SetDescription(L["Replace all existing triggers"]);
     replaceButton:SetIcon("Interface\\Icons\\Spell_ChargeNegative");
@@ -1633,15 +1633,15 @@ function WeakAuras.CreateTemplateView(Private, frame)
         newView.data.load[v] = nil;
         newView.data.load["use_"..v] = nil;
       end
-      newView.data.load.class = CopyTable(WeakAuras.data_stub.load.class);
-      newView.data.load.spec = CopyTable(WeakAuras.data_stub.load.spec);
+      newView.data.load.class = CopyTable(BlindAuras.data_stub.load.class);
+      newView.data.load.spec = CopyTable(BlindAuras.data_stub.load.spec);
       if (newView.chosenItem.load) then
-        WeakAuras.DeepMixin(newView.data.load, newView.chosenItem.load)
+        BlindAuras.DeepMixin(newView.data.load, newView.chosenItem.load)
       end
     end);
     newViewScroll:AddChild(replaceButton);
 
-    local addButton = AceGUI:Create("WeakAurasNewButton");
+    local addButton = AceGUI:Create("BlindAurasNewButton");
     addButton:SetTitle(L["Add Triggers"]);
     addButton:SetDescription(L["Keeps existing triggers intact"]);
     addButton:SetIcon("Interface\\Icons\\Spell_ChargePositive");
@@ -1659,7 +1659,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     newView.batchModeLabel:Hide();
     if (not newView.data) then
       -- First step: Show region types
-      for regionType, regionData in pairs(WeakAuras.regionOptions) do
+      for regionType, regionData in pairs(BlindAuras.regionOptions) do
         if (regionData.templates) then
           local button = createRegionButton(regionType, regionData, selectedItem);
           newViewScroll:AddChild(button);
@@ -1679,7 +1679,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
           classHeader:SetFullWidth(true);
           newViewScroll:AddChild(classHeader);
 
-          local button = AceGUI:Create("WeakAurasNewButton");
+          local button = AceGUI:Create("BlindAurasNewButton");
           button:SetTitle(item.title);
           button:SetDescription(item.description);
           button:SetFullWidth(true);
@@ -1701,32 +1701,32 @@ function WeakAuras.CreateTemplateView(Private, frame)
       -- Second step: Trigger selection screen
 
       -- Class
-      local classSelector = createDropdown("class", WeakAuras.class_types);
+      local classSelector = createDropdown("class", BlindAuras.class_types);
       newViewScroll:AddChild(classSelector);
 
-      if WeakAuras.IsRetail() then
-        local specSelector = createDropdown("spec", WeakAuras.spec_types_specific[newView.class]);
+      if BlindAuras.IsRetail() then
+        local specSelector = createDropdown("spec", BlindAuras.spec_types_specific[newView.class]);
         newViewScroll:AddChild(specSelector);
         newViewScroll:AddChild(createSpacer());
       end
-      if (WeakAuras.triggerTemplates.class[newView.class] and WeakAuras.triggerTemplates.class[newView.class][newView.spec]) then
-        createTriggerButtons(WeakAuras.triggerTemplates.class[newView.class][newView.spec], selectedItem);
+      if (BlindAuras.triggerTemplates.class[newView.class] and BlindAuras.triggerTemplates.class[newView.class][newView.spec]) then
+        createTriggerButtons(BlindAuras.triggerTemplates.class[newView.class][newView.spec], selectedItem);
       end
       local classHeader = AceGUI:Create("Heading");
       classHeader:SetFullWidth(true);
       newViewScroll:AddChild(classHeader);
 
-      createTriggerButton(WeakAuras.triggerTemplates.general, selectedItem);
+      createTriggerButton(BlindAuras.triggerTemplates.general, selectedItem);
 
       -- Race
       local raceHeader = AceGUI:Create("Heading");
       raceHeader:SetFullWidth(true);
       newViewScroll:AddChild(raceHeader);
-      local raceSelector = createDropdown("race", WeakAuras.race_types);
+      local raceSelector = createDropdown("race", BlindAuras.race_types);
       newViewScroll:AddChild(raceSelector);
       newViewScroll:AddChild(createSpacer());
-      if (WeakAuras.triggerTemplates.race[newView.race]) then
-        local group = createTriggerFlyout(WeakAuras.triggerTemplates.race[newView.race], true);
+      if (BlindAuras.triggerTemplates.race[newView.race]) then
+        local group = createTriggerFlyout(BlindAuras.triggerTemplates.race[newView.race], true);
         newViewScroll:AddChild(group);
       end
 
@@ -1776,16 +1776,16 @@ function WeakAuras.CreateTemplateView(Private, frame)
       local subType = newView.chosenItemBatchSubType[item]
       replaceTrigger(newView.data, item, subType);
       replaceCondition(newView.data, item, subType);
-      newView.data.id = WeakAuras.FindUnusedId(item.title);
+      newView.data.id = BlindAuras.FindUnusedId(item.title);
       newView.data.load = {};
       if (item.load) then
         newView.data.load = CopyTable(item.load);
       end
       if (subType.data) then
-        WeakAuras.DeepMixin(newView.data, subType.data)
+        BlindAuras.DeepMixin(newView.data, subType.data)
       end
       -- create aura
-      WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
+      BlindAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
     end
     newView:CancelClose();
   end);
@@ -1869,7 +1869,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
       newView.chosenItemBatch = {};
     end
     newView.class = select(2, UnitClass("player"));
-    if WeakAuras.IsRetail() then
+    if BlindAuras.IsRetail() then
       newView.spec = GetSpecialization() or 1;
     else
       newView.spec = 1

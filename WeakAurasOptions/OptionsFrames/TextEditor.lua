@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -13,8 +13,8 @@ local AceGUI = LibStub("AceGUI-3.0")
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 local IndentationLib = IndentationLib
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local textEditor
 
@@ -54,14 +54,14 @@ local editor_themes = {
   }
 }
 
-if not WeakAurasSaved.editor_tab_spaces then WeakAurasSaved.editor_tab_spaces = 4 end
-if not WeakAurasSaved.editor_font_size then WeakAurasSaved.editor_font_size = 12 end -- set default font size if missing
+if not BlindAurasSaved.editor_tab_spaces then BlindAurasSaved.editor_tab_spaces = 4 end
+if not BlindAurasSaved.editor_font_size then BlindAurasSaved.editor_font_size = 12 end -- set default font size if missing
 local color_scheme = {[0] = "|r"}
 local function set_scheme()
-  if not WeakAurasSaved.editor_theme then
-    WeakAurasSaved.editor_theme = "Monokai"
+  if not BlindAurasSaved.editor_theme then
+    BlindAurasSaved.editor_theme = "Monokai"
   end
-  local theme = editor_themes[WeakAurasSaved.editor_theme]
+  local theme = editor_themes[BlindAurasSaved.editor_theme]
   color_scheme[IndentationLib.tokens.TOKEN_SPECIAL] = theme["Special"]
   color_scheme[IndentationLib.tokens.TOKEN_KEYWORD] = theme["Keyword"]
   color_scheme[IndentationLib.tokens.TOKEN_COMMENT_SHORT] = theme["Comment"]
@@ -150,7 +150,7 @@ end]=]
 }
 
 local function ConstructTextEditor(frame)
-  local group = AceGUI:Create("WeakAurasInlineGroup")
+  local group = AceGUI:Create("BlindAurasInlineGroup")
   group.frame:SetParent(frame)
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
@@ -169,7 +169,7 @@ local function ConstructTextEditor(frame)
   editor:DisableButton(true)
   local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium")
   if (fontPath) then
-    editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size)
+    editor.editBox:SetFont(fontPath, BlindAurasSaved.editor_font_size)
   end
   group:AddChild(editor)
   editor.frame:SetClipsChildren(true)
@@ -190,7 +190,7 @@ local function ConstructTextEditor(frame)
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
   set_scheme()
-  IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
+  IndentationLib.enable(editor.editBox, color_scheme, BlindAurasSaved.editor_tab_spaces)
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
   cancel:SetScript(
@@ -257,10 +257,10 @@ local function ConstructTextEditor(frame)
           text = k,
           isNotRadio = false,
           checked = function()
-            return WeakAurasSaved.editor_theme == k
+            return BlindAurasSaved.editor_theme == k
           end,
           func = function()
-            WeakAurasSaved.editor_theme = k
+            BlindAurasSaved.editor_theme = k
             set_scheme()
             editor.editBox:SetText(editor.editBox:GetText())
           end
@@ -272,10 +272,10 @@ local function ConstructTextEditor(frame)
           text = L["Bracket Matching"],
           isNotRadio = true,
           checked = function()
-            return WeakAurasSaved.editor_bracket_matching
+            return BlindAurasSaved.editor_bracket_matching
           end,
           func = function()
-            WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
+            BlindAurasSaved.editor_bracket_matching = not BlindAurasSaved.editor_bracket_matching
           end
         },
       level)
@@ -289,7 +289,7 @@ local function ConstructTextEditor(frame)
       level)
       UIDropDownMenu_AddButton(
         {
-          text = WeakAuras.newFeatureString .. L["Font Size"],
+          text = BlindAuras.newFeatureString .. L["Font Size"],
           hasArrow = true,
           notCheckable = true,
           menuList = "sizes"
@@ -303,11 +303,11 @@ local function ConstructTextEditor(frame)
             text = i,
             isNotRadio = false,
             checked = function()
-              return WeakAurasSaved.editor_tab_spaces == i
+              return BlindAurasSaved.editor_tab_spaces == i
             end,
             func = function()
-              WeakAurasSaved.editor_tab_spaces = i
-              IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
+              BlindAurasSaved.editor_tab_spaces = i
+              IndentationLib.enable(editor.editBox, color_scheme, BlindAurasSaved.editor_tab_spaces)
               editor.editBox:SetText(editor.editBox:GetText().."\n")
               IndentationLib.indentEditbox(editor.editBox)
             end
@@ -322,11 +322,11 @@ local function ConstructTextEditor(frame)
             text = i,
             isNotRadio = false,
             checked = function()
-              return WeakAurasSaved.editor_font_size == i
+              return BlindAurasSaved.editor_font_size == i
             end,
             func = function()
-              WeakAurasSaved.editor_font_size = i
-              editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size)
+              BlindAurasSaved.editor_font_size = i
+              editor.editBox:SetFont(fontPath, BlindAurasSaved.editor_font_size)
             end
           },
         level)
@@ -352,8 +352,8 @@ local function ConstructTextEditor(frame)
   snippetsButton:RegisterForClicks("LeftButtonUp")
 
   -- Get the saved snippets from SavedVars
-  WeakAurasOptionsSaved.savedSnippets = WeakAurasOptionsSaved.savedSnippets or {}
-  local savedSnippets = WeakAurasOptionsSaved.savedSnippets
+  BlindAurasOptionsSaved.savedSnippets = BlindAurasOptionsSaved.savedSnippets or {}
+  local savedSnippets = BlindAurasOptionsSaved.savedSnippets
 
   -- function to build snippet selection list
   local function UpdateSnippets(frame)
@@ -373,7 +373,7 @@ local function ConstructTextEditor(frame)
 
     -- Iterate premade snippets and make buttons for them
     for order, snippet in ipairs(premadeSnippets) do
-      local button = AceGUI:Create("WeakAurasSnippetButton")
+      local button = AceGUI:Create("BlindAurasSnippetButton")
       button:SetTitle(snippet.name)
       button:SetDescription(snippet.snippet)
       button:SetCallback(
@@ -394,7 +394,7 @@ local function ConstructTextEditor(frame)
 
     -- iterate saved snippets and make buttons
     for order, snippet in ipairs(savedSnippets) do
-      local button = AceGUI:Create("WeakAurasSnippetButton")
+      local button = AceGUI:Create("BlindAurasSnippetButton")
       local snippetInsert = gsub(snippet.snippet, "|", "||")
       button:SetTitle(snippet.name)
       button:SetDescription(snippetInsert)
@@ -440,7 +440,7 @@ local function ConstructTextEditor(frame)
   end
 
   -- Make sidebar for snippets
-  local snippetsFrame = CreateFrame("Frame", "WeakAurasSnippets", group.frame, "BackdropTemplate")
+  local snippetsFrame = CreateFrame("Frame", "BlindAurasSnippets", group.frame, "BackdropTemplate")
   snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
   snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)
@@ -536,7 +536,7 @@ local function ConstructTextEditor(frame)
   editor.editBox:HookScript(
     "OnChar",
     function(_, char)
-      if not IsControlKeyDown() and WeakAurasSaved.editor_bracket_matching then
+      if not IsControlKeyDown() and BlindAurasSaved.editor_bracket_matching then
         if char == "(" then
           editor.editBox:Insert(")")
           editor.editBox:SetCursorPosition(editor.editBox:GetCursorPosition() - 1)
@@ -795,24 +795,24 @@ local function ConstructTextEditor(frame)
   function group.Close(self)
     if self.setOnParent then
       OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
-      WeakAuras.Add(self.data)
+      BlindAuras.Add(self.data)
     else
       local textById = editor.combinedText and extractTexts(editor:GetText())
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.data) do
         local text = editor.combinedText and (textById[child.id] or "") or editor:GetText()
         OptionsPrivate.Private.ValueToPath(child, self.multipath and self.path[child.id] or self.path, text)
-        WeakAuras.Add(child)
+        BlindAuras.Add(child)
         OptionsPrivate.ClearOptions(child.id)
       end
     end
 
-    WeakAuras.ClearAndUpdateOptions(self.data.id)
+    BlindAuras.ClearAndUpdateOptions(self.data.id)
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged)
     editor:ClearFocus()
     frame.window = "default"
     frame:UpdateFrameVisible()
-    WeakAuras.FillOptions()
+    BlindAuras.FillOptions()
   end
 
   return group

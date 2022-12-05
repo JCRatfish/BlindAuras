@@ -2,6 +2,6 @@ if GetLocale() ~= "ruRU" then
   return
 end
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
---@localization(locale="ruRU", format="lua_additive_table", namespace="WeakAuras", handle-subnamespaces="none")@
+--@localization(locale="ruRU", format="lua_additive_table", namespace="BlindAuras", handle-subnamespaces="none")@

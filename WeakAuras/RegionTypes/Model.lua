@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 -- Default settings
 local default = {
@@ -66,7 +66,7 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+BlindAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   return properties;
@@ -89,13 +89,13 @@ local function create(parent)
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate");
   region.border = border;
 
-  WeakAuras.regionPrototype.create(region);
+  BlindAuras.regionPrototype.create(region);
 
   for k, v in pairs (regionFunctions) do
     region[k] = v
   end
 
-  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
+  region.AnchorSubRegion = BlindAuras.regionPrototype.AnchorSubRegion
 
   -- Return complete region
   return region;
@@ -119,7 +119,7 @@ local function ConfigureModel(region, model, data)
   model:Show()
 
   -- Adjust model
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+  BlindAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
   if (data.api) then
@@ -135,7 +135,7 @@ local function ConfigureModel(region, model, data)
     model:RegisterEvent("UNIT_MODEL_CHANGED");
 
     local unit
-    if not WeakAuras.IsRetail() then
+    if not BlindAuras.IsRetail() then
       unit = data.model_path
     else
       unit = data.model_fileId
@@ -143,13 +143,13 @@ local function ConfigureModel(region, model, data)
 
     if (unit == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
-    elseif not WeakAuras.IsClassic() and unit == "focus" then
+    elseif not BlindAuras.IsClassic() and unit == "focus" then
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
       Private.StartProfileSystem("model");
       if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
-        WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+        BlindAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
       Private.StopProfileSystem("model");
     end
@@ -157,7 +157,7 @@ local function ConfigureModel(region, model, data)
   else
     model:UnregisterEvent("UNIT_MODEL_CHANGED");
     model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-    if not WeakAuras.IsClassic() then
+    if not BlindAuras.IsClassic() then
       model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", nil);
@@ -183,7 +183,7 @@ local function ReleaseModel(model)
   model:Hide()
   model:UnregisterEvent("UNIT_MODEL_CHANGED");
   model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-  if not WeakAuras.IsClassic() then
+  if not BlindAuras.IsClassic() then
     model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
   end
   model:SetScript("OnEvent", nil);
@@ -193,7 +193,7 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
 
@@ -300,14 +300,14 @@ local function modify(parent, region, data)
     end
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
 -- Work around for movies and world map hiding all models
 do
   function Private.PreShowModels(self, event)
     Private.StartProfileSystem("model");
-    for id, data in pairs(WeakAuras.regions) do
+    for id, data in pairs(BlindAuras.regions) do
       Private.StartProfileAura(id);
       if data.region.toShow then
         if (data.regionType == "model") then
@@ -327,5 +327,5 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
--- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties, validate);
+-- Register new region type with BlindAuras
+BlindAuras.RegisterRegionType("model", create, modify, default, GetProperties, validate);

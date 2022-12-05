@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L;
 
 local LSM = LibStub("LibSharedMedia-3.0");
 
@@ -78,14 +78,14 @@ Private.group_hybrid_sort_types = {
   descending = L["Descending"]
 }
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   Private.time_format_types = {
-    [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
+    [0] = L["BlindAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
     [1] = L["Blizzard (2h | 3m | 10s | 2.4)"],
   }
 else
   Private.time_format_types = {
-    [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
+    [0] = L["BlindAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
     [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
     [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
   }
@@ -128,7 +128,7 @@ Private.unit_realm_name_types = {
 }
 
 local timeFormatter = {}
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   Mixin(timeFormatter, SecondsFormatterMixin)
   timeFormatter:Init(0, SecondsFormatter.Abbreviation.OneLetter)
 
@@ -193,7 +193,7 @@ local simpleFormatters = {
       return fmt:gsub(" ", ""):format(time)
     end,
     -- Modern Blizzard
-    [2] = WeakAuras.IsRetail() and function(value)
+    [2] = BlindAuras.IsRetail() and function(value)
       return timeFormatter:Format(value)
     end,
     -- Fixed built-in formatter
@@ -223,13 +223,13 @@ Private.format_types = {
       addOption(symbol .. "_abbreviate", {
         type = "toggle",
         name = L["Abbreviate"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
         name = L["Max Char "],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         min = 1,
         softMax = 20,
         hidden = hidden,
@@ -244,7 +244,7 @@ Private.format_types = {
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
       if abbreviate then
         return function(input)
-          return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
+          return BlindAuras.WA_Utf8Sub(input, abbreviateMax)
         end
       end
       return nil
@@ -256,7 +256,7 @@ Private.format_types = {
       addOption(symbol .. "_time_format", {
         type = "select",
         name = L["Format"],
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         values = Private.time_format_types,
         hidden = hidden
       })
@@ -267,14 +267,14 @@ Private.format_types = {
         max = 60,
         step = 1,
         name = L["Increase Precision Below"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
       })
 
       addOption(symbol .. "_time_precision", {
         type = "select",
         name = L["Precision"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.time_precision_types,
         hidden = hidden,
         disabled = function() return get(symbol .. "_time_dynamic_threshold") == 0 end
@@ -284,7 +284,7 @@ Private.format_types = {
         type = "toggle",
         name = L["Blizzard Cooldown Reduction"],
         desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
       })
 
@@ -292,7 +292,7 @@ Private.format_types = {
         type = "toggle",
         name = L["Use Legacy floor rounding"],
         desc = L["Enables (incorrect) round down of seconds, which was the previous default behavior."],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
         disabled = function() return get(symbol .. "_time_format", 0) ~= 0 end
       })
@@ -371,14 +371,14 @@ Private.format_types = {
       addOption(symbol .. "_big_number_format", {
         type = "select",
         name = L["Format"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.big_number_types,
         hidden = hidden
       })
       addOption(symbol .. "_big_number_space", {
         type = "description",
         name = "",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden
       })
     end,
@@ -396,14 +396,14 @@ Private.format_types = {
       addOption(symbol .. "_decimal_precision", {
         type = "select",
         name = L["Precision"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.precision_types,
         hidden = hidden
       })
       addOption(symbol .. "_round_type", {
         type = "select",
         name = L["Round Mode"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.round_types,
         hidden = hidden,
         disabled = function()
@@ -431,7 +431,7 @@ Private.format_types = {
         addOption(symbol .. "_color", {
           type = "select",
           name = L["Color"],
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           values = Private.unit_color_types,
           hidden = hidden,
         })
@@ -439,20 +439,20 @@ Private.format_types = {
       addOption(symbol .. "_realm_name", {
         type = "select",
         name = L["Realm Name"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.unit_realm_name_types,
         hidden = hidden,
       })
       addOption(symbol .. "_abbreviate", {
         type = "toggle",
         name = L["Abbreviate"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
         name = L["Max Char "],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         min = 1,
         max = 20,
         hidden = hidden,
@@ -514,14 +514,14 @@ Private.format_types = {
           if not unit then
             return ""
           end
-          local name, realm = WeakAuras.UnitNameWithRealm(unit)
+          local name, realm = BlindAuras.UnitNameWithRealm(unit)
           return name .. "-" .. realm
         end
       end
 
       if abbreviate then
         abbreviateFunc = function(input)
-          return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
+          return BlindAuras.WA_Utf8Sub(input, abbreviateMax)
         end
       end
 
@@ -558,7 +558,7 @@ Private.format_types = {
         addOption(symbol .. "_color", {
           type = "select",
           name = L["Color"],
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           values = Private.unit_color_types,
           hidden = hidden,
         })
@@ -566,20 +566,20 @@ Private.format_types = {
       addOption(symbol .. "_realm_name", {
         type = "select",
         name = L["Realm Name"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.unit_realm_name_types,
         hidden = hidden,
       })
       addOption(symbol .. "_abbreviate", {
         type = "toggle",
         name = L["Abbreviate"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden,
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
         name = L["Max Char "],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         min = 1,
         max = 20,
         hidden = hidden,
@@ -628,7 +628,7 @@ Private.format_types = {
       elseif realm == "always" then
         nameFunc = function(name, realm)
           if realm == "" then
-            realm = select(2, WeakAuras.UnitNameWithRealm("player"))
+            realm = select(2, BlindAuras.UnitNameWithRealm("player"))
           end
           return name .. "-" .. realm
         end
@@ -636,7 +636,7 @@ Private.format_types = {
 
       if abbreviate then
         abbreviateFunc = function(input)
-          return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
+          return BlindAuras.WA_Utf8Sub(input, abbreviateMax)
         end
       end
 
@@ -684,39 +684,39 @@ Private.format_types = {
       addOption(symbol .. "_gcd_gcd", {
         type = "toggle",
         name = L["Subtract GCD"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden
       })
       addOption(symbol .. "_gcd_cast", {
         type = "toggle",
         name = L["Subtract Cast"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden
       })
       addOption(symbol .. "_gcd_channel", {
         type = "toggle",
         name = L["Subtract Channel"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden
       })
       addOption(symbol .. "_gcd_hide_zero", {
         type = "toggle",
         name = L["Hide 0 cooldowns"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         hidden = hidden
       })
 
       addOption(symbol .. "_decimal_precision", {
         type = "select",
         name = L["Precision"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.precision_types,
         hidden = hidden
       })
       addOption(symbol .. "_round_type", {
         type = "select",
         name = L["Round Mode"],
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         values = Private.round_types,
         hidden = hidden,
         disabled = function()
@@ -747,25 +747,25 @@ Private.format_types = {
           return value
         end
 
-        WeakAuras.WatchGCD()
+        BlindAuras.WatchGCD()
         local result = value
         local now = GetTime()
         if gcd then
-          local gcdDuration, gcdExpirationTime = WeakAuras.GetGCDInfo()
+          local gcdDuration, gcdExpirationTime = BlindAuras.GetGCDInfo()
           if gcdDuration ~= 0 then
             result = now + value - gcdExpirationTime
           end
         end
 
         if cast then
-          local _, _, _, _, endTime = WeakAuras.UnitCastingInfo("player")
+          local _, _, _, _, endTime = BlindAuras.UnitCastingInfo("player")
           local castExpirationTIme = endTime and endTime > 0 and (endTime / 1000) or 0
           if castExpirationTIme > 0 then
             result = min(result, now + value - castExpirationTIme)
           end
         end
         if channel then
-          local _, _, _, _, endTime = WeakAuras.UnitChannelInfo("player")
+          local _, _, _, _, endTime = BlindAuras.UnitChannelInfo("player")
           local castExpirationTIme = endTime and endTime > 0 and (endTime / 1000) or 0
           if castExpirationTIme > 0 then
             result = min(result, now + value - castExpirationTIme)
@@ -776,7 +776,7 @@ Private.format_types = {
           return hideZero and "" or "0"
         end
 
-        return numberToStringFunc(result / WeakAuras.CalculatedGcdDuration())
+        return numberToStringFunc(result / BlindAuras.CalculatedGcdDuration())
       end
     end
   }
@@ -915,16 +915,16 @@ Private.unit_threat_situation_types = {
   [3] = "|cFFFF0000"..L["Tanking And Highest"].."|r"
 }
 
-WeakAuras.class_types = {}
+BlindAuras.class_types = {}
 for classID = 1, 20 do -- 20 is for GetNumClasses() but that function doesn't exists on Classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
   if classInfo then
-    WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, WA_GetClassColor(classInfo.classFile))
+    BlindAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, WA_GetClassColor(classInfo.classFile))
   end
 end
 
 
-WeakAuras.race_types = {}
+BlindAuras.race_types = {}
 do
   local unplayableRace = {
     [12] = true,
@@ -940,7 +940,7 @@ do
     [23] = true,
     [33] = true
   }
-  if WeakAuras.IsClassicOrBCCOrWrath() then
+  if BlindAuras.IsClassicOrBCCOrWrath() then
     unplayableRace[9] = true
   end
 
@@ -948,14 +948,14 @@ do
   local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
   while raceInfo do
     if not unplayableRace[raceID] then
-      WeakAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
+      BlindAuras.race_types[raceInfo.clientFileString] = raceInfo.raceName
     end
     raceID = raceID + 1
     raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
   end
 end
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   Private.covenant_types = {}
   Private.covenant_types[0] = L["None"]
   for i = 1, 4 do
@@ -1363,17 +1363,17 @@ Private.spec_types_2 = {
   [2] = SPECIALIZATION.." 2"
 }
 
-WeakAuras.spec_types_specific = {}
+BlindAuras.spec_types_specific = {}
 Private.spec_types_all = {}
 local function update_specs()
-  for classFileName, classID in pairs(WeakAuras.class_ids) do
-    WeakAuras.spec_types_specific[classFileName] = {}
+  for classFileName, classID in pairs(BlindAuras.class_ids) do
+    BlindAuras.spec_types_specific[classFileName] = {}
     local classTexcoords = CLASS_ICON_TCOORDS[classFileName]
     local numSpecs = GetNumSpecializationsForClassID(classID)
     for i=1, numSpecs do
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
-        tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
+        tinsert(BlindAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
         Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
          .. ":0|t"
@@ -1385,7 +1385,7 @@ end
 
 
 Private.talent_types = {}
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -1413,7 +1413,7 @@ else
 end
 
 Private.pvp_talent_types = {}
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   for i = 1,10 do
     tinsert(Private.pvp_talent_types, string.format(L["PvP Talent %i"], i));
   end
@@ -1572,13 +1572,13 @@ Private.texture_types = {
     ["166954"] = "Bull",
     ["166683"] = "Rapid Fire",
     ["166125"] = "Fire",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-icon.tga"] = "Cancel Icon",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\cancel-mark.tga"] = "Cancel Mark",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\emoji.tga"] = "Emoji",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\exclamation-mark.tga"] = "Exclamation Mark",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\eyes.tga"] = "Eyes",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\ok-icon.tga"] = "Ok Icon",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga"] = "Targeting Mark",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\cancel-icon.tga"] = "Cancel Icon",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\cancel-mark.tga"] = "Cancel Mark",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\emoji.tga"] = "Emoji",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\exclamation-mark.tga"] = "Exclamation Mark",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\eyes.tga"] = "Eyes",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\ok-icon.tga"] = "Ok Icon",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\targeting-mark.tga"] = "Targeting Mark",
 
   },
   ["Runes"] = {
@@ -1748,49 +1748,49 @@ Private.texture_types = {
     ["167097"] = "Iron Chain",
     ["186193"] = "Ghost Chain",
     ["186211"] = "Shock Lightning",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\rainbowbar"] = "Rainbow Bar",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\StripedTexture"] = "Striped Bar",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stripe-bar.tga"] = "Striped Bar 2",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stripe-rainbow-bar.tga"] = "Rainbow Bar 2",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\rainbowbar"] = "Rainbow Bar",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\StripedTexture"] = "Striped Bar",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\stripe-bar.tga"] = "Striped Bar 2",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\stripe-rainbow-bar.tga"] = "Rainbow Bar 2",
   },
   ["Shapes"] = {
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth"] = "Smooth Circle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth_Border"] = "Smooth Circle with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel"] = "Spiralled Circle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Squirrel_Border"] = "Spiralled Circle with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White"] = "Circle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_White_Border"] = "Circle with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth"] = "Smooth Square",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border"] = "Smooth Square with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Smooth_Border2"] = "Smooth Square with Border 2",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel"] = "Spiralled Square",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_Squirrel_Border"] = "Spiralled Square with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White"] = "Square",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite"] = "Full White Square",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Triangle45"] = "45° Triangle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Trapezoid"] = "Trapezoid",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\triangle-border.tga"] = "Triangle with Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\triangle.tga"] = "Triangle",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_Smooth2.tga"] = "Smooth Circle Small",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\circle_border5.tga"] = "Circle Border",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\ring_glow3.tga"] = "Circle Border Glow",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_mini.tga"] = "Small Square",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\target_indicator.tga"] = "Target Indicator",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\target_indicator_glow.tga"] = "Target Indicator Glow",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\arrows_target.tga"] = "Arrows Target",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_Smooth"] = "Smooth Circle",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_Smooth_Border"] = "Smooth Circle with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_Squirrel"] = "Spiralled Circle",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_Squirrel_Border"] = "Spiralled Circle with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_White"] = "Circle",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_White_Border"] = "Circle with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_Smooth"] = "Smooth Square",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_Smooth_Border"] = "Smooth Square with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_Smooth_Border2"] = "Smooth Square with Border 2",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_Squirrel"] = "Spiralled Square",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_Squirrel_Border"] = "Spiralled Square with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White"] = "Square",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White_Border"] = "Square with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_FullWhite"] = "Full White Square",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Triangle45"] = "45° Triangle",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Trapezoid"] = "Trapezoid",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\triangle-border.tga"] = "Triangle with Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\triangle.tga"] = "Triangle",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_Smooth2.tga"] = "Smooth Circle Small",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\circle_border5.tga"] = "Circle Border",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\ring_glow3.tga"] = "Circle Border Glow",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\square_mini.tga"] = "Small Square",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\target_indicator.tga"] = "Target Indicator",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\target_indicator_glow.tga"] = "Target Indicator Glow",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\arrows_target.tga"] = "Arrows Target",
 
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_AlphaGradient_In.tga"] = "Circle Alpha Gradient In",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Circle_AlphaGradient_Out.tga"] = "Circle Alpha Gradient Out",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_10px.tga"] = "Ring 10px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_20px.tga"] = "Ring 20px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_30px.tga"] = "Ring 30px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Ring_40px.tga"] = "Ring 40px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient.tga"] = "Square Alpha Gradient",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_AlphaGradient_In.tga"] = "Circle Alpha Gradient In",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Circle_AlphaGradient_Out.tga"] = "Circle Alpha Gradient Out",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Ring_10px.tga"] = "Ring 10px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Ring_20px.tga"] = "Ring 20px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Ring_30px.tga"] = "Ring 30px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Ring_40px.tga"] = "Ring 40px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_AlphaGradient.tga"] = "Square Alpha Gradient",
 
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_1px.tga"] = "Square Border 1px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_5px.tga"] = "Square Border 5px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\square_border_10px.tga"] = "Square Border 10px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\square_border_1px.tga"] = "Square Border 1px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\square_border_5px.tga"] = "Square Border 5px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\square_border_10px.tga"] = "Square Border 10px",
   },
   ["Sparks"] = {
     ["130877"] = "Blizzard Spark",
@@ -1811,9 +1811,9 @@ Private.texture_types = {
     ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"] = RAID_TARGET_7,
     ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"] = RAID_TARGET_8,
   },
-  ["WeakAuras"] = {
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_64.tga"] = "WeakAuras logo 64px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_256.tga"] = "WeakAuras logo 256px"
+  ["BlindAuras"] = {
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\logo_64.tga"] = "BlindAuras logo 64px",
+    ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\logo_256.tga"] = "BlindAuras logo 256px"
   }
 }
 local BuildInfo = select(4, GetBuildInfo())
@@ -1821,7 +1821,7 @@ if BuildInfo <= 80100 then -- 8.1.5
   Private.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
   Private.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
 end
-if WeakAuras.IsClassic() then -- Classic
+if BlindAuras.IsClassic() then -- Classic
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -1844,7 +1844,7 @@ if WeakAuras.IsClassic() then -- Classic
       runes[tostring(v)] = nil
     end
   end
-elseif WeakAuras.IsBCCOrWrath() then
+elseif BlindAuras.IsBCCOrWrath() then
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -1869,7 +1869,7 @@ elseif WeakAuras.IsBCCOrWrath() then
   end
 end
 
-local PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
+local PowerAurasPath = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\"
 Private.texture_types["PowerAuras Heads-Up"] = {
   [PowerAurasPath.."Aura1"] = "Runed Text",
   [PowerAurasPath.."Aura2"] = "Runed Text On Ring",
@@ -2024,7 +2024,7 @@ Private.texture_types["PowerAuras Words"] = {
   [PowerAurasPath.."Aura43"] = "Danger",
   [PowerAurasPath.."Aura44"] = "Buff",
   [PowerAurasPath.."Aura44"] = "Buff",
-  ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt"
+  ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\interrupt"] = "Interrupt"
 }
 
 Private.operator_types = {
@@ -2062,11 +2062,11 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if BlindAuras.IsClassicOrBCCOrWrath() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-if WeakAuras.IsWrathClassic() then
+if BlindAuras.IsWrathClassic() then
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
     [2] = L["Blood Rune #2"],
@@ -2246,7 +2246,7 @@ Private.instance_types = {
   ratedarena = L["Rated Arena"]
 }
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   Private.instance_types["ratedpvp"] = nil
   Private.instance_types["arena"] = nil
   Private.instance_types["ratedarena"] = nil
@@ -2325,7 +2325,7 @@ do
         end
       else
         Private.instance_difficulty_types[i] = name
-        WeakAuras.prettyPrint(string.format("Unknown difficulty id found. Please report as a bug: %s %s %s", i, name, type))
+        BlindAuras.prettyPrint(string.format("Unknown difficulty id found. Please report as a bug: %s %s %s", i, name, type))
       end
     end
   end
@@ -2350,7 +2350,7 @@ Private.group_types = {
   raid = L["In Raid"]
 }
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   Private.difficulty_types = {
     none = L["None"],
     normal = PLAYER_DIFFICULTY1,
@@ -2360,7 +2360,7 @@ if WeakAuras.IsRetail() then
     lfr = PLAYER_DIFFICULTY3,
     challenge = PLAYER_DIFFICULTY5
   }
-elseif WeakAuras.IsBCCOrWrath() then
+elseif BlindAuras.IsBCCOrWrath() then
   Private.difficulty_types = {
     none = L["None"],
     normal = PLAYER_DIFFICULTY1,
@@ -2369,14 +2369,14 @@ elseif WeakAuras.IsBCCOrWrath() then
 end
 
 
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if BlindAuras.IsClassicOrBCCOrWrath() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
     NONE = L["Other"]
   }
 end
-if WeakAuras.IsWrathOrRetail() then
+if BlindAuras.IsWrathOrRetail() then
   Private.role_types = {
     TANK = INLINE_TANK_ICON.." "..TANK,
     DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
@@ -2501,75 +2501,75 @@ Private.cast_types = {
 }
 
 -- register sounds
-LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg")
-LSM:Register("sound", "Bike Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.ogg")
-LSM:Register("sound", "Boxing Arena Gong", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BoxingArenaSound.ogg")
-LSM:Register("sound", "Bleat", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Bleat.ogg")
-LSM:Register("sound", "Cartoon Hop", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonHop.ogg")
-LSM:Register("sound", "Cat Meow", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CatMeow2.ogg")
-LSM:Register("sound", "Kitten Meow", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\KittenMeow.ogg")
-LSM:Register("sound", "Robot Blip", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RobotBlip.ogg")
-LSM:Register("sound", "Sharp Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SharpPunch.ogg")
-LSM:Register("sound", "Water Drop", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WaterDrop.ogg")
-LSM:Register("sound", "Air Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AirHorn.ogg")
-LSM:Register("sound", "Applause", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Applause.ogg")
-LSM:Register("sound", "Banana Peel Slip", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BananaPeelSlip.ogg")
-LSM:Register("sound", "Blast", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Blast.ogg")
-LSM:Register("sound", "Cartoon Voice Baritone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonVoiceBaritone.ogg")
-LSM:Register("sound", "Cartoon Walking", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonWalking.ogg")
-LSM:Register("sound", "Cow Mooing", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CowMooing.ogg")
-LSM:Register("sound", "Ringing Phone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RingingPhone.ogg")
-LSM:Register("sound", "Roaring Lion", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoaringLion.ogg")
-LSM:Register("sound", "Shotgun", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Shotgun.ogg")
-LSM:Register("sound", "Squish Fart", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SquishFart.ogg")
-LSM:Register("sound", "Temple Bell", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TempleBellHuge.ogg")
-LSM:Register("sound", "Torch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg")
-LSM:Register("sound", "Warning Siren", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg")
+LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\BatmanPunch.ogg")
+LSM:Register("sound", "Bike Horn", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\BikeHorn.ogg")
+LSM:Register("sound", "Boxing Arena Gong", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\BoxingArenaSound.ogg")
+LSM:Register("sound", "Bleat", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Bleat.ogg")
+LSM:Register("sound", "Cartoon Hop", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\CartoonHop.ogg")
+LSM:Register("sound", "Cat Meow", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\CatMeow2.ogg")
+LSM:Register("sound", "Kitten Meow", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\KittenMeow.ogg")
+LSM:Register("sound", "Robot Blip", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\RobotBlip.ogg")
+LSM:Register("sound", "Sharp Punch", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\SharpPunch.ogg")
+LSM:Register("sound", "Water Drop", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\WaterDrop.ogg")
+LSM:Register("sound", "Air Horn", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\AirHorn.ogg")
+LSM:Register("sound", "Applause", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Applause.ogg")
+LSM:Register("sound", "Banana Peel Slip", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\BananaPeelSlip.ogg")
+LSM:Register("sound", "Blast", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Blast.ogg")
+LSM:Register("sound", "Cartoon Voice Baritone", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\CartoonVoiceBaritone.ogg")
+LSM:Register("sound", "Cartoon Walking", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\CartoonWalking.ogg")
+LSM:Register("sound", "Cow Mooing", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\CowMooing.ogg")
+LSM:Register("sound", "Ringing Phone", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\RingingPhone.ogg")
+LSM:Register("sound", "Roaring Lion", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\RoaringLion.ogg")
+LSM:Register("sound", "Shotgun", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Shotgun.ogg")
+LSM:Register("sound", "Squish Fart", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\SquishFart.ogg")
+LSM:Register("sound", "Temple Bell", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\TempleBellHuge.ogg")
+LSM:Register("sound", "Torch", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Torch.ogg")
+LSM:Register("sound", "Warning Siren", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\WarningSiren.ogg")
 LSM:Register("sound", "Lich King Apocalypse", 554003) -- Sound\Creature\LichKing\IC_Lich King_Special01.ogg
 -- Sounds from freesound.org, see commits for attributions
-LSM:Register("sound", "Sheep Blerping", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SheepBleat.ogg")
-LSM:Register("sound", "Rooster Chicken Call", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoosterChickenCalls.ogg")
-LSM:Register("sound", "Goat Bleeting", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\GoatBleating.ogg")
-LSM:Register("sound", "Acoustic Guitar", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AcousticGuitar.ogg")
-LSM:Register("sound", "Synth Chord", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SynthChord.ogg")
-LSM:Register("sound", "Chicken Alarm", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\ChickenAlarm.ogg")
-LSM:Register("sound", "Xylophone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Xylophone.ogg")
-LSM:Register("sound", "Drums", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Drums.ogg")
-LSM:Register("sound", "Tada Fanfare", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TadaFanfare.ogg")
-LSM:Register("sound", "Squeaky Toy Short", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SqueakyToyShort.ogg")
-LSM:Register("sound", "Error Beep", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\ErrorBeep.ogg")
-LSM:Register("sound", "Oh No", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\OhNo.ogg")
-LSM:Register("sound", "Double Whoosh", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\DoubleWhoosh.ogg")
-LSM:Register("sound", "Brass", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Brass.mp3")
-LSM:Register("sound", "Glass", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Glass.mp3")
+LSM:Register("sound", "Sheep Blerping", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\SheepBleat.ogg")
+LSM:Register("sound", "Rooster Chicken Call", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\RoosterChickenCalls.ogg")
+LSM:Register("sound", "Goat Bleeting", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\GoatBleating.ogg")
+LSM:Register("sound", "Acoustic Guitar", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\AcousticGuitar.ogg")
+LSM:Register("sound", "Synth Chord", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\SynthChord.ogg")
+LSM:Register("sound", "Chicken Alarm", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\ChickenAlarm.ogg")
+LSM:Register("sound", "Xylophone", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Xylophone.ogg")
+LSM:Register("sound", "Drums", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Drums.ogg")
+LSM:Register("sound", "Tada Fanfare", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\TadaFanfare.ogg")
+LSM:Register("sound", "Squeaky Toy Short", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\SqueakyToyShort.ogg")
+LSM:Register("sound", "Error Beep", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\ErrorBeep.ogg")
+LSM:Register("sound", "Oh No", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\OhNo.ogg")
+LSM:Register("sound", "Double Whoosh", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\DoubleWhoosh.ogg")
+LSM:Register("sound", "Brass", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Brass.mp3")
+LSM:Register("sound", "Glass", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Glass.mp3")
 
-LSM:Register("sound", "Voice: Adds", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Adds.ogg")
-LSM:Register("sound", "Voice: Boss", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Boss.ogg")
-LSM:Register("sound", "Voice: Circle", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Circle.ogg")
-LSM:Register("sound", "Voice: Cross", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Cross.ogg")
-LSM:Register("sound", "Voice: Diamond", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Diamond.ogg")
-LSM:Register("sound", "Voice: Don't Release", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\DontRelease.ogg")
-LSM:Register("sound", "Voice: Empowered", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Empowered.ogg")
-LSM:Register("sound", "Voice: Focus", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Focus.ogg")
-LSM:Register("sound", "Voice: Idiot", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Idiot.ogg")
-LSM:Register("sound", "Voice: Left", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Left.ogg")
-LSM:Register("sound", "Voice: Moon", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Moon.ogg")
-LSM:Register("sound", "Voice: Next", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Next.ogg")
-LSM:Register("sound", "Voice: Portal", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Portal.ogg")
-LSM:Register("sound", "Voice: Protected", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Protected.ogg")
-LSM:Register("sound", "Voice: Release", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Release.ogg")
-LSM:Register("sound", "Voice: Right", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Right.ogg")
-LSM:Register("sound", "Voice: Run Away", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RunAway.ogg")
-LSM:Register("sound", "Voice: Skull", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Skull.ogg")
-LSM:Register("sound", "Voice: Spread", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Spread.ogg")
-LSM:Register("sound", "Voice: Square", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Square.ogg")
-LSM:Register("sound", "Voice: Stack", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Stack.ogg")
-LSM:Register("sound", "Voice: Star", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Star.ogg")
-LSM:Register("sound", "Voice: Switch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Switch.ogg")
-LSM:Register("sound", "Voice: Taunt", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Taunt.ogg")
-LSM:Register("sound", "Voice: Triangle", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Triangle.ogg")
+LSM:Register("sound", "Voice: Adds", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Adds.ogg")
+LSM:Register("sound", "Voice: Boss", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Boss.ogg")
+LSM:Register("sound", "Voice: Circle", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Circle.ogg")
+LSM:Register("sound", "Voice: Cross", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Cross.ogg")
+LSM:Register("sound", "Voice: Diamond", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Diamond.ogg")
+LSM:Register("sound", "Voice: Don't Release", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\DontRelease.ogg")
+LSM:Register("sound", "Voice: Empowered", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Empowered.ogg")
+LSM:Register("sound", "Voice: Focus", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Focus.ogg")
+LSM:Register("sound", "Voice: Idiot", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Idiot.ogg")
+LSM:Register("sound", "Voice: Left", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Left.ogg")
+LSM:Register("sound", "Voice: Moon", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Moon.ogg")
+LSM:Register("sound", "Voice: Next", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Next.ogg")
+LSM:Register("sound", "Voice: Portal", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Portal.ogg")
+LSM:Register("sound", "Voice: Protected", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Protected.ogg")
+LSM:Register("sound", "Voice: Release", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Release.ogg")
+LSM:Register("sound", "Voice: Right", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Right.ogg")
+LSM:Register("sound", "Voice: Run Away", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\RunAway.ogg")
+LSM:Register("sound", "Voice: Skull", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Skull.ogg")
+LSM:Register("sound", "Voice: Spread", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Spread.ogg")
+LSM:Register("sound", "Voice: Square", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Square.ogg")
+LSM:Register("sound", "Voice: Stack", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Stack.ogg")
+LSM:Register("sound", "Voice: Star", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Star.ogg")
+LSM:Register("sound", "Voice: Switch", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Switch.ogg")
+LSM:Register("sound", "Voice: Taunt", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Taunt.ogg")
+LSM:Register("sound", "Voice: Triangle", "Interface\\AddOns\\BlindAuras\\Media\\Sounds\\Triangle.ogg")
 
-local PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
+local PowerAurasSoundPath = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Sounds\\"
 LSM:Register("sound", "Aggro", PowerAurasSoundPath.."aggro.ogg")
 LSM:Register("sound", "Arrow Swoosh", PowerAurasSoundPath.."Arrow_swoosh.ogg")
 LSM:Register("sound", "Bam", PowerAurasSoundPath.."bam.ogg")
@@ -2623,7 +2623,7 @@ for name, path in next, LSM:HashTable("sound") do
   Private.sound_types[path] = name
 end
 
-LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediatype, key)
+LSM.RegisterCallback(BlindAuras, "LibSharedMedia_Registered", function(_, mediatype, key)
   if mediatype == "sound" then
     local path = LSM:Fetch(mediatype, key)
     if path then
@@ -2633,17 +2633,17 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
 end)
 
 -- register options font
-LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\BlindAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
 -- register plain white border
-LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
+LSM:Register("border", "Square Full White", [[Interface\AddOns\BlindAuras\Media\Textures\Square_FullWhite.tga]])
 
 --
-LSM:Register("statusbar", "Clean", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Clean]])
-LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes]])
-LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
-LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
-LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
+LSM:Register("statusbar", "Clean", [[Interface\AddOns\BlindAuras\Media\Textures\Statusbar_Clean]])
+LSM:Register("statusbar", "Stripes", [[Interface\AddOns\BlindAuras\Media\Textures\Statusbar_Stripes]])
+LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\BlindAuras\Media\Textures\Statusbar_Stripes_Thick]])
+LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\BlindAuras\Media\Textures\Statusbar_Stripes_Thin]])
+LSM:Register("border", "Drop Shadow", [[Interface\AddOns\BlindAuras\Media\Textures\Border_DropShadow]])
 
 Private.duration_types = {
   seconds = L["Seconds"],
@@ -2667,12 +2667,12 @@ Private.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   Private.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
   Private.pet_behavior_types.assist = nil
 end
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   Private.pet_spec_types = {
     [1] = select(2, GetSpecializationInfoByID(74)), -- Ferocity
     [2] = select(2, GetSpecializationInfoByID(81)), -- Tenacity
@@ -2771,7 +2771,7 @@ local mythic_plus_ignorelist = {
   [15] = true
 }
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   for i = 1, 255 do
     local r = not mythic_plus_ignorelist[i] and C_ChallengeMode.GetAffixInfo(i)
     if r then
@@ -2929,7 +2929,7 @@ Private.non_transmissable_fields_v2000 = {
   preferToUpdate = true,
 }
 
-WeakAuras.data_stub = {
+BlindAuras.data_stub = {
   -- note: this is the minimal data stub which prevents false positives in diff upon reimporting an aura.
   -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
   triggers = {
@@ -3267,14 +3267,14 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
   end
 end
 
-if WeakAuras.IsBCCOrWrathOrRetail() then
+if BlindAuras.IsBCCOrWrathOrRetail() then
   for i = 1, 5 do
     Private.baseUnitId["arena"..i] = true
     Private.multiUnitUnits.arena["arena"..i] = true
@@ -3308,7 +3308,7 @@ Private.weapon_enchant_types = {
   showAlways = L["Always"],
 }
 
-WeakAuras.EJIcons = {
+BlindAuras.EJIcons = {
   tank =      "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:7:25:7:25|t",
   dps =       "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:7:25|t",
   healer =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:71:89:7:25|t",
@@ -3380,7 +3380,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if BlindAuras.IsClassicOrBCCOrWrath() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
@@ -3394,130 +3394,130 @@ end
 
 -- Shields
 Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
-WeakAuras.item_weapon_types = Private.item_weapon_types
+BlindAuras.item_weapon_types = Private.item_weapon_types
 
-WeakAuras.StopMotion = {}
-WeakAuras.StopMotion.texture_types = {
+BlindAuras.StopMotion = {}
+BlindAuras.StopMotion.texture_types = {
 }
 
-WeakAuras.StopMotion.texture_types.Basic = {
-  ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = "Example",
+BlindAuras.StopMotion.texture_types.Basic = {
+  ["Interface\\AddOns\\BlindAuras\\Media\\Textures\\stopmotion"] = "Example",
 }
 
-WeakAuras.StopMotion.texture_data = {
+BlindAuras.StopMotion.texture_data = {
 }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAuras\\Media\\Textures\\stopmotion"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\circle"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\circle"] = {
      ["count"] = 256,
      ["rows"] = 16,
      ["columns"] = 16
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\checkmark"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\checkmark"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\redx"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\redx"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\leftarc"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\leftarc"] = {
      ["count"] = 256,
      ["rows"] = 16,
      ["columns"] = 16
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\rightarc"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\rightarc"] = {
      ["count"] = 256,
      ["rows"] = 16,
      ["columns"] = 16
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\fireball"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Basic\\fireball"] = {
      ["count"] = 7,
      ["rows"] = 5,
      ["columns"] = 5
   }
 
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\AURARUNE8"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Runes\\AURARUNE8"] = {
      ["count"] = 256,
      ["rows"] = 16,
      ["columns"] = 16
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionv"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Runes\\legionv"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionw"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Runes\\legionw"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionf"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Runes\\legionf"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionword"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Runes\\legionword"] = {
      ["count"] = 64,
      ["rows"] = 8,
      ["columns"] = 8
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\CellRing"] = {
       ["count"] = 32,
       ["rows"] = 8,
       ["columns"] = 4
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Gadget"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\Gadget"] = {
      ["count"] = 32,
      ["rows"] = 8,
      ["columns"] = 4
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Radar"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\Radar"] = {
      ["count"] = 32,
      ["rows"] = 8,
      ["columns"] = 4
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = {
      ["count"] = 32,
      ["rows"] = 8,
      ["columns"] = 4
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Saber"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\Saber"] = {
      ["count"] = 32,
      ["rows"] = 8,
      ["columns"] = 4
   }
 
-WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Waveform"] = {
+BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Textures\\Kaitan\\Waveform"] = {
      ["count"] = 32,
      ["rows"] = 8,
      ["columns"] = 4
   }
 
 
-WeakAuras.StopMotion.animation_types = {
+BlindAuras.StopMotion.animation_types = {
   loop = L["Loop"],
   bounce = L["Forward, Reverse Loop"],
   once = L["Forward"],
@@ -3525,7 +3525,7 @@ WeakAuras.StopMotion.animation_types = {
 }
 
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   Private.baseUnitId.focus = nil
   Private.baseUnitId.vehicle = nil
   Private.multiUnitId.boss = nil
@@ -3562,7 +3562,7 @@ if WeakAuras.IsClassic() then
   end
 end
 
-if WeakAuras.IsBCCOrWrath() then
+if BlindAuras.IsBCCOrWrath() then
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
   Private.talent_extra_option_types[0] = nil

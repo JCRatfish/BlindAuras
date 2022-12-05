@@ -1,4 +1,4 @@
-WeakAuras.ModelPaths = {
+BlindAuras.ModelPaths = {
  {
   children = {
    {

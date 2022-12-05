@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
-local regionOptions = WeakAuras.regionOptions
+local L = BlindAuras.L
+local regionOptions = BlindAuras.regionOptions
 
 local commonOptionsCache = {}
 OptionsPrivate.commonOptionsCache = commonOptionsCache
@@ -122,7 +122,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     end
   end
 
-  local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
+  local titleWidth = BlindAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
                      - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
@@ -142,12 +142,12 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
       func = setCollapsed,
       image = function()
         if notcollapsable then
-          return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\bullet1", 18, 18
+          return "Interface\\AddOns\\BlindAuras\\Media\\Textures\\bullet1", 18, 18
         else
-          return isCollapsed() and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+          return isCollapsed() and "Interface\\AddOns\\BlindAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\BlindAuras\\Media\\Textures\\collapse", 18, 18
         end
       end,
-      control = "WeakAurasExpand",
+      control = "BlindAurasExpand",
       hidden = hiddenFunc
     }
 
@@ -157,10 +157,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Add"],
         order = order + 0.2,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\add",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "addButton"], input.__add)
@@ -172,10 +172,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Move Up"],
         order = order + 0.3,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\moveup",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "upButton"], input.__up)
@@ -187,10 +187,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Move Down"],
         order = order + 0.4,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\movedown",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "downButton"], input.__down)
@@ -202,10 +202,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Duplicate"],
         order = order + 0.5,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\duplicate",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "duplicateButton"], input.__duplicate)
@@ -217,10 +217,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Delete"],
         order = order + 0.6,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\delete",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "deleteButton"], input.__delete)
@@ -232,10 +232,10 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         name = L["Apply Template"],
         order = order + 0.7,
         width = 0.15,
-        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
+        image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\template",
         imageWidth = 24,
         imageHeight = 24,
-        control = "WeakAurasIcon",
+        control = "BlindAurasIcon",
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
@@ -1010,7 +1010,7 @@ local function CreateExecuteAll(subOption)
         secondCall = true
       end
     end
-    WeakAuras.ClearAndUpdateOptions(data.id)
+    BlindAuras.ClearAndUpdateOptions(data.id)
   end
 end
 
@@ -1018,7 +1018,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   local metaOrder = 99
   local function IsParentDynamicGroup()
     if data.parent then
-      local parentData = WeakAuras.GetData(data.parent)
+      local parentData = BlindAuras.GetData(data.parent)
       return parentData and parentData.regionType == "dynamicgroup"
     end
   end
@@ -1033,7 +1033,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     __order = metaOrder,
     width = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Width"],
       order = 60,
       min = 1,
@@ -1044,7 +1044,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     height = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Height"],
       order = 61,
       min = 1,
@@ -1055,7 +1055,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     anchorFrameType = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Anchored To"],
       order = 70,
       hidden = function()
@@ -1065,7 +1065,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     anchorFrameParent = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Set Parent to Anchor"],
       desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
       order = 71,
@@ -1078,7 +1078,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     anchorFrameSpaceOne = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = "",
       order = 72,
       image = function() return "", 0, 0 end,
@@ -1089,7 +1089,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     -- Input field to select frame to anchor on
     anchorFrameFrame = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Frame"],
       order = 73,
       hidden = function()
@@ -1102,7 +1102,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     -- Button to select frame to anchor on
     chooseAnchorFrameFrame = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Choose"],
       order = 74,
       hidden = function()
@@ -1117,17 +1117,17 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     selfPoint = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Anchor"],
       order = 75,
       hidden = IsParentDynamicGroup,
       values = OptionsPrivate.Private.point_types,
       disabled = disableSelfPoint,
-      control = "WeakAurasAnchorButtons",
+      control = "BlindAurasAnchorButtons",
     },
     anchorPoint = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = function()
         if (data.anchorFrameType == "SCREEN") then
           return L["To Screen's"]
@@ -1152,11 +1152,11 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         end
       end,
       values = OptionsPrivate.Private.point_types,
-      control = "WeakAurasAnchorButtons",
+      control = "BlindAurasAnchorButtons",
     },
     anchorPointGroup = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["To Group's"],
       order = 77,
       hidden = function()
@@ -1174,11 +1174,11 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       disabled = true,
       values = {["CENTER"] = L["Anchor Point"]},
       get = function() return "CENTER"; end,
-      control = "WeakAurasAnchorButtons",
+      control = "BlindAurasAnchorButtons",
     },
     anchorFramePoints = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = "",
       order = 78,
       image = function() return "", 0, 0 end,
@@ -1190,7 +1190,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       type = "range",
       name = L["X Offset"],
       order = 79,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       softMin = (-1 * screenWidth),
       min = (-4 * screenWidth),
       softMax = screenWidth,
@@ -1199,8 +1199,8 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       get = function() return data.xOffset end,
       set = function(info, v)
         data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
       end
@@ -1209,7 +1209,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       type = "range",
       name = L["Y Offset"],
       order = 80,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       softMin = (-1 * screenHeight),
       min = (-4 * screenHeight),
       softMax = screenHeight,
@@ -1218,22 +1218,22 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       get = function() return data.yOffset end,
       set = function(info, v)
         data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
       end
     },
     frameStrata = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Frame Strata"],
       order = 81,
       values = OptionsPrivate.Private.frame_strata_types
     },
     anchorFrameSpace = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = "",
       order = 82,
       image = function() return "", 0, 0 end,
@@ -1258,14 +1258,14 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     border = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Show Border"],
       order = order + 0.1,
       hidden = hiddenFunc,
     },
     borderEdge = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       dialogControl = "LSM30_Border",
       name = L["Border Style"],
       order = order + 0.2,
@@ -1274,7 +1274,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderBackdrop = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       dialogControl = "LSM30_Background",
       name = L["Backdrop Style"],
       order = order + 0.3,
@@ -1283,7 +1283,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Offset"],
       order = order + 0.3,
       softMin = 0,
@@ -1293,7 +1293,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderSize = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Size"],
       order = order + 0.4,
       min = 1,
@@ -1303,7 +1303,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderInset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Inset"],
       order = order + 0.5,
       softMin = 1,
@@ -1314,13 +1314,13 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     border_spacer = {
       type = "description",
       name = "",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
       order = order + 0.6
     },
     borderColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Color"],
       hasAlpha = true,
       order = order + 0.7,
@@ -1328,14 +1328,14 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderInFront  = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border in Front"],
       order = order + 0.8,
       hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
     },
     backdropColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Backdrop Color"],
       hasAlpha = true,
       order = order + 0.9,
@@ -1343,7 +1343,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     backdropInFront  = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Backdrop in Front"],
       order = order + 1,
       hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
@@ -1378,12 +1378,12 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
   args[prefix .. "_custom"] = {
     type = "input",
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     name = name,
     order = order,
     multiline = true,
     hidden = hiddenFunc,
-    control = "WeakAurasMultiLineEditBox",
+    control = "BlindAurasMultiLineEditBox",
     arg = {
       extraFunctions = options.extraFunctions,
     },
@@ -1396,7 +1396,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       end
 
       subdata[path[#path]] = v;
-      WeakAuras.Add(data);
+      BlindAuras.Add(data);
       if (options.extraSetFunction) then
         options.extraSetFunction();
       end
@@ -1440,7 +1440,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       end
       return errorString and "|cFFFF0000"..errorString or "";
     end,
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     order = order + 0.002,
     hidden = function()
       if (hiddenFunc()) then
@@ -1485,7 +1485,7 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
 
   options.type = {
     type = "select",
-    width = doubleWidth and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+    width = doubleWidth and BlindAuras.doubleWidth or BlindAuras.normalWidth,
     name = L["Type"],
     desc = L["The type of trigger"],
     order = 1.1,
@@ -1501,11 +1501,11 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
           trigger.event = OptionsPrivate.Private.event_categories[v].default
         end
       end
-      WeakAuras.Add(data);
-      WeakAuras.UpdateThumbnail(data);
-      WeakAuras.ClearAndUpdateOptions(data.id);
+      BlindAuras.Add(data);
+      BlindAuras.UpdateThumbnail(data);
+      BlindAuras.ClearAndUpdateOptions(data.id);
     end,
-    control = "WeakAurasSortedDropdown"
+    control = "BlindAurasSortedDropdown"
   }
 end
 
@@ -1548,14 +1548,14 @@ local function AddTriggerGetterSetter(options, data, triggernum)
             trigger[key] = nil
           end
 
-          WeakAuras.Add(data)
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       else
         option.set = function(info, v)
           trigger[key] = v
-          WeakAuras.Add(data)
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       end
     end

@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function createOptions(id, data)
   local options = {
@@ -9,10 +9,10 @@ local function createOptions(id, data)
     __order = 1,
     modelIsUnit = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show model of unit "],
       order = 0.5,
-      hidden = function() return data.modelDisplayInfo and WeakAuras.BuildInfo > 80100 end
+      hidden = function() return data.modelDisplayInfo and BlindAuras.BuildInfo > 80100 end
     },
     -- Option for modelIsDisplayInfo added below
 
@@ -25,21 +25,21 @@ local function createOptions(id, data)
       func = function()
         OptionsPrivate.OpenModelPicker(data, {});
       end,
-      disabled = function() return data.modelIsUnit or (WeakAuras.BuildInfo > 80100 and data.modelDisplayInfo) end,
+      disabled = function() return data.modelIsUnit or (BlindAuras.BuildInfo > 80100 and data.modelDisplayInfo) end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     advance = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Animate"],
       order = 5,
     },
     sequence = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Animation Sequence"],
       min = 0,
       softMax = 1499,
@@ -52,18 +52,18 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 7,
-      width = WeakAuras.normalWidth
+      width = BlindAuras.normalWidth
     },
     portraitZoom = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Portrait Zoom"],
       order = 8,
     },
     -- old settings
     model_z = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -20,
       softMax = 20,
@@ -74,7 +74,7 @@ local function createOptions(id, data)
     },
     model_x = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Offset"],
       softMin = -20,
       softMax = 20,
@@ -85,7 +85,7 @@ local function createOptions(id, data)
     },
     model_y = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -20,
       softMax = 20,
@@ -96,7 +96,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -108,7 +108,7 @@ local function createOptions(id, data)
     -- New Settings
     model_st_tx = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -119,7 +119,7 @@ local function createOptions(id, data)
     },
     model_st_ty = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -130,7 +130,7 @@ local function createOptions(id, data)
     },
     model_st_tz = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -141,7 +141,7 @@ local function createOptions(id, data)
     },
     model_st_rx = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Rotation"],
       min = 0,
       max = 360,
@@ -152,7 +152,7 @@ local function createOptions(id, data)
     },
     model_st_ry = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Rotation"],
       min = 0,
       max = 360,
@@ -163,7 +163,7 @@ local function createOptions(id, data)
     },
     model_st_rz = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Rotation"],
       min = 0,
       max = 360,
@@ -174,7 +174,7 @@ local function createOptions(id, data)
     },
     model_st_us = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Scale"],
       min = 5,
       max = 1000,
@@ -190,24 +190,24 @@ local function createOptions(id, data)
     },
   };
 
-  if WeakAuras.BuildInfo > 80100 then
+  if BlindAuras.BuildInfo > 80100 then
     options.modelDisplayInfo = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Use Display Info Id"],
       order = 0.6,
       hidden = function() return data.modelIsUnit end
     }
     options.model_fileId = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Model"],
       order = 1
     }
   else
     options.model_path = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Model"],
       order = 1
     }
@@ -250,9 +250,9 @@ local function modifyThumbnail(parent, region, data)
   model:SetWidth(region:GetWidth() - 2);
   model:SetHeight(region:GetHeight() - 2);
   model:SetPoint("center", region, "center");
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+  BlindAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetScript("OnShow", function()
-    WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+    BlindAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
     if (data.api) then
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
@@ -305,7 +305,7 @@ local templates = {
   }
 }
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   tinsert(templates, {
     title = L["Fire Orb"],
     description = "",
@@ -411,4 +411,4 @@ if WeakAuras.IsRetail() then
   })
 end
 
-WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);
+BlindAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);

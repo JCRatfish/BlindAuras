@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 local MSQ = LibStub("Masque", true);
 if MSQ then
   MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
@@ -33,7 +33,7 @@ local default = {
   useCooldownModRate = true
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+BlindAuras.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -109,7 +109,7 @@ local properties = {
   }
 };
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+BlindAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   local result = CopyTable(properties)
@@ -143,7 +143,7 @@ end
 
 local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   if anchorType == "area" then
-    WeakAuras.regionPrototype.AnchorSubRegion(selfPoint == "region" and self or self.icon, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+    BlindAuras.regionPrototype.AnchorSubRegion(selfPoint == "region" and self or self.icon, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   else
     subRegion:ClearAllPoints()
     anchorPoint = anchorPoint or "CENTER"
@@ -236,20 +236,20 @@ local function create(parent, data)
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 
   --This section creates a unique frame id for the cooldown frame so that it can be created with a global reference
-  --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its ignore list for timer overlays)
+  --The reason is so that BlindAuras cooldown frames can interact properly with OmniCC (i.e., put on its ignore list for timer overlays)
   local id = data.id;
   local frameId = id:lower():gsub(" ", "_");
-  if(_G["WeakAurasCooldown"..frameId]) then
+  if(_G["BlindAurasCooldown"..frameId]) then
     local baseFrameId = frameId;
     local num = 2;
-    while(_G["WeakAurasCooldown"..frameId]) do
+    while(_G["BlindAurasCooldown"..frameId]) do
       frameId = baseFrameId..num;
       num = num + 1;
     end
   end
   region.frameId = frameId;
 
-  local cooldown = CreateFrame("Cooldown", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
+  local cooldown = CreateFrame("Cooldown", "BlindAurasCooldown"..frameId, region, "CooldownFrameTemplate");
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
   cooldown:SetDrawBling(false)
@@ -266,7 +266,7 @@ local function create(parent, data)
     end
   end
 
-  WeakAuras.regionPrototype.create(region);
+  BlindAuras.regionPrototype.create(region);
 
   region.AnchorSubRegion = AnchorSubRegion
 
@@ -278,7 +278,7 @@ local function modify(parent, region, data)
   region.stacks = nil
   region.text2 = nil
 
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.regionPrototype.modify(parent, region, data);
 
   local button, icon, cooldown = region.button, region.icon, region.cooldown;
 
@@ -289,7 +289,7 @@ local function modify(parent, region, data)
     local masqueId = data.id:lower():gsub(" ", "_");
     if region.masqueId ~= masqueId then
       region.masqueId = masqueId
-      region.MSQGroup = MSQ:Group("WeakAuras", region.masqueId, data.uid);
+      region.MSQGroup = MSQ:Group("BlindAuras", region.masqueId, data.uid);
       region.MSQGroup:SetName(data.id)
       region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown}, "WA_Aura", true);
       button.data = data
@@ -451,7 +451,7 @@ local function modify(parent, region, data)
     end
 
     iconPath = iconPath or self.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
-    WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
+    BlindAuras.SetTextureOrAtlas(self.icon, iconPath)
   end
 
   function region:Scale(scalex, scaley)
@@ -619,7 +619,7 @@ local function modify(parent, region, data)
     end
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 
   --- WORKAROUND
   -- This fixes a issue with barmodels not appearing on icons if the
@@ -632,4 +632,4 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties, validate)
+BlindAuras.RegisterRegionType("icon", create, modify, default, GetProperties, validate)

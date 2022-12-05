@@ -4,8 +4,8 @@ local loader = CreateFrame("Frame")
 loader:RegisterEvent("ADDON_LOADED")
 loader:SetScript("OnEvent", function(self, _, addon)
   if addon == addonName then
-    if type(WeakAurasArchive) ~= "table" then
-      WeakAurasArchive = {}
+    if type(BlindAurasArchive) ~= "table" then
+      BlindAurasArchive = {}
     end
     self:UnregisterEvent("ADDON_LOADED")
   end

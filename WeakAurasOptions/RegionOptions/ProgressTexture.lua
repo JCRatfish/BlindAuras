@@ -1,14 +1,14 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local L = BlindAuras.L;
+local GetAtlasInfo = BlindAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function createOptions(id, data)
   local options = {
     __title = L["Progress Texture Settings"],
     __order = 1,
     foregroundTexture = {
-      width = WeakAuras.normalWidth - 0.15,
+      width = BlindAuras.normalWidth - 0.15,
       type = "input",
       name = L["Foreground Texture"],
       order = 1
@@ -29,12 +29,12 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     backgroundTexture = {
       type = "input",
-      width = WeakAuras.normalWidth - 0.15,
+      width = BlindAuras.normalWidth - 0.15,
       name = L["Background Texture"],
       order = 5,
       disabled = function() return data.sameTexture; end,
@@ -57,12 +57,12 @@ local function createOptions(id, data)
       disabled = function() return data.sameTexture; end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     mirror = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Mirror"],
       order = 10,
       disabled = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
@@ -70,31 +70,31 @@ local function createOptions(id, data)
     sameTexture = {
       type = "toggle",
       name = L["Same"],
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 15
     },
     desaturateForeground = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 17.5,
     },
     desaturateBackground = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 17.6,
     },
     blendMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Blend Mode"],
       order = 20,
       values = OptionsPrivate.Private.blend_types
     },
     backgroundOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Background Offset"],
       min = 0,
       softMax = 25,
@@ -103,41 +103,41 @@ local function createOptions(id, data)
     },
     orientation = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Orientation"],
       order = 35,
       values = OptionsPrivate.Private.orientation_with_circle_types
     },
     compress = {
       type = "toggle",
-      width = WeakAuras.halfWidth,
+      width = BlindAuras.halfWidth,
       name = L["Compress"],
       order = 40,
       disabled = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
     },
     inverse = {
       type = "toggle",
-      width = WeakAuras.halfWidth,
+      width = BlindAuras.halfWidth,
       name = L["Inverse"],
       order = 41
     },
     foregroundColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Foreground Color"],
       hasAlpha = true,
       order = 30
     },
     backgroundColor = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Background Color"],
       hasAlpha = true,
       order = 37
     },
     user_x = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 42,
       name = L["Re-center X"],
       min = -0.5,
@@ -147,7 +147,7 @@ local function createOptions(id, data)
     },
     user_y = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 44,
       name = L["Re-center Y"],
       min = -0.5,
@@ -157,7 +157,7 @@ local function createOptions(id, data)
     },
     startAngle = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 42,
       name = L["Start Angle"],
       min = 0,
@@ -167,7 +167,7 @@ local function createOptions(id, data)
     },
     endAngle = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 44,
       name = L["End Angle"],
       min = 0,
@@ -177,7 +177,7 @@ local function createOptions(id, data)
     },
     crop_x = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Crop X"],
       order = 46,
       min = 0,
@@ -187,14 +187,14 @@ local function createOptions(id, data)
       set = function(info, v)
         data.width = data.width * ((1 + data.crop_x) / (1 + v));
         data.crop_x = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end,
     },
     crop_y = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Crop Y"],
       order = 47,
       min = 0,
@@ -204,14 +204,14 @@ local function createOptions(id, data)
       set = function(info, v)
         data.height = data.height * ((1 + data.crop_y) / (1 + v));
         data.crop_y = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end,
     },
     rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       order = 52,
       min = 0,
@@ -220,7 +220,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Alpha"],
       order = 48,
       min = 0,
@@ -230,28 +230,28 @@ local function createOptions(id, data)
     },
     smoothProgress = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Smooth Progress"],
       desc = L["Animates progress changes"],
       order = 55.1
     },
     textureWrapMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Texture Wrap"],
       order = 55.2,
       values = OptionsPrivate.Private.texture_wrap_types
     },
     slanted = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Slanted"],
       order = 55.3,
       hidden = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
     },
     slant = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Slant Amount"],
       order = 55.4,
       min = 0,
@@ -261,14 +261,14 @@ local function createOptions(id, data)
     },
     slantFirst = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Inverse Slant"],
       order = 55.5,
       hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end
     },
     slantMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Slant Mode"],
       order = 55.6,
       hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end,
@@ -285,7 +285,7 @@ local function createOptions(id, data)
       name = "",
     },
   };
-  options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
+  options = BlindAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 57);
 
   local overlayInfo = OptionsPrivate.Private.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
@@ -298,7 +298,7 @@ local function createOptions(id, data)
     for id, display in ipairs(overlayInfo) do
       options["overlaycolor" .. id] = {
         type = "color",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         name = string.format(L["%s Color"], display),
         hasAlpha = true,
         order = index,
@@ -313,7 +313,7 @@ local function createOptions(id, data)
             data.overlays = {};
           end
           data.overlays[id] = { r, g, b, a};
-          WeakAuras.Add(data);
+          BlindAuras.Add(data);
         end
       }
       index = index + 0.01
@@ -321,7 +321,7 @@ local function createOptions(id, data)
 
     options["overlayclip"] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Clip Overlays"],
       order = index
     }
@@ -435,8 +435,8 @@ local function createThumbnail()
   end
   background.SetTexture = foreground.SetTexture;
 
-  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND", 1);
-  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK", 1);
+  borderframe.backgroundSpinner = BlindAuras.createSpinner(region, "BACKGROUND", 1);
+  borderframe.foregroundSpinner = BlindAuras.createSpinner(region, "ARTWORK", 1);
 
   return borderframe;
 end
@@ -726,8 +726,8 @@ end
 
 local function createIcon()
   local data = {
-    foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
-    backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+    foregroundTexture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura3",
+    backgroundTexture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura3",
     sameTexture = true,
     backgroundOffset = 2,
     blendMode = "BLEND",
@@ -823,8 +823,8 @@ local templates = {
   },
 }
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);
+BlindAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);

@@ -1,6 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasMultiLineEditBox", 36
+local Type, Version = "BlindAurasMultiLineEditBox", 36
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -16,14 +16,14 @@ local _G = _G
 Support functions
 -------------------------------------------------------------------------------]]
 
-if not AceGUIWeakAurasMultiLineEditBoxInsertLink then
+if not AceGUIBlindAurasMultiLineEditBoxInsertLink then
   -- upgradeable hook
-  hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIWeakAurasMultiLineEditBoxInsertLink(...) end)
+  hooksecurefunc("ChatEdit_InsertLink", function(...) return _G.AceGUIBlindAurasMultiLineEditBoxInsertLink(...) end)
 end
 
-function _G.AceGUIWeakAurasMultiLineEditBoxInsertLink(text)
+function _G.AceGUIBlindAurasMultiLineEditBoxInsertLink(text)
   for i = 1, AceGUI:GetWidgetCount(Type) do
-    local editbox = _G[("WeakAurasMultiLineEditBox%uEdit"):format(i)]
+    local editbox = _G[("BlindAurasMultiLineEditBox%uEdit"):format(i)]
     if editbox and editbox:IsVisible() and editbox:HasFocus() then
       editbox:Insert(text)
       return true

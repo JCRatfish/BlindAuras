@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -8,8 +8,8 @@ local pairs = pairs
 local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
   = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local frameChooserFrame
 local frameChooserBox
@@ -17,7 +17,7 @@ local frameChooserBox
 local oldFocus
 local oldFocusName
 function OptionsPrivate.StartFrameChooser(data, path)
-  local frame = WeakAuras.OptionsFrame();
+  local frame = BlindAuras.OptionsFrame();
   if not(frameChooserFrame) then
     frameChooserFrame = CreateFrame("Frame");
     frameChooserBox = CreateFrame("Frame", nil, frameChooserFrame, "BackdropTemplate");
@@ -36,7 +36,7 @@ function OptionsPrivate.StartFrameChooser(data, path)
     if(IsMouseButtonDown("RightButton")) then
       OptionsPrivate.Private.ValueToPath(data, path, givenValue);
       OptionsPrivate.StopFrameChooser(data);
-      WeakAuras.FillOptions()
+      BlindAuras.FillOptions()
     elseif(IsMouseButtonDown("LeftButton") and oldFocusName) then
       OptionsPrivate.StopFrameChooser(data);
     else
@@ -50,12 +50,12 @@ function OptionsPrivate.StartFrameChooser(data, path)
         if(focusName == "WorldFrame" or not focusName) then
           focusName = nil;
           local focusIsGroup = false;
-          for id, regionData in pairs(WeakAuras.regions) do
+          for id, regionData in pairs(BlindAuras.regions) do
             if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
               local isGroup = regionData.regionType == "group" or regionData.regionType == "dynamicgroup";
               if (not focusName or (not isGroup and focusIsGroup)) then
                 focus = regionData.region;
-                focusName = "WeakAuras:"..id;
+                focusName = "BlindAuras:"..id;
                 focusIsGroup = focusIsGroup;
               end
             end
@@ -73,7 +73,7 @@ function OptionsPrivate.StartFrameChooser(data, path)
           if(focusName ~= oldFocusName) then
             OptionsPrivate.Private.ValueToPath(data, path, focusName);
             oldFocusName = focusName;
-            WeakAuras.FillOptions()
+            BlindAuras.FillOptions()
           end
           oldFocus = focus;
         end
@@ -92,5 +92,5 @@ function OptionsPrivate.StopFrameChooser(data)
     frameChooserBox:Hide();
   end
   ResetCursor();
-  WeakAuras.Add(data);
+  BlindAuras.Add(data);
 end

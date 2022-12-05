@@ -2,10 +2,10 @@ std = "lua51"
 max_line_length = false
 exclude_files = {
 	"babelfish.lua",
-	"WeakAuras_Main.lua",
-	"WeakAuras_Options.lua",
-	"WeakAuras_Templates.lua",
-	"WeakAuras/Libs/",
+	"BlindAuras_Main.lua",
+	"BlindAuras_Options.lua",
+	"BlindAuras_Templates.lua",
+	"BlindAuras/Libs/",
 	".luacheckrc"
 }
 ignore = {
@@ -33,24 +33,24 @@ globals = {
 	"bit",
 
 	-- misc custom
-	"AceGUIWeakAurasMultiLineEditBoxInsertLink",
+	"AceGUIBlindAurasMultiLineEditBoxInsertLink",
 	"AceGUIWidgetLSMlists",
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
 	"OmniCC",
 
-	-- WeakAuras
-	"WeakAuras_DropDownMenu",
-	"WeakAuras_DropIndicator",
-	"WeakAuras",
-	"WeakAurasAceEvents",
-	"WeakAurasCompanion",
-	"WeakAurasFrame",
-	"WeakAurasOptions",
-	"WeakAurasOptionsSaved",
-	"WeakAurasSaved",
-	"WeakAurasTimers",
-	"WeakAurasArchive",
+	-- BlindAuras
+	"BlindAuras_DropDownMenu",
+	"BlindAuras_DropIndicator",
+	"BlindAuras",
+	"BlindAurasAceEvents",
+	"BlindAurasCompanion",
+	"BlindAurasFrame",
+	"BlindAurasOptions",
+	"BlindAurasOptionsSaved",
+	"BlindAurasSaved",
+	"BlindAurasTimers",
+	"BlindAurasArchive",
 
 	-- Third Party Addons/Libs
 	"BigWigs",

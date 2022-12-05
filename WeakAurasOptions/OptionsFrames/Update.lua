@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 -- Scam Check
 local function notEmptyString(str)
@@ -248,7 +248,7 @@ local function Diff(ours, theirs)
     OptionsPrivate.Private.non_transmissable_fields)
   end
 
-  -- generates a diff which WeakAuras.Update can use
+  -- generates a diff which BlindAuras.Update can use
   local debug = false
   if not ours or not theirs then return end
   local diff = RecurseDiff(ours, theirs)
@@ -263,9 +263,9 @@ end
 
 local function EnsureUniqueUid(data)
   if not data.uid then
-    data.uid = WeakAuras.GenerateUniqueID()
+    data.uid = BlindAuras.GenerateUniqueID()
   elseif OptionsPrivate.Private.GetDataByUID(data.uid) then
-    data.uid = WeakAuras.GenerateUniqueID()
+    data.uid = BlindAuras.GenerateUniqueID()
   end
 end
 
@@ -705,7 +705,7 @@ local function BuildUidMap(data, children, type)
 
     if not self:GetUIDMatch(uid) then
       if OptionsPrivate.Private.GetDataByUID(uid) then
-        local newUid = WeakAuras.GenerateUniqueID()
+        local newUid = BlindAuras.GenerateUniqueID()
         self:ChangeUID(uid, newUid)
         uid = newUid
       end
@@ -1194,10 +1194,10 @@ local function MatchInfo(data, children, target)
 end
 
 local function AddAuraList(container, uidMap, list, expandText)
-  local expand = AceGUI:Create("WeakAurasExpand")
+  local expand = AceGUI:Create("BlindAurasExpand")
   local collapsed = true
-  local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
-                           or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
+  local image = collapsed and "Interface\\AddOns\\BlindAuras\\Media\\Textures\\expand"
+                           or "Interface\\AddOns\\BlindAuras\\Media\\Textures\\collapse"
   expand:SetImage(image)
   expand:SetImageSize(10, 10)
   expand:SetFontObject(GameFontHighlight)
@@ -1205,7 +1205,7 @@ local function AddAuraList(container, uidMap, list, expandText)
   expand:SetLabel(expandText)
   container:AddChild(expand)
 
-  local auraLabelContainer = AceGUI:Create("WeakAurasInlineGroup")
+  local auraLabelContainer = AceGUI:Create("BlindAurasInlineGroup")
   auraLabelContainer:SetFullWidth(true)
   auraLabelContainer:DoLayout()
   container:AddChild(auraLabelContainer)
@@ -1218,8 +1218,8 @@ local function AddAuraList(container, uidMap, list, expandText)
 
   expand:SetCallback("OnClick", function()
     collapsed = not collapsed
-    local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
-                           or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
+    local image = collapsed and "Interface\\AddOns\\BlindAuras\\Media\\Textures\\expand"
+                           or "Interface\\AddOns\\BlindAuras\\Media\\Textures\\collapse"
     expand:SetImage(image)
 
     if collapsed then
@@ -1306,7 +1306,7 @@ local methods = {
           matchInfoResult:SetText(L["This is a modified version of your aura, |cff9900FF%s.|r"]:format(oldRootId))
         end
 
-        self:AddChild(AceGUI:Create("WeakAurasSpacer"))
+        self:AddChild(AceGUI:Create("BlindAurasSpacer"))
         local choicesHeader = AceGUI:Create("Label")
         choicesHeader:SetText(L["What do you want to do?"])
         choicesHeader:SetFontObject(GameFontNormalHuge)
@@ -1327,7 +1327,7 @@ local methods = {
         self.updateRadioButton = updateRadioButton
         self:AddChild(updateRadioButton)
 
-        local updateUiArea = AceGUI:Create("WeakAurasInlineGroup")
+        local updateUiArea = AceGUI:Create("BlindAurasInlineGroup")
         updateUiArea:SetFullWidth(true)
         updateUiArea:SetFullHeight(true)
         self.updateUiArea = updateUiArea
@@ -1373,7 +1373,7 @@ local methods = {
     self.scamCheckResult = scamCheckResult
 
     if (#scamCheckResult > 0) then
-      self:AddChild(AceGUI:Create("WeakAurasSpacer"))
+      self:AddChild(AceGUI:Create("BlindAurasSpacer"))
 
       local scamCheckText = AceGUI:Create("Label")
       scamCheckText:SetFontObject(GameFontHighlight)
@@ -1390,17 +1390,17 @@ local methods = {
       end
     end
 
-    if (highestVersion > WeakAuras.InternalVersion()) then
+    if (highestVersion > BlindAuras.InternalVersion()) then
       local highestVersionWarning = AceGUI:Create("Label")
       highestVersionWarning:SetFontObject(GameFontHighlight)
       highestVersionWarning:SetFullWidth(true)
-      highestVersionWarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
+      highestVersionWarning:SetText(L["This aura was created with a newer version of BlindAuras.\nIt might not work correctly with your version!"])
       highestVersionWarning:SetColor(1, 0, 0)
       self:AddChild(highestVersionWarning)
     end
 
 
-    local currentBuild = floor(WeakAuras.BuildInfo / 10000)
+    local currentBuild = floor(BlindAuras.BuildInfo / 10000)
     local importBuild = data.tocversion and floor(data.tocversion / 10000)
 
     if importBuild and currentBuild ~= importBuild then
@@ -1421,7 +1421,7 @@ local methods = {
     self:DoLayout()
   end,
   CreateUpdateArea = function(self, area, matchInfo)
-    area:AddChild(AceGUI:Create("WeakAurasSpacer"))
+    area:AddChild(AceGUI:Create("BlindAurasSpacer"))
     local categoryHeader = AceGUI:Create("Label")
     categoryHeader:SetText(L["Categories to Update"])
     categoryHeader:SetFontObject(GameFontNormalHuge)
@@ -1646,13 +1646,13 @@ local methods = {
 
     if pendingPickData then
       OptionsPrivate.ClearPicks()
-      WeakAuras.PickDisplay(pendingPickData.id, pendingPickData.tabToShow)
+      BlindAuras.PickDisplay(pendingPickData.id, pendingPickData.tabToShow)
     end
   end,
   -- This ensures that the id that we are adding is either
   --  same for existing uids
   --  or unique for non-existing uids
-  -- Note: There's a final renaming via WeakAuras.Rename at the end of the update process
+  -- Note: There's a final renaming via BlindAuras.Rename at the end of the update process
   FixUpNames = function(self, uidMap, uid)
     uid = uid or uidMap:GetRootUID()
     local existingData = OptionsPrivate.Private.GetDataByUID(uid)
@@ -1661,8 +1661,8 @@ local methods = {
       end
       uidMap:ChangeId(uid, existingData.id)
     else
-      if WeakAuras.GetData(uidMap:GetIdFor(uid)) then
-        local newId = WeakAuras.FindUnusedId(uidMap:GetIdFor(uid))
+      if BlindAuras.GetData(uidMap:GetIdFor(uid)) then
+        local newId = BlindAuras.FindUnusedId(uidMap:GetIdFor(uid))
         uidMap:ChangeId(uid, newId)
       end
     end
@@ -1697,11 +1697,11 @@ local methods = {
   RenameAuras = function(self, targetNames)
     local changed = false
     for uid, targetName in pairs(targetNames) do
-      local aura = WeakAuras.GetData(targetName)
+      local aura = BlindAuras.GetData(targetName)
       if not aura then
         -- No squatter, so just take the name
         local data = OptionsPrivate.Private.GetDataByUID(uid)
-        WeakAuras.Rename(data, targetName)
+        BlindAuras.Rename(data, targetName)
         targetNames[uid] = nil
         changed = true
         self:IncProgress()
@@ -1717,9 +1717,9 @@ local methods = {
         if string.sub(data.id, 1, #targetName) == targetName then
           -- Our name is already prefixed with targetName, don't try to improve
         else
-          local newId = WeakAuras.FindUnusedId(targetName)
+          local newId = BlindAuras.FindUnusedId(targetName)
           local oldid = data.id
-          WeakAuras.Rename(data, newId)
+          BlindAuras.Rename(data, newId)
           if targetName[aura.uid] then -- We can hope that the aura the squatter renames itself, so try again
             changed = true
           end
@@ -1755,7 +1755,7 @@ local methods = {
       if not data then
         error("Can't find data")
       end
-      WeakAuras.Delete(data)
+      BlindAuras.Delete(data)
       uidMap:Remove(uid)
       self:IncProgress()
       coroutine.yield()
@@ -1802,8 +1802,8 @@ local methods = {
     data.preferToUpdate = true
     data.authorMode = nil
 
-    WeakAuras.Add(data)
-    WeakAuras.NewDisplayButton(data, true)
+    BlindAuras.Add(data)
+    BlindAuras.NewDisplayButton(data, true)
     self:IncProgress10()
     coroutine.yield()
 
@@ -1821,9 +1821,9 @@ local methods = {
       local data = GetPhase2Data(uid)
       data.preferToUpdate = true
       data.authorMode = nil
-      WeakAuras.Add(data)
+      BlindAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
-      local button = WeakAuras.GetDisplayButton(data.id)
+      local button = BlindAuras.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = structureUidMap:GetParentIsDynamicGroup(uid)
@@ -1835,9 +1835,9 @@ local methods = {
         button:SetGroupOrder(nil, nil)
       end
       button.callbacks.UpdateExpandButton()
-      WeakAuras.UpdateGroupOrders(data)
-      WeakAuras.UpdateThumbnail(data)
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.UpdateGroupOrders(data)
+      BlindAuras.UpdateThumbnail(data)
+      BlindAuras.ClearAndUpdateOptions(data.id)
       self:IncProgress10()
       coroutine.yield()
     end
@@ -1846,22 +1846,22 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = WeakAuras.GetDisplayButton(data.id)
+      local displayButton = BlindAuras.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
   end,
   ImportPhase1 = function(self, uidMap, uid, phase2Order)
     tinsert(phase2Order, uid)
     local data = uidMap:GetPhase1Data(uid)
-    local newId = WeakAuras.FindUnusedId(data.id)
+    local newId = BlindAuras.FindUnusedId(data.id)
     uidMap:ChangeId(uid, newId)
 
     data.preferToUpdate = false
     data.authorMode = nil
     data.id = newId
 
-    WeakAuras.Add(data)
-    WeakAuras.NewDisplayButton(data, true)
+    BlindAuras.Add(data)
+    BlindAuras.NewDisplayButton(data, true)
 
     self:IncProgress()
     coroutine.yield()
@@ -1881,10 +1881,10 @@ local methods = {
       local data = uidMap:GetPhase2Data(uid)
       data.preferToUpdate = false
       data.authorMode = nil
-      WeakAuras.Add(data)
+      BlindAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
 
-      local button = WeakAuras.GetDisplayButton(data.id)
+      local button = BlindAuras.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = uidMap:GetParentIsDynamicGroup(uid)
@@ -1896,9 +1896,9 @@ local methods = {
         button:SetGroupOrder(nil, nil)
       end
       button.callbacks.UpdateExpandButton()
-      WeakAuras.UpdateGroupOrders(data)
-      WeakAuras.UpdateThumbnail(data)
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.UpdateGroupOrders(data)
+      BlindAuras.UpdateThumbnail(data)
+      BlindAuras.ClearAndUpdateOptions(data.id)
       self:IncProgress()
       coroutine.yield()
     end
@@ -1906,7 +1906,7 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = WeakAuras.GetDisplayButton(data.id)
+      local displayButton = BlindAuras.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
 
@@ -1991,7 +1991,7 @@ local methods = {
     title:SetText(L["Importing...."])
     self:AddChild(title)
 
-    local progress = AceGUI:Create("WeakAurasProgressBar")
+    local progress = AceGUI:Create("BlindAurasProgressBar")
     self.progressBar = progress
     self:AddChild(progress)
   end

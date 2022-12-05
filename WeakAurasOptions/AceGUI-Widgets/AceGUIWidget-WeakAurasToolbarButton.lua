@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 --[[-----------------------------------------------------------------------------
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 5
+local Type, Version = "BlindAurasToolbarButton", 5
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -117,14 +117,14 @@ local function Constructor()
 	--frame:SetNormalTexture(nTex)
 
 	local hTex = frame:CreateTexture()
-	hTex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
+	hTex:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_FullWhite")
 	hTex:SetVertexColor(1, 1, 1, 0.1)
 
 	hTex:SetAllPoints()
 	frame:SetHighlightTexture(hTex)
 
 	local pTex = frame:CreateTexture()
-	pTex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
+	pTex:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_FullWhite")
 	pTex:SetVertexColor(1, 1, 1, 0.2)
 	pTex:SetAllPoints()
 	frame:SetPushedTexture(pTex)

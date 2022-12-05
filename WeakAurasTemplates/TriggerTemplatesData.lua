@@ -1,7 +1,7 @@
 local AddonName, TemplatePrivate = ...
-local WeakAuras = WeakAuras
-if not WeakAuras.IsRetail() then return end
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+if not BlindAuras.IsRetail() then return end
+local L = BlindAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
 -- The templates tables are created on demand
@@ -64,7 +64,7 @@ local powerTypes =
     [99] = {name = STAGGER, icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
--- Collected by WeakAurasTemplateCollector:
+-- Collected by BlindAurasTemplateCollector:
 --------------------------------------------------------------------------------
 templates.class.WARRIOR = {
   [1] = { -- Arms
@@ -4423,9 +4423,9 @@ tinsert(templates.general.args, {
 });
 tinsert(templates.general.args, {
   title = L["Always Active"],
-  icon = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura78",
+  icon = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura78",
   triggers = {[1] = { trigger = {
-    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    type = BlindAuras.GetTriggerCategoryFor("Conditions"),
     event = "Conditions",
     use_alwaystrue = true}}}
 });
@@ -4434,7 +4434,7 @@ tinsert(templates.general.args, {
   title = L["Pet alive"],
   icon = "Interface\\Icons\\ability_hunter_pet_raptor",
   triggers = {[1] = { trigger = {
-    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    type = BlindAuras.GetTriggerCategoryFor("Conditions"),
     event = "Conditions",
     use_HasPet = true}}}
 });
@@ -4443,7 +4443,7 @@ tinsert(templates.general.args, {
   title = L["Pet Behavior"],
   icon = "Interface\\Icons\\Ability_hunter_pet_assist",
   triggers = {[1] = { trigger = {
-    type = WeakAuras.GetTriggerCategoryFor("Pet Behavior"),
+    type = BlindAuras.GetTriggerCategoryFor("Pet Behavior"),
     event = "Pet Behavior",
     use_behavior = true,
     behavior = "assist"}}}
@@ -4533,7 +4533,7 @@ for i = 1, 4 do
     title = L["Shapeshift Form"],
     icon = 132276,
     triggers = {[1] = { trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+      type = BlindAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
       event = "Stance/Form/Aura",
       }}}
   });
@@ -4548,7 +4548,7 @@ for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
         triggers = {
           [1] = {
             trigger = {
-              type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+              type = BlindAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
               event = "Stance/Form/Aura",
               use_form = true,
               form = { single = j }
@@ -4585,7 +4585,7 @@ for i = 1, 3 do
     title = L["Runes"],
     icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
     triggers = {[1] = { trigger = {
-      type = WeakAuras.GetTriggerCategoryFor("Death Knight Rune"),
+      type = BlindAuras.GetTriggerCategoryFor("Death Knight Rune"),
       event = "Death Knight Rune"}}}
   });
 end
@@ -5521,10 +5521,10 @@ end);
 
 
 -- Enrich Display templates with default values
-for regionType, regionData in pairs(WeakAuras.regionOptions) do
+for regionType, regionData in pairs(BlindAuras.regionOptions) do
   if (regionData.templates) then
     for _, item in ipairs(regionData.templates) do
-      for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
+      for k, v in pairs(BlindAuras.regionTypes[regionType].default) do
         if (item.data[k] == nil) then
           item.data[k] = v;
         end
@@ -5533,4 +5533,4 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
   end
 end
 
-WeakAuras.triggerTemplates = templates;
+BlindAuras.triggerTemplates = templates;

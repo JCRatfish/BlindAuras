@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function createOptions(parentData, data, index, subIndex)
   local hiddentickextras = function()
@@ -12,35 +12,35 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     tick_visible = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show Tick"],
       order = 1,
     },
     tick_color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Color"],
       order = 2,
       hasAlpha = true,
     },
     tick_placement_mode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Tick Mode"],
       order = 3,
       values = OptionsPrivate.Private.tick_placement_modes,
     },
     tick_placement = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Tick Placement"],
       order = 4,
-      validate = WeakAuras.ValidateNumeric,
+      validate = BlindAuras.ValidateNumeric,
       desc = L["Enter in a value for the tick's placement."],
     },
     tick_thickness = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Thickness"],
       order = 5,
       min = 0,
@@ -49,7 +49,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_extrasDescription = {
       type = "execute",
-      control = "WeakAurasExpandSmall",
+      control = "BlindAurasExpandSmall",
       name = function()
         local lengthtext = ""
         if data.automatic_length then
@@ -78,7 +78,7 @@ local function createOptions(parentData, data, index, subIndex)
 
         return description
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 6,
       func = function(info, button)
         local collapsed = OptionsPrivate.IsCollapsed("subtext", "subtext", "tickextras" .. index, true)
@@ -96,7 +96,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     automatic_length = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Automatic length"],
       order = 7,
       desc = L["Matches the height setting of a horizontal bar or width for a vertical bar."],
@@ -104,7 +104,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_length = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Length"],
       order = 8,
       min = 0,
@@ -115,14 +115,14 @@ local function createOptions(parentData, data, index, subIndex)
     },
     use_texture = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Use Texture"],
       order = 9,
       hidden = hiddentickextras,
     },
     tick_blend_mode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Blend Mode"],
       order = 10,
       values = OptionsPrivate.Private.blend_types,
@@ -133,7 +133,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "input",
       name = L["Texture"],
       order = 11,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       disabled = function() return not data.use_texture end,
       hidden = hiddentickextras,
     },
@@ -155,19 +155,19 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddentickextras,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     tick_desaturate = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Desaturate"],
       order = 12,
       hidden = hiddentickextras,
     },
     tick_rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -176,7 +176,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_mirror = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Mirror"],
       order = 15,
       disabled = function() return not data.use_texture end,
@@ -184,7 +184,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_xOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["x-Offset"],
       order = 16,
       softMin = -200,
@@ -193,7 +193,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_yOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["y-Offset"],
       order = 17,
       softMin = -200,
@@ -206,7 +206,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 18,
       hidden = hiddentickextras,
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       arg = {
         expanderName = "tick" .. index .. "#" .. subIndex
       }
@@ -218,4 +218,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"]);
+BlindAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"]);

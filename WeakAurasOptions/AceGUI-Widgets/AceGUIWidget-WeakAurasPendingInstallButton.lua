@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 
-local Type, Version = "WeakAurasPendingInstallButton", 3
+local Type, Version = "BlindAurasPendingInstallButton", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
@@ -25,13 +25,13 @@ local methods = {
     self.companionData = companionData
 
     function self.callbacks.OnUpdateClick()
-      WeakAuras.Import(self.companionData.encoded)
+      BlindAuras.Import(self.companionData.encoded)
     end
 
     self:SetTitle(self.companionData.name)
     self.update:SetScript("OnClick", self.callbacks.OnUpdateClick)
     local data = OptionsPrivate.Private.StringToTable(self.companionData.encoded, true)
-    WeakAuras.PreAdd(data.d)
+    BlindAuras.PreAdd(data.d)
     self.data = data.d
     self.frame:EnableKeyboard(false)
     self:Enable()
@@ -83,7 +83,7 @@ local methods = {
       self:ReleaseThumbnail()
       self:AcquireThumbnail()
     else
-      local option = WeakAuras.regionOptions[self.thumbnailType]
+      local option = BlindAuras.regionOptions[self.thumbnailType]
       if option and option.modifyThumbnail then
         option.modifyThumbnail(self.frame, self.thumbnail, self.data)
       end
@@ -97,7 +97,7 @@ local methods = {
 
     if self.thumbnail then
       local regionType = self.thumbnailType
-      local option = WeakAuras.regionOptions[regionType]
+      local option = BlindAuras.regionOptions[regionType]
       if self.thumbnail.icon then
         self.thumbnail.icon:SetDesaturated(false)
       end
@@ -120,7 +120,7 @@ local methods = {
     local regionType = self.data.regionType
     self.thumbnailType = regionType
 
-    local option = WeakAuras.regionOptions[regionType]
+    local option = BlindAuras.regionOptions[regionType]
     if option and option.acquireThumbnail then
       self.thumbnail = option.acquireThumbnail(button, self.data)
       if self.thumbnail.icon then
@@ -155,7 +155,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-  local name = "WeakAurasPendingInstallButton" .. AceGUI:GetNextWidgetNum(Type)
+  local name = "BlindAurasPendingInstallButton" .. AceGUI:GetNextWidgetNum(Type)
   local button = CreateFrame("Button", name, UIParent)
   button:SetHeight(32)
   button:SetWidth(1000)
@@ -192,7 +192,7 @@ local function Constructor()
   update.disabled = true
   update.func = function()
   end
-  update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
+  update:SetNormalTexture([[Interface\AddOns\BlindAuras\Media\Textures\wagoupdate_refresh.tga]])
   update:Disable()
   update:SetWidth(24)
   update:SetHeight(24)
@@ -202,7 +202,7 @@ local function Constructor()
   local updateLogo = CreateFrame("Frame", nil, button)
   button.updateLogo = updateLogo
   local tex = updateLogo:CreateTexture()
-  tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+  tex:SetTexture([[Interface\AddOns\BlindAuras\Media\Textures\wagoupdate_logo.tga]])
   tex:SetAllPoints()
   updateLogo.tex = tex
   updateLogo:SetSize(24, 24)

@@ -1,4 +1,4 @@
-WeakAuras.ModelPaths = {
+BlindAuras.ModelPaths = {
  {
   text = "cameras",
   value = "cameras",

@@ -1,6 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 do
   local function subCreateOptions(parentData, data, index, subIndex)
@@ -11,20 +11,20 @@ do
           for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
             OptionsPrivate.MoveSubRegionUp(child, index, "subbackground")
           end
-          WeakAuras.ClearAndUpdateOptions(parentData.id)
+          BlindAuras.ClearAndUpdateOptions(parentData.id)
         end,
         __down = function()
           for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
             OptionsPrivate.MoveSubRegionDown(child, index, "subbackground")
           end
-          WeakAuras.ClearAndUpdateOptions(parentData.id)
+          BlindAuras.ClearAndUpdateOptions(parentData.id)
         end,
         __notcollapsable = true
       }
       return options
     end
 
-  WeakAuras.RegisterSubRegionOptions("subbackground", subCreateOptions, L["Background"]);
+  BlindAuras.RegisterSubRegionOptions("subbackground", subCreateOptions, L["Background"]);
 end
 
 -- Foreground for aurabar
@@ -38,18 +38,18 @@ do
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
           OptionsPrivate.MoveSubRegionUp(child, index, "subforeground")
         end
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+        BlindAuras.ClearAndUpdateOptions(parentData.id)
       end,
       __down = function()
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
           OptionsPrivate.MoveSubRegionDown(child, index, "subforeground")
         end
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+        BlindAuras.ClearAndUpdateOptions(parentData.id)
       end,
       __notcollapsable = true
     }
     return options
   end
 
-  WeakAuras.RegisterSubRegionOptions("subforeground", subCreateOptions, L["Foreground"]);
+  BlindAuras.RegisterSubRegionOptions("subforeground", subCreateOptions, L["Foreground"]);
 end

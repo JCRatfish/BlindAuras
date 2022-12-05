@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function createOptions(parentData, data, index, subIndex)
   local options = {
@@ -9,23 +9,23 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     model_visible = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Show Model"],
       order = 9,
     },
     model_fileId = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10,
-      hidden = WeakAuras.IsClassic()
+      hidden = BlindAuras.IsClassic()
     },
     model_path = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10.5,
-      hidden = not WeakAuras.IsClassic()
+      hidden = not BlindAuras.IsClassic()
     },
     chooseModel = {
       type = "execute",
@@ -37,19 +37,19 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     bar_model_clip = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Clipped by Progress"],
       order = 12,
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
     extra_width = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Extra Width"],
       order = 12.1,
       softMin = -100,
@@ -59,7 +59,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     extra_height = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Extra Height"],
       order = 12.2,
       softMin = -100,
@@ -69,7 +69,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_alpha = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Alpha"],
       order = 13,
       min = 0,
@@ -80,11 +80,11 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 14,
-      width = WeakAuras.normalWidth
+      width = BlindAuras.normalWidth
     },
     model_z = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -20,
       softMax = 20,
@@ -95,7 +95,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_x = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Offset"],
       softMin = -20,
       softMax = 20,
@@ -106,7 +106,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_y = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -20,
       softMax = 20,
@@ -117,7 +117,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -129,7 +129,7 @@ local function createOptions(parentData, data, index, subIndex)
     -- New Settings
     model_st_tx = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -140,7 +140,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_ty = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -151,7 +151,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_tz = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -1000,
       softMax = 1000,
@@ -162,7 +162,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_rx = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["X Rotation"],
       min = 0,
       max = 360,
@@ -173,7 +173,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_ry = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y Rotation"],
       min = 0,
       max = 360,
@@ -184,7 +184,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_rz = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Z Rotation"],
       min = 0,
       max = 360,
@@ -195,7 +195,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_st_us = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Scale"],
       min = 5,
       max = 1000,
@@ -211,4 +211,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"]);
+BlindAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"]);

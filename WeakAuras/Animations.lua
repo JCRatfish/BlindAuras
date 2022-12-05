@@ -1,6 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 -- Animations
 local animations = {}
@@ -9,7 +9,7 @@ local anim_function_strings = Private.anim_function_strings;
 
 local function noopErrorHandler() end
 
-local frame = WeakAuras.frames["WeakAuras Main Frame"]
+local frame = BlindAuras.frames["BlindAuras Main Frame"]
 
 local updatingAnimations;
 local last_update = GetTime();
@@ -73,7 +73,7 @@ local function UpdateAnimations()
     progress = anim.easeFunc(progress, anim.easeStrength or 3)
     Private.ActivateAuraEnvironmentForRegion(anim.region)
     if(anim.translateFunc) then
-      local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Slide Animation"])
+      local errorHandler = BlindAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Slide Animation"])
       if (anim.region.SetOffsetAnim) then
         local ok, x, y = xpcall(anim.translateFunc, errorHandler, progress, 0, 0, anim.dX, anim.dY);
         anim.region:SetOffsetAnim(x, y);
@@ -86,7 +86,7 @@ local function UpdateAnimations()
       end
     end
     if(anim.alphaFunc) then
-      local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Fade Animation"])
+      local errorHandler = BlindAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Fade Animation"])
       local ok, alpha = xpcall(anim.alphaFunc, errorHandler, progress, anim.startAlpha, anim.dAlpha);
       if (ok) then
         if (anim.region.SetAnimAlpha) then
@@ -97,7 +97,7 @@ local function UpdateAnimations()
       end
     end
     if(anim.scaleFunc) then
-      local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Zoom Animation"])
+      local errorHandler = BlindAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Zoom Animation"])
       local ok, scaleX, scaleY = xpcall(anim.scaleFunc, errorHandler, progress, 1, 1, anim.scaleX, anim.scaleY);
       if (ok) then
         if(anim.region.Scale) then
@@ -109,14 +109,14 @@ local function UpdateAnimations()
       end
     end
     if(anim.rotateFunc and anim.region.Rotate) then
-      local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Rotate Animation"])
+      local errorHandler = BlindAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Rotate Animation"])
       local ok, rotate = xpcall(anim.rotateFunc, errorHandler, progress, anim.startRotation, anim.rotate);
       if (ok) then
         anim.region:Rotate(rotate);
       end
     end
     if(anim.colorFunc and anim.region.ColorAnim) then
-      local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Color Animation"])
+      local errorHandler = BlindAuras.IsOptionsOpen() and noopErrorHandler or Private.GetErrorHandlerUid(anim.auraUID, L["Color Animation"])
       local startR, startG, startB, startA = anim.region:GetColor();
       startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
       local ok, r, g, b, a = xpcall(anim.colorFunc, errorHandler, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
@@ -232,7 +232,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
         anim.translateFunc = anim_function_strings[anim.translateType]
       end
       if (anim.translateFunc) then
-        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc);
+        translateFunc = BlindAuras.LoadFunction("return " .. anim.translateFunc);
       else
         if (region.SetOffsetAnim) then
           region:SetOffsetAnim(0, 0);
@@ -253,7 +253,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
         anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
       if (anim.alphaFunc) then
-        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc);
+        alphaFunc = BlindAuras.LoadFunction("return " .. anim.alphaFunc);
       else
         if (region.SetAnimAlpha) then
           region:SetAnimAlpha(nil);
@@ -274,7 +274,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
         anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
       if (anim.scaleFunc) then
-        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc);
+        scaleFunc = BlindAuras.LoadFunction("return " .. anim.scaleFunc);
       else
         region:Scale(1, 1);
       end
@@ -287,7 +287,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
         anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
       if (anim.rotateFunc) then
-        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc);
+        rotateFunc = BlindAuras.LoadFunction("return " .. anim.rotateFunc);
       else
         region:Rotate(startRotation);
       end
@@ -300,7 +300,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
         anim.colorFunc = anim_function_strings[anim.colorType]
       end
       if (anim.colorFunc) then
-        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc);
+        colorFunc = BlindAuras.LoadFunction("return " .. anim.colorFunc);
       else
         region:ColorAnim(nil);
       end
@@ -314,7 +314,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
       local data = Private.GetDataByUID(uid);
       if(data and data.parent) then
-        local parentRegion = WeakAuras.regions[data.parent].region;
+        local parentRegion = BlindAuras.regions[data.parent].region;
         if(parentRegion and parentRegion.controlledRegions) then
           for index, regionData in pairs(parentRegion.controlledRegions) do
             local childRegion = regionData.region;

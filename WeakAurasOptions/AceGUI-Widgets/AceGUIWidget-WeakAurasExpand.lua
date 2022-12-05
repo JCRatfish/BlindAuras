@@ -1,9 +1,9 @@
 --[[-----------------------------------------------------------------------------
 Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasExpand", 4
+local Type, Version = "BlindAurasExpand", 4
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -126,7 +126,7 @@ local function Constructor()
 
 	local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
 	highlight:SetAllPoints(frame)
-	highlight:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+	highlight:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\Square_White")
 	highlight:SetVertexColor(0.2, 0.4, 0.8, 0.2)
 	highlight:SetBlendMode("ADD")
 

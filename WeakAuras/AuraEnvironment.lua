@@ -1,13 +1,13 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 local LCD
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
-  LCD:RegisterFrame("WeakAuras")
+  LCD:RegisterFrame("BlindAuras")
 end
 
 local UnitAura = UnitAura
@@ -25,7 +25,7 @@ local WA_GetUnitAura = function(unit, spell, filter)
   end
 end
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
     local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
@@ -84,7 +84,7 @@ local WA_ClassColorName = function(unit)
   end
 end
 
-WeakAuras.WA_ClassColorName = WA_ClassColorName
+BlindAuras.WA_ClassColorName = WA_ClassColorName
 
 -- UTF-8 Sub is pretty commonly needed
 local WA_Utf8Sub = function(input, size)
@@ -127,15 +127,15 @@ local WA_Utf8Sub = function(input, size)
   return output
 end
 
-WeakAuras.WA_Utf8Sub = WA_Utf8Sub
+BlindAuras.WA_Utf8Sub = WA_Utf8Sub
 
 local LCG = LibStub("LibCustomGlow-1.0")
-WeakAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
-WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
+BlindAuras.ShowOverlayGlow = LCG.ButtonGlow_Start
+BlindAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 
 local LGF = LibStub("LibGetFrame-1.0")
-WeakAuras.GetUnitFrame = LGF.GetUnitFrame
-WeakAuras.GetUnitNameplate =  function(unit)
+BlindAuras.GetUnitFrame = LGF.GetUnitFrame
+BlindAuras.GetUnitNameplate =  function(unit)
   if Private.multiUnitUnits.nameplate[unit] then
     return LGF.GetUnitNameplate(unit)
   end
@@ -179,8 +179,8 @@ local blockedTables = {
   SendMailMoneyGold = true,
   MailFrameTab2 = true,
   ChatFrame1 = true,
-  WeakAurasOptions = true,
-  WeakAurasOptionsSaved = true
+  BlindAurasOptions = true,
+  BlindAurasOptionsSaved = true
 }
 
 local aura_environments = {}
@@ -205,7 +205,7 @@ end
 
 local current_uid = nil
 local current_aura_env = nil
--- Stack of of aura environments/uids, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
+-- Stack of of aura environments/uids, allows use of recursive aura activations through calls to BlindAuras.ScanEvents().
 local aura_env_stack = {}
 
 function Private.ClearAuraEnvironment(id)
@@ -217,8 +217,8 @@ function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
 end
 
 function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
-  local data = WeakAuras.GetData(id)
-  local region = WeakAuras.GetRegion(id, cloneId)
+  local data = BlindAuras.GetData(id)
+  local region = BlindAuras.GetRegion(id, cloneId)
   if not data then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack)
@@ -273,7 +273,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       if data.controlledChildren then
         current_aura_env.child_envs = {}
         for dataIndex, childID in ipairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childID)
+          local childData = BlindAuras.GetData(childID)
           if childData then
             if not environment_initialized[childID] then
               Private.ActivateAuraEnvironment(childID)
@@ -331,7 +331,7 @@ local function MakeReadOnly(input, options)
   })
 end
 
-local FakeWeakAurasMixin = {
+local FakeBlindAurasMixin = {
   blockedFunctions = {
     -- Other addons might use these, so before moving them to the Private space, we need
     -- to discuss these. But Auras have no purpose for calling these
@@ -350,7 +350,7 @@ local FakeWeakAurasMixin = {
     RegisterTriggerSystem = true,
     RegisterTriggerSystemOptions = true,
     ShowOptions = true,
-    -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
+    -- Note these shouldn't exist in the BlindAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
     ClearAndUpdateOptions = true,
     CloseImportExport = true,
@@ -373,7 +373,7 @@ local FakeWeakAurasMixin = {
     AuraWarnings = true,
     ModelPaths = true,
     regionPrototype = true,
-    -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
+    -- Note these shouldn't exist in the BlindAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
     data_stub = true,
     displayButtons = true,
@@ -392,12 +392,12 @@ local FakeWeakAurasMixin = {
   },
   blocked = blocked,
   setBlocked = function()
-    Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasSet", "error",
-                  L["Writing to the WeakAuras table is not allowed."], true)
+    Private.AuraWarnings.UpdateWarning(current_uid, "FakeBlindAurasSet", "error",
+                  L["Writing to the BlindAuras table is not allowed."], true)
   end
 }
 
-local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
+local FakeBlindAuras = MakeReadOnly(BlindAuras, FakeBlindAurasMixin)
 
 local overridden = {
   WA_GetUnitAura = WA_GetUnitAura,
@@ -406,9 +406,9 @@ local overridden = {
   WA_IterateGroupMembers = WA_IterateGroupMembers,
   WA_ClassColorName = WA_ClassColorName,
   WA_Utf8Sub = WA_Utf8Sub,
-  ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
-  ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
-  WeakAuras = FakeWeakAuras
+  ActionButton_ShowOverlayGlow = BlindAuras.ShowOverlayGlow,
+  ActionButton_HideOverlayGlow = BlindAuras.HideOverlayGlow,
+  BlindAuras = FakeBlindAuras
 }
 
 local env_getglobal
@@ -450,7 +450,7 @@ function env_getglobal(k)
 end
 
 local function_cache = {}
-function WeakAuras.LoadFunction(string)
+function BlindAuras.LoadFunction(string)
   if function_cache[string] then
     return function_cache[string]
   else

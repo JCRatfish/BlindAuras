@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 -- Legendaries based on https://wow.tools/dbc/?dbc=runeforgelegendaryability
@@ -272,8 +272,8 @@ for k, v in pairs(legendariesToBonusId) do
   bonusIdToLegendary[v] = k
 end
 
-WeakAuras.GetLegendariesBonusIds = function()
-  if not WeakAuras.IsRetail() then
+BlindAuras.GetLegendariesBonusIds = function()
+  if not BlindAuras.IsRetail() then
     return ""
   end
 
@@ -300,8 +300,8 @@ WeakAuras.GetLegendariesBonusIds = function()
   return result
 end
 
-WeakAuras.GetLegendaryData = function(id)
-  if not WeakAuras.IsRetail() then
+BlindAuras.GetLegendaryData = function(id)
+  if not BlindAuras.IsRetail() then
     return ""
   end
   local legendaryID = bonusIdToLegendary[tonumber(id)]

@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local selfPoints = {
   default = "CENTER",
@@ -80,7 +80,7 @@ local function createOptions(id, data)
     __order = 1,
     groupIcon = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Group Icon"],
       desc = L["Set Thumbnail Icon"],
       order = 0.5,
@@ -89,8 +89,8 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.groupIcon = v
-        WeakAuras.Add(data)
-        WeakAuras.UpdateThumbnail(data)
+        BlindAuras.Add(data)
+        BlindAuras.UpdateThumbnail(data)
       end
     },
     chooseIcon = {
@@ -103,13 +103,13 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     -- grow options
     grow = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Grow"],
       order = 1,
       values = OptionsPrivate.Private.grow_types,
@@ -124,22 +124,22 @@ local function createOptions(id, data)
           end
           data.selfPoint = selfPoint
         end
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
     useAnchorPerUnit = {
       type = "toggle",
       order = 1.5,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Group by Frame"],
       desc = L["Group and anchor each auras by frame.\n\n- Nameplates: attach to nameplates per unit.\n- Unit Frames: attach to unit frame buttons per unit.\n- Custom Frames: choose which frame each region should be anchored to."],
       hidden = function() return data.grow == "CUSTOM" end,
     },
     anchorPerUnit = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Group by Frame"],
       order = 1.6,
       values = {
@@ -153,7 +153,7 @@ local function createOptions(id, data)
     -- custom grow option added below
     align = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Align"],
       order = 2,
       values = OptionsPrivate.Private.align_types,
@@ -164,8 +164,8 @@ local function createOptions(id, data)
           selfPoint = selfPoint(data)
         end
         data.selfPoint = selfPoint
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
@@ -173,7 +173,7 @@ local function createOptions(id, data)
     },
     rotated_align = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Align"],
       order = 3,
       values = OptionsPrivate.Private.rotated_align_types,
@@ -186,15 +186,15 @@ local function createOptions(id, data)
           selfPoint = selfPoint(data)
         end
         data.selfPoint = selfPoint
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
     -- circle grow options
     constantFactor = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Constant Factor"],
       order = 4,
       values = OptionsPrivate.Private.circular_group_constant_factor_types,
@@ -202,7 +202,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Start Angle"],
       order = 5,
       min = 0,
@@ -212,14 +212,14 @@ local function createOptions(id, data)
     },
     fullCircle = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Full Circle"],
       order = 7,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
     arcLength = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Total Angle"],
       order = 8,
       min = 0,
@@ -230,7 +230,7 @@ local function createOptions(id, data)
     },
     radius = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Radius"],
       order = 9,
       softMin = 0,
@@ -241,7 +241,7 @@ local function createOptions(id, data)
     -- grid grow options
     gridType = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Grid direction"],
       order = 8,
       values = OptionsPrivate.Private.grid_types,
@@ -249,13 +249,13 @@ local function createOptions(id, data)
       set = function(info, value)
         data.selfPoint = gridSelfPoints[value]
         data.gridType = value
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
     gridWidth = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = function()
         if not data.gridType then return "" end
         if data.gridType:find("^[RL]") then
@@ -273,7 +273,7 @@ local function createOptions(id, data)
     rowSpace = {
       type = "range",
       name = L["Row Space"],
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 10,
       softMin = 0,
       softMax = 300,
@@ -283,7 +283,7 @@ local function createOptions(id, data)
     columnSpace = {
       type = "range",
       name = L["Column Space"],
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 11,
       softMin = 0,
       softMax = 300,
@@ -293,7 +293,7 @@ local function createOptions(id, data)
     -- generic grow options
     space = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Space"],
       order = 7,
       softMin = 0,
@@ -307,7 +307,7 @@ local function createOptions(id, data)
     },
     stagger = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Stagger"],
       order = 8,
       min = -50,
@@ -324,7 +324,7 @@ local function createOptions(id, data)
     -- sort options
     sort = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Sort"],
       order = 20,
       values = OptionsPrivate.Private.group_sort_types
@@ -332,7 +332,7 @@ local function createOptions(id, data)
     -- custom sort option added below
     hybridPosition = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Hybrid Position"],
       order = 21,
       values = OptionsPrivate.Private.group_hybrid_position_types,
@@ -340,7 +340,7 @@ local function createOptions(id, data)
     },
     hybridSortMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Hybrid Sort Mode"],
       order = 22,
       values = OptionsPrivate.Private.group_hybrid_sort_types,
@@ -369,21 +369,21 @@ local function createOptions(id, data)
     sortSpace = {
       type = "description",
       name = "",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 24,
       hidden = function() return data.sort == "hybrid" end
     },
     useLimit = {
       type = "toggle",
       order = 25,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Limit"],
       hidden = function() return data.grow == "CUSTOM" end,
     },
     limit = {
       type = "range",
       order = 26,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Limit"],
       min = 0,
       softMax = 20,
@@ -393,13 +393,13 @@ local function createOptions(id, data)
     },
     animate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Animated Expand and Collapse"],
       order = 27
     },
     scale = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Group Scale"],
       order = 28,
       min = 0.05,
@@ -415,7 +415,7 @@ local function createOptions(id, data)
         data.xOffset = data.xOffset/(1-change)
         data.yOffset = data.yOffset/(1-change)
         data.scale = v
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -522,7 +522,7 @@ local function modifyThumbnail(parent, frame, data)
       icon:SetAllPoints(frame)
       frame.icon = icon
     end
-    local success = WeakAuras.SetTextureOrAtlas(frame.icon, path or data.groupIcon) and (path or data.groupIcon)
+    local success = BlindAuras.SetTextureOrAtlas(frame.icon, path or data.groupIcon) and (path or data.groupIcon)
     if success then
       if frame.defaultIcon then
         frame.defaultIcon:Hide()
@@ -547,4 +547,4 @@ local function createIcon()
   return thumbnail
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
+BlindAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);

@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local function createOptions(id, data)
   local options = {
@@ -9,7 +9,7 @@ local function createOptions(id, data)
     __order = 1,
     texture = {
       type = "input",
-      width = WeakAuras.doubleWidth - 0.15,
+      width = BlindAuras.doubleWidth - 0.15,
       name = L["Texture"],
       order = 1
     },
@@ -31,45 +31,45 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     desaturate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 2,
     },
     space2 = {
       type = "execute",
       name = "",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 5,
       image = function() return "", 0, 0 end,
     },
     color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 10
     },
     blendMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Blend Mode"],
       order = 12,
       values = OptionsPrivate.Private.blend_types
     },
     mirror = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Mirror"],
       order = 20
     },
     alpha = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Alpha"],
       order = 25,
       min = 0,
@@ -79,13 +79,13 @@ local function createOptions(id, data)
     },
     rotate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Allow Full Rotation"],
       order = 30
     },
     rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
       max = 360,
@@ -96,7 +96,7 @@ local function createOptions(id, data)
     },
     discrete_rotation = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Discrete Rotation"],
       min = 0,
       max = 360,
@@ -106,7 +106,7 @@ local function createOptions(id, data)
     },
     textureWrapMode = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Texture Wrap"],
       order = 36,
       values = OptionsPrivate.Private.texture_wrap_types
@@ -154,7 +154,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     region.texture:SetHeight(scale * data.height);
   end
 
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  BlindAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
   region.texture:SetBlendMode(data.blendMode);
 
@@ -187,7 +187,7 @@ local function createIcon()
   local data = {
     height = 40,
     width = 40,
-    texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+    texture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura3",
     color = {1, 1, 1, 1},
     blendMode = "ADD",
     rotate = true;
@@ -239,7 +239,7 @@ local templates = {
   {
     title = L["Low Mana"],
     data = {
-      texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura70",
+      texture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura70",
       blendMode = "ADD",
       width = 200,
       height = 200,
@@ -248,8 +248,8 @@ local templates = {
   },
 }
 
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-WeakAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);
+BlindAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);

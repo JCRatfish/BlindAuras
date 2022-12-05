@@ -2,6 +2,6 @@ if GetLocale() ~= "esES" then
   return
 end
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
---@localization(locale="esES", format="lua_additive_table", namespace="WeakAuras", handle-subnamespaces="none")@
+--@localization(locale="esES", format="lua_additive_table", namespace="BlindAuras", handle-subnamespaces="none")@

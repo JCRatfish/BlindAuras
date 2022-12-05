@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 local indentWidth = 0.15
 
 local function createOptions(parentData, data, index, subIndex)
@@ -15,20 +15,20 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     glow = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show Glow"],
       order = 2,
     },
     glowType = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Type"],
       order = 2,
       values = OptionsPrivate.Private.glow_types,
     },
     glow_anchor = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Glow Anchor"],
       order = 3,
       values = OptionsPrivate.Private.aurabar_anchor_areas,
@@ -36,7 +36,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowExtraDescription = {
       type = "execute",
-      control = "WeakAurasExpandSmall",
+      control = "BlindAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
         local color = L["Default Color"]
@@ -79,7 +79,7 @@ local function createOptions(parentData, data, index, subIndex)
         end
         return line
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 4,
       image = function()
         local collapsed = OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
@@ -104,7 +104,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     useGlowColor = {
       type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Use Custom Color"],
       desc = L["If unchecked, then a default color will be used (usually yellow)"],
       order = 6,
@@ -113,7 +113,7 @@ local function createOptions(parentData, data, index, subIndex)
     glowColor = {
       type = "color",
       hasAlpha = true,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Custom Color"],
       order = 7,
       disabled = function() return not data.useGlowColor end,
@@ -128,7 +128,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowLines = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Lines & Particles"],
       order = 9,
       min = 1,
@@ -138,7 +138,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowFrequency = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Frequency"],
       order = 10,
       softMin = -2,
@@ -155,7 +155,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowLength = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Length"],
       order = 12,
       min = 1,
@@ -165,7 +165,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowThickness = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Thickness"],
       order = 13,
       min = 0.05,
@@ -182,7 +182,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowXOffset = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["X-Offset"],
       order = 15,
       softMin = -100,
@@ -192,7 +192,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowYOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Y-Offset"],
       order = 16,
       softMin = -100,
@@ -209,7 +209,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowScale = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Scale"],
       order = 18,
       min = 0.05,
@@ -220,7 +220,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowBorder = {
       type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Border"],
       order = 19,
       hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
@@ -231,7 +231,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 20,
       hidden = hiddenGlowExtra,
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       arg = {
         expanderName = "glow" .. index .. "#" .. subIndex
       }
@@ -243,4 +243,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subglow", createOptions, L["Shows a glow"]);
+BlindAuras.RegisterSubRegionOptions("subglow", createOptions, L["Shows a glow"]);

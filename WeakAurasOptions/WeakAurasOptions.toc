@@ -1,18 +1,18 @@
 ## Interface: 90207
-## Title: WeakAuras Options
+## Title: BlindAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
-## Notes: Options for WeakAuras
-## Notes-esES: Opciones para WeakAuras
-## Notes-deDE: Optionen für WeakAuras
-## Notes-ruRU: Опции WeakAuras
-## Notes-zhTW: WeakAuras的設定
+## Notes: Options for BlindAuras
+## Notes-esES: Opciones para BlindAuras
+## Notes-deDE: Optionen für BlindAuras
+## Notes-ruRU: Опции BlindAuras
+## Notes-zhTW: BlindAuras的設定
 ## X-Category: Interface Enhancements
-## Globe-Main: WeakAuras
+## Globe-Main: BlindAuras
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
-## Dependencies: WeakAuras
-## SavedVariables: WeakAurasOptionsSaved
+## Dependencies: BlindAuras
+## SavedVariables: BlindAurasOptionsSaved
 
 locales.xml
 
@@ -51,7 +51,7 @@ BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 
-WeakAurasOptions.lua
+BlindAurasOptions.lua
 ConditionOptions.lua
 AuthorOptions.lua
 
@@ -71,26 +71,26 @@ OptionsFrames\DebugLogFrame.lua
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
-AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasPendingInstallButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasPendingUpdateButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasTextureButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasIconButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasMultiLineEditBox.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasNewButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasImportButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasSortedDropDown.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasToolbarButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasTwoColumnDropDown.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasAnchorButtons.lua
-AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
-AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
-AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasExpand.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasExpandSmall.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasIcon.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasNewHeaderButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasLoadedHeaderButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasDisplayButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasPendingInstallButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasPendingUpdateButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasTextureButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasIconButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasMultiLineEditBox.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasNewButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasImportButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasSortedDropDown.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasToolbarButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasTwoColumnDropDown.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasSnippetButton.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasAnchorButtons.lua
+AceGUI-Widgets\AceGUIContainer-BlindAurasTreeGroup.lua
+AceGUI-Widgets\AceGUIContainer-BlindAurasInlineGroup.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasExpandAnchor.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasSpacer.lua
+AceGUI-Widgets\AceGuiWidget-BlindAurasProgressBar.lua

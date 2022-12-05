@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
 if GetLocale() ~= "ptBR" then
   return
 end
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
---@localization(locale="ptBR", format="lua_additive_table", namespace="WeakAuras / Options")@
+--@localization(locale="ptBR", format="lua_additive_table", namespace="BlindAuras / Options")@

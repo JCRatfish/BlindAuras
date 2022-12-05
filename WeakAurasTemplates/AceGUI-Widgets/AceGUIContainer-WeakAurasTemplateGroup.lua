@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
 --[[-----------------------------------------------------------------------------
-WeakAurasTemplateGroup Container
+BlindAurasTemplateGroup Container
 Simple container that is used in the template selection
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasTemplateGroup", 1
+local Type, Version = "BlindAurasTemplateGroup", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 

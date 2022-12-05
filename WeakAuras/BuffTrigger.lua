@@ -2,10 +2,10 @@
 This used to contains the "aura" trigger for buffs and debuffs. Nowadays all functions do essentially nothing
 ]]--
 
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local BuffTrigger = {}
 
@@ -79,11 +79,11 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
 end
 
 function BuffTrigger.CreateFakeStates(id, triggernum)
-  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  local data = WeakAuras.GetData(id)
+  local allStates = BlindAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = BlindAuras.GetData(id)
   local state = {}
   BuffTrigger.CreateFallbackState(data, triggernum, state)
   allStates[""] = state
 end
 
-WeakAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);
+BlindAuras.RegisterTriggerSystem({"aura"}, BuffTrigger);

@@ -44,11 +44,11 @@
 --   - setter: The setter function, called both on activating and deactivating a property change
 ---  - action: The action function, called on activating a condition
 --   - type: The type
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L;
 
 local function addSpace(args, order)
   args["space" .. order] = {
@@ -56,7 +56,7 @@ local function addSpace(args, order)
     name = "",
     image = function() return "", 0, 0 end,
     order = order,
-    width = WeakAuras.normalWidth
+    width = BlindAuras.normalWidth
   }
   order = order + 1;
   return order;
@@ -204,12 +204,12 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   local valuesForProperty = filterUsedProperties(allProperties.indexToProperty, display, usedProperties, conditions[i].changes[j].property);
   args["condition" .. i .. "property" .. j] = {
     type = "select",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = blueIfSubset(data, conditions[i].changes[j], totalAuraCount) .. thenText,
     desc = descIfSubset(data, conditions[i].changes[j], totalAuraCount),
     order = order,
     values = valuesForProperty,
-    control = "WeakAurasTwoColumnDropdown",
+    control = "BlindAurasTwoColumnDropdown",
     get = function()
       local property = conditions[i].changes[j].property;
       return property and allProperties.propertyToIndex[property];
@@ -241,27 +241,27 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
             if reference then
               local conditionIndex = reference.conditionIndex;
               tinsert(child[conditionVariable][conditionIndex].changes, insertPoint, change);
-              WeakAuras.Add(child);
+              BlindAuras.Add(child);
               OptionsPrivate.ClearOptions(child.id)
             end
           end
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       elseif (property == "DELETE") then
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].changes[j].references) do
-            local auraData = WeakAuras.GetData(id);
+            local auraData = BlindAuras.GetData(id);
             local conditionIndex = conditions[i].check.references[id].conditionIndex;
             tremove(auraData[conditionVariable][conditionIndex].changes, reference.changeIndex);
-            WeakAuras.Add(auraData);
+            BlindAuras.Add(auraData);
             OptionsPrivate.ClearOptions(auraData.id)
           end
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         else
           tremove(conditions[i].changes, j);
-          WeakAuras.Add(data);
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data);
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
         return;
       end
@@ -269,20 +269,20 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].changes[j].references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].property = property;
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = default;
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.ClearOptions(auraData.id)
         end
         conditions[i].changes[j].property = property;
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       else
         conditions[i].changes[j].property = property;
         conditions[i].changes[j].value = default;
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
   }
@@ -295,25 +295,25 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   if (data.controlledChildren) then
     setValue = function(info, v)
       for id, reference in pairs(conditions[i].changes[j].references) do
-        local auraData = WeakAuras.GetData(id);
+        local auraData = BlindAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = v;
-        WeakAuras.Add(auraData);
+        BlindAuras.Add(auraData);
         OptionsPrivate.ClearOptions(auraData.id)
       end
       conditions[i].changes[j].value = v;
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end
     setValueColor = function(info, r, g, b, a)
       for id, reference in pairs(conditions[i].changes[j].references) do
-        local auraData = WeakAuras.GetData(id);
+        local auraData = BlindAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value or {};
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[1] = r;
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[2] = g;
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[3] = b;
         auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[4] = a;
-        WeakAuras.Add(auraData);
+        BlindAuras.Add(auraData);
         OptionsPrivate.ClearOptions(auraData.id)
       end
       conditions[i].changes[j].value = conditions[i].changes[j].value or {};
@@ -321,19 +321,19 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       conditions[i].changes[j].value[2] = g;
       conditions[i].changes[j].value[3] = b;
       conditions[i].changes[j].value[4] = a;
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end
 
     setValueComplex = function(property)
       return function(info, v)
         for id, reference in pairs(conditions[i].changes[j].references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           if (type(auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value) ~= "table") then
             auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = {};
           end
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property] = v;
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.ClearOptions(auraData.id)
         end
         if (type(conditions[i].changes[j].value) ~= "table") then
@@ -341,15 +341,15 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         end
         conditions[i].changes[j].value[property] = v;
 
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
     setValueColorComplex = function(property)
       return function(info, r, g, b, a)
         for id, reference in pairs(conditions[i].changes[j].references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           if (type(auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value) ~= "table") then
             auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = {};
@@ -361,7 +361,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][2] = g;
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][3] = b;
           auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][4] = a;
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.ClearOptions(auraData.id)
         end
         if (type(conditions[i].changes[j].value) ~= "table") then
@@ -374,14 +374,14 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         conditions[i].changes[j].value[property][2] = g;
         conditions[i].changes[j].value[property][3] = b;
         conditions[i].changes[j].value[property][4] = a;
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
   else
     setValue = function(info, v)
       conditions[i].changes[j].value = v;
-      WeakAuras.Add(data);
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.Add(data);
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end
     setValueColor = function(info, r, g, b, a)
       conditions[i].changes[j].value = conditions[i].changes[j].value or {};
@@ -389,8 +389,8 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       conditions[i].changes[j].value[2] = g;
       conditions[i].changes[j].value[3] = b;
       conditions[i].changes[j].value[4] = a;
-      WeakAuras.Add(data);
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.Add(data);
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end
 
     setValueComplex = function(property)
@@ -399,8 +399,8 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
@@ -416,8 +416,8 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         conditions[i].changes[j].value[property][2] = g;
         conditions[i].changes[j].value[property][3] = b;
         conditions[i].changes[j].value[property][4] = a;
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
   end
@@ -430,7 +430,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   if (propertyType == "bool" or propertyType == "number") then
     args["condition" .. i .. "value" .. j] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
@@ -453,13 +453,13 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         args["condition" .. i .. "value" .. j].isPercent = properties.isPercent;
       else
         args["condition" .. i .. "value" .. j].type = "input";
-        args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
+        args["condition" .. i .. "value" .. j].validate = BlindAuras.ValidateNumeric;
       end
     end
   elseif (propertyType == "icon") then
     args["condition" .. i .. "value" .. j] = {
       type = "input",
-      width = WeakAuras.normalWidth - 0.15,
+      width = BlindAuras.normalWidth - 0.15,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
@@ -488,13 +488,13 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     }
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
@@ -512,7 +512,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     local values = property and allProperties.propertyMap[property] and allProperties.propertyMap[property].values;
     args["condition" .. i .. "value" .. j] = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = values,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType, values),
@@ -526,7 +526,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   elseif (propertyType == "sound") then
     args["condition" .. i .. "value" .. j .. "sound_type"] = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.sound_condition_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, OptionsPrivate.Private.sound_condition_types),
@@ -555,7 +555,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound"] = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.sound_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, OptionsPrivate.Private.sound_types),
@@ -564,14 +564,14 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound;
       end,
       set = wrapWithPlaySound(setValueComplex("sound")),
-      control = "WeakAurasSortedDropdown",
+      control = "BlindAurasSortedDropdown",
       hidden = function() return not (anySoundType("Play") or anySoundType("Loop")) end
     }
     order = order + 1;
 
     args["condition" .. i .. "value" .. j .. "sound_channel"] = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.sound_channel_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", L["Sound Channel"], L["Sound Channel"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", propertyType, OptionsPrivate.Private.sound_channel_types),
@@ -586,7 +586,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound_repeat"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       min = 0,
       softMax = 60,
       bigStep = 1,
@@ -604,7 +604,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound_repeat_space"] = {
       type = "description",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = "",
       order = order,
       hidden = function() return not (anySoundType("Loop")) end
@@ -628,7 +628,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound_path"] = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", L["Sound File Path"], L["Sound File Path"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_path", propertyType),
       order = order,
@@ -642,7 +642,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound_kit_id"] = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", L["Sound Kit ID"], L["Sound Kit ID"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_kit_id", propertyType),
       order = order,
@@ -658,7 +658,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   elseif (propertyType == "chat") then
     args["condition" .. i .. "value" .. j .. "message type"] = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       values = OptionsPrivate.Private.send_chat_message_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, OptionsPrivate.Private.send_chat_message_types),
@@ -667,7 +667,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type;
       end,
       set = setValueComplex("message_type"),
-      control = "WeakAurasSortedDropdown"
+      control = "BlindAurasSortedDropdown"
     }
     order = order + 1;
 
@@ -686,10 +686,10 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       return false;
     end
 
-    if WeakAuras.IsRetail() then
+    if BlindAuras.IsRetail() then
       args["condition" .. i .. "value" .. j .. "message type warning"] = {
         type = "description",
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         name = L["Note: Automated Messages to SAY and YELL are blocked outside of Instances."],
         order = order,
         hidden = function()
@@ -701,7 +701,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "_indent"] = {
       type = "description",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = "",
       order = order,
       hidden = function()
@@ -712,7 +712,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "message color"] = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       hasAlpha = false,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_color", L["Color"], L["Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_color", propertyType),
@@ -737,7 +737,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "message dest"] = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", L["Send To"], L["Send To"]),
       desc = descMessage,
       order = order,
@@ -753,7 +753,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", propertyType),
       order = order,
@@ -769,7 +769,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "message voice"] = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
       desc = (descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType, OptionsPrivate.Private.tts_voices) or "") .. "\n" .. L["Available Voices are system specific"],
       values = OptionsPrivate.Private.tts_voices,
@@ -790,7 +790,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "message"] = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message", L["Message"], L["Message"]),
       desc = descMessage,
       order = order,
@@ -855,7 +855,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       local footerOption = {
         type = "header",
         name = "",
-        width = WeakAuras.doubleWidth
+        width = BlindAuras.doubleWidth
       }
       addOption("footer", footerOption)
     end
@@ -869,7 +869,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "custom", propertyType),
       order = order,
@@ -878,7 +878,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
-      control = "WeakAurasMultiLineEditBox",
+      control = "BlindAurasMultiLineEditBox",
       set = setValueComplex("custom"),
       arg = {
         extraFunctions = {
@@ -915,7 +915,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         local _, errorString = loadstring("return  " .. custom);
         return errorString and "|cFFFF0000"..errorString or "";
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = order,
       hidden = function()
         local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
@@ -947,7 +947,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", L["Custom Code"], L["Custom Code"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_custom", propertyType),
       order = order,
@@ -955,7 +955,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
       end,
-      control = "WeakAurasMultiLineEditBox",
+      control = "BlindAurasMultiLineEditBox",
       set = setValueComplex("custom"),
       arg = {
         extraFunctions = {
@@ -968,7 +968,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
                 for id, reference in pairs(conditions[i].changes[j].references) do
                   local conditionIndex = conditions[i].check.references[id].conditionIndex;
                   local changeIndex = reference.changeIndex;
-                  local childData = WeakAuras.GetData(id);
+                  local childData = BlindAuras.GetData(id);
                   childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
@@ -994,7 +994,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         local _, errorString = loadstring("return function() " .. custom .. "\n end");
         return errorString and "|cFFFF0000"..errorString or "";
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = order,
       hidden = function()
         local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.custom;
@@ -1045,7 +1045,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",
       values = OptionsPrivate.Private.glow_action_types,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", L["Glow Action"], L["Glow Action"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", propertyType, OptionsPrivate.Private.glow_action_types),
       order = order,
@@ -1058,7 +1058,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j .. "glow_frame_type"] = {
       type = "select",
       values = OptionsPrivate.Private.glow_frame_types,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", L["Glow Frame Type"], L["Glow Frame Type"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, {
         UNITFRAME = L["Unit Frame"],
@@ -1076,7 +1076,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j .. "glow_type"] = {
       type = "select",
       values = OptionsPrivate.Private.glow_types,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", L["Glow Type"], L["Glow Type"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", propertyType, OptionsPrivate.Private.glow_types),
       order = order,
@@ -1091,7 +1091,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_frame"] = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", L["Frame"], L["Frame"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
       order = order,
@@ -1106,7 +1106,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "choose_glow_frame"] = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", L["Choose"], L["Choose"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
       order = order,
@@ -1120,7 +1120,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "use_glow_color"] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", L["Glow Color"], L["Glow Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", propertyType),
       order = order,
@@ -1136,7 +1136,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j .. "glow_color"] = {
       type = "color",
       hasAlpha = true,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),
       order = order,
@@ -1157,7 +1157,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_lines"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", L["Lines & Particles"], L["Lines & Particles"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", propertyType),
       order = order,
@@ -1175,7 +1175,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_frequency"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", L["Frequency"], L["Frequency"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", propertyType),
       order = order,
@@ -1193,7 +1193,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_length"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", L["Length"], L["Length"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", propertyType),
       order = order,
@@ -1211,7 +1211,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_thickness"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", L["Thickness"], L["Thickness"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", propertyType),
       order = order,
@@ -1229,7 +1229,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_XOffset"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", L["X-Offset"], L["X-Offset"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", propertyType),
       order = order,
@@ -1247,7 +1247,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_YOffset"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", L["Y-Offset"], L["Y-Offset"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", propertyType),
       order = order,
@@ -1265,7 +1265,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_scale"] = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", L["Scale"], L["Scale"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", propertyType),
       order = order,
@@ -1284,7 +1284,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_border"] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", L["Border"], L["Border"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", propertyType),
       order = order,
@@ -1299,7 +1299,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_spacer"] = {
       type = "description",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = "",
       order = order,
       hidden = false,
@@ -1360,7 +1360,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
 
   local indentDepth = min(#path, 3); -- Be reasonable
   local indentWidth = (indentDepth > 0 and 0.02 or 0) + indentDepth * 0.03;
-  local normalWidth = WeakAuras.normalWidth - indentWidth;
+  local normalWidth = BlindAuras.normalWidth - indentWidth;
 
   local conditionTemplatesToUse = indentDepth < 3 and conditionTemplates or conditionTemplateWithoutCombinations;
 
@@ -1404,7 +1404,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
       name = "",
       image = function() return "", 0, 0 end,
       order = order,
-      width = WeakAuras.doubleWidth * 1.5,
+      width = BlindAuras.doubleWidth * 1.5,
     }
     order = order + 1;
 
@@ -1423,7 +1423,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
       width = 0.05,
       name = "",
       order = order,
-      image = "Interface\\Addons\\WeakAuras\\Media\\Textures\\bullet" .. indentDepth,
+      image = "Interface\\Addons\\BlindAuras\\Media\\Textures\\bullet" .. indentDepth,
       imageWidth = 10,
       imageHeight = 10,
     }
@@ -1486,26 +1486,26 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
             end
 
             tinsert(child[conditionVariable], insertPoint, condition);
-            WeakAuras.Add(child);
+            BlindAuras.Add(child);
             OptionsPrivate.ClearOptions(child.id)
           end
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       end
 
       if (conditionTemplatesToUse.indexToTrigger[v] == "REMOVE") then
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].check.references) do
-            local auraData = WeakAuras.GetData(id);
+            local auraData = BlindAuras.GetData(id);
             removeSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
-            WeakAuras.Add(auraData)
-            WeakAuras.ClearAndUpdateOptions(auraData.id)
+            BlindAuras.Add(auraData)
+            BlindAuras.ClearAndUpdateOptions(auraData.id)
           end
         else
           removeSubCheck(conditions[i].check, path);
-          WeakAuras.Add(data)
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
         return;
       end
@@ -1518,15 +1518,15 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
 
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local childCheck = getOrCreateSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
           childCheck.variable = variable;
           childCheck.trigger = trigger;
           childCheck.value = nil;
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       else
         local oldType;
         check = getOrCreateSubCheck(conditions[i].check, path);
@@ -1541,8 +1541,8 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         if (newType ~= oldType) then
           check.value = nil;
         end
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end,
     get = function()
@@ -1586,21 +1586,21 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         return function(info, v)
           check = getOrCreateSubCheck(conditions[i].check, path);
           for id, reference in pairs(conditions[i].check.references) do
-            local auraData = WeakAuras.GetData(id);
+            local auraData = BlindAuras.GetData(id);
             local childCheck = getOrCreateSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
             childCheck[field] = v;
-            WeakAuras.Add(auraData);
+            BlindAuras.Add(auraData);
             OptionsPrivate.ClearOptions(auraData.id)
           end
           check[field] = v;
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       else
         return function(info, v)
           check = getOrCreateSubCheck(conditions[i].check, path);
           check[field] = v;
-          WeakAuras.Add(data);
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data);
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       end
     end
@@ -1622,7 +1622,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "select",
         order = order,
         values = opTypes,
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         get = function()
           return check.op;
         end,
@@ -1634,9 +1634,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "input",
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         order = order,
-        validate = WeakAuras.ValidateNumeric,
+        validate = BlindAuras.ValidateNumeric,
         get = function()
           return check.value;
         end,
@@ -1649,7 +1649,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
           name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
           desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
           type = "select",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           order = order,
           values = OptionsPrivate.Private.equality_operator_types,
           get = function()
@@ -1664,7 +1664,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         if (currentConditionTemplate.type == "unit") then
           args["condition" .. i .. tostring(path) .. "_value"] = {
             type = "select",
-            width = WeakAuras.normalWidth,
+            width = BlindAuras.normalWidth,
             name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
             desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
             order = order,
@@ -1678,7 +1678,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
 
           args["condition" .. i .. tostring(path) .. "_member"] = {
             type = "input",
-            width = WeakAuras.doubleWidth,
+            width = BlindAuras.doubleWidth,
             name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
             desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
             order = order,
@@ -1694,7 +1694,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         else
           args["condition" .. i .. tostring(path) .. "_value"] = {
             type = "select",
-            width = WeakAuras.normalWidth,
+            width = BlindAuras.normalWidth,
             name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
             desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
             order = order,
@@ -1710,7 +1710,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
     elseif (currentConditionTemplate.type == "bool") then
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "select",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
         order = order,
@@ -1727,7 +1727,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
           name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
           desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
           type = "select",
-          width = WeakAuras.normalWidth,
+          width = BlindAuras.normalWidth,
           order = order,
           values = OptionsPrivate.Private.string_operator_types,
           get = function()
@@ -1741,7 +1741,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
 
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
         order = order,
@@ -1760,7 +1760,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "select",
         order = order,
         values = OptionsPrivate.Private.operator_types_without_equal,
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         get = function()
           return check.op_range;
         end,
@@ -1772,9 +1772,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "input",
         name = L["Range in yards"],
         desc = descIfNoValue(data, conditions[i].check, "range", currentConditionTemplate.type),
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         order = order,
-        validate = WeakAuras.ValidateNumeric,
+        validate = BlindAuras.ValidateNumeric,
         get = function()
           return check.range;
         end,
@@ -1787,7 +1787,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
           type = "description",
           name = "",
           order = order,
-          width = WeakAuras.doubleWidth * 1.5,
+          width = BlindAuras.doubleWidth * 1.5,
         }
         order = order + 1;
         args["condition" .. i .. tostring(path) .. "_indent"] = {
@@ -1822,7 +1822,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "select",
         order = order,
         values = OptionsPrivate.Private.operator_types,
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         get = function()
           return check.op;
         end,
@@ -1834,9 +1834,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         type = "input",
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
-        width = WeakAuras.halfWidth,
+        width = BlindAuras.halfWidth,
         order = order,
-        validate = WeakAuras.ValidateNumeric,
+        validate = BlindAuras.ValidateNumeric,
         get = function()
           return check.value;
         end,
@@ -1848,7 +1848,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         name = blueIfNoValue(data, conditions[i].check, "op", L["Additional Events"], L["Additional Events"]),
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type) or "",
         type = "input",
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         order = order,
         get = function()
           return check and check.op;
@@ -1859,7 +1859,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
 
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         name = blueIfNoValue(data, conditions[i].check, "value", L["Custom Check"], L["Custom Check"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type) or "",
         order = order,
@@ -1868,7 +1868,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
         end,
         set = setValue,
         multiline = true,
-        control = "WeakAurasMultiLineEditBox",
+        control = "BlindAurasMultiLineEditBox",
         arg = {
           extraFunctions = {
             {
@@ -1913,7 +1913,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
           local _, errorString = loadstring("return " .. check.value);
           return errorString and "|cFFFF0000"..errorString or "";
         end,
-        width = WeakAuras.doubleWidth,
+        width = BlindAuras.doubleWidth,
         order = order,
         hidden = function()
           if (not check.value) then
@@ -1969,7 +1969,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     type = "execute",
     name = L["Condition %i"]:format(i),
     order = order,
-    width = WeakAuras.doubleWidth - 0.6,
+    width = BlindAuras.doubleWidth - 0.6,
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -1980,12 +1980,12 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
       else
         OptionsPrivate.SetCollapsed(data.id, "condition", i, not collapsed);
       end
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end,
-    image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
+    image = collapsed and "Interface\\AddOns\\BlindAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\BlindAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
     imageHeight = 18,
-    control = "WeakAurasExpand"
+    control = "BlindAurasExpand"
   };
   order = order + 1;
 
@@ -2009,36 +2009,36 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     func = function()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local index = reference.conditionIndex;
           if (index > 1) then
             local tmp = auraData[conditionVariable][reference.conditionIndex];
             tremove(auraData[conditionVariable], reference.conditionIndex);
             tinsert(auraData[conditionVariable], reference.conditionIndex - 1, tmp);
             fixUpLinkedInFirstCondition(auraData[conditionVariable])
-            WeakAuras.Add(auraData);
+            BlindAuras.Add(auraData);
             OptionsPrivate.MoveCollapseDataUp(auraData.id, "condition", {reference.conditionIndex})
             OptionsPrivate.ClearOptions(auraData.id)
           end
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       else
         if (i > 1) then
           local tmp = conditions[i];
           tremove(conditions, i);
           tinsert(conditions, i - 1, tmp);
           fixUpLinkedInFirstCondition(conditions)
-          WeakAuras.Add(data);
+          BlindAuras.Add(data);
           OptionsPrivate.MoveCollapseDataUp(data.id, "condition", {i})
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       end
     end,
     width = 0.15,
-    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
+    image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\moveup",
     imageWidth = 24,
     imageHeight = 24,
-    control = "WeakAurasIcon"
+    control = "BlindAurasIcon"
   };
   order = order + 1;
 
@@ -2050,7 +2050,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
           local index = reference.conditionIndex;
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           if (index < #auraData[conditionVariable]) then
             return false;
           end
@@ -2063,19 +2063,19 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     func = function()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local index = reference.conditionIndex;
           if (index < #auraData[conditionVariable]) then
             local tmp = auraData[conditionVariable][reference.conditionIndex];
             tremove(auraData[conditionVariable], reference.conditionIndex);
             tinsert(auraData[conditionVariable], reference.conditionIndex + 1, tmp);
             fixUpLinkedInFirstCondition(auraData[conditionVariable])
-            WeakAuras.Add(auraData);
+            BlindAuras.Add(auraData);
             OptionsPrivate.MoveCollapseDataDown(auraData.id, "condition", {reference.conditionIndex})
             OptionsPrivate.ClearOptions(auraData.id)
           end
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       else
         if (i < #conditions) then
@@ -2083,18 +2083,18 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
           tremove(conditions, i);
           tinsert(conditions, i + 1, tmp);
           fixUpLinkedInFirstCondition(conditions)
-          WeakAuras.Add(data);
+          BlindAuras.Add(data);
           OptionsPrivate.MoveCollapseDataDown(data.id, "condition", {i})
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.ClearAndUpdateOptions(data.id)
           return;
         end
       end
     end,
     width = 0.15,
-    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+    image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\movedown",
     imageWidth = 24,
     imageHeight = 24,
-    control = "WeakAurasIcon"
+    control = "BlindAurasIcon"
   };
   order = order + 1;
 
@@ -2105,29 +2105,29 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     func = function()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           local clone = CopyTable(auraData[conditionVariable][reference.conditionIndex])
           tinsert(auraData[conditionVariable], reference.conditionIndex + 1, clone);
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.DuplicateCollapseData(auraData.id, "condition", {reference.conditionIndex})
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       else
         local clone = CopyTable(conditions[i])
         tinsert(conditions, i + 1, clone);
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.DuplicateCollapseData(data.id, "condition", {i})
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       end
     end,
     width = 0.15,
-    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+    image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\duplicate",
     imageWidth = 24,
     imageHeight = 24,
-    control = "WeakAurasIcon"
+    control = "BlindAurasIcon"
   };
   order = order + 1;
 
@@ -2138,29 +2138,29 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     func = function()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
+          local auraData = BlindAuras.GetData(id);
           tremove(auraData[conditionVariable], reference.conditionIndex);
           fixUpLinkedInFirstCondition(auraData[conditionVariable])
-          WeakAuras.Add(auraData);
+          BlindAuras.Add(auraData);
           OptionsPrivate.RemoveCollapsed(auraData.id, "condition", {reference.conditionIndex})
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       else
         tremove(conditions, i);
         fixUpLinkedInFirstCondition(conditions)
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.RemoveCollapsed(data.id, "condition", {i})
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
         return;
       end
     end,
     width = 0.15,
-    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+    image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\delete",
     imageWidth = 24,
     imageHeight = 24,
-    control = "WeakAurasIcon"
+    control = "BlindAurasIcon"
   };
   order = order + 1;
 
@@ -2186,24 +2186,24 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
 
   args["condition" .. i .. "_addChange"] = {
     type = "execute",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = L["Add Property Change"],
     order = order,
     func = function()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
-          local auradata = WeakAuras.GetData(id);
+          local auradata = BlindAuras.GetData(id);
           auradata[conditionVariable][reference.conditionIndex].changes = auradata[conditionVariable][reference.conditionIndex].changes or {}
           tinsert(auradata[conditionVariable][reference.conditionIndex].changes, {})
-          WeakAuras.Add(auradata);
+          BlindAuras.Add(auradata);
           OptionsPrivate.ClearOptions(auradata.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       else
         conditions[i].changes = conditions[i].changes or {};
         conditions[i].changes[#conditions[i].changes + 1] = {};
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
   }
@@ -2215,7 +2215,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
   if (data.controlledChildren) then
     for id, reference in pairs(conditions[i].check.references) do
       if reference.conditionIndex > 1 then
-        local auradata = WeakAuras.GetData(id);
+        local auradata = BlindAuras.GetData(id);
         isLinked = auradata[conditionVariable][reference.conditionIndex].linked
         showElseIf = true
         break;
@@ -2231,7 +2231,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
   if showElseIf then
     args["condition" .. i .. "_else"] = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Else If"],
       order = order,
       get = function()
@@ -2240,18 +2240,18 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
       set = function()
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].check.references) do
-            local auradata = WeakAuras.GetData(id);
+            local auradata = BlindAuras.GetData(id);
             if reference.conditionIndex > 1 then
               auradata[conditionVariable][reference.conditionIndex].linked = not isLinked
-              WeakAuras.Add(auradata);
+              BlindAuras.Add(auradata);
               OptionsPrivate.ClearOptions(auradata.id)
             end
           end
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.ClearAndUpdateOptions(data.id)
         else
           conditions[i].linked = not isLinked
-          WeakAuras.Add(data);
-          WeakAuras.ClearAndUpdateOptions(data.id)
+          BlindAuras.Add(data);
+          BlindAuras.ClearAndUpdateOptions(data.id)
         end
       end
     }
@@ -2772,7 +2772,7 @@ function OptionsPrivate.GetConditionOptions(data)
 
   args["addConditionHeader"] = {
     type = "header",
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     name = "",
     order = order
   }
@@ -2780,7 +2780,7 @@ function OptionsPrivate.GetConditionOptions(data)
 
   args["addCondition"] = {
     type = "execute",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = L["Add Condition"],
     order = order,
     func = function()
@@ -2791,10 +2791,10 @@ function OptionsPrivate.GetConditionOptions(data)
         child[conditionVariable][#child[conditionVariable]].changes[1] = {}
         child[conditionVariable][#child[conditionVariable]].category = category;
         OptionsPrivate.SetCollapsed(child.id, "condition", #child[conditionVariable], false);
-        WeakAuras.Add(child);
+        BlindAuras.Add(child);
         OptionsPrivate.ClearOptions(child.id)
       end
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      BlindAuras.ClearAndUpdateOptions(data.id)
     end
   }
   order = order + 1;

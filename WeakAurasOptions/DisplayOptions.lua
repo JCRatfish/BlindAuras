@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
-local L = WeakAuras.L
-local regionOptions = WeakAuras.regionOptions
+local L = BlindAuras.L
+local regionOptions = BlindAuras.regionOptions
 
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 local fixMetaOrders = OptionsPrivate.commonOptions.fixMetaOrders
@@ -24,12 +24,12 @@ local function AddSubRegion(data, subRegionName)
         local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
         subRegionData.type = subRegionName
         tinsert(data.subRegions, subRegionData)
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
         OptionsPrivate.ClearOptions(data.id)
       end
     end
   end
-  WeakAuras.ClearAndUpdateOptions(data.id)
+  BlindAuras.ClearAndUpdateOptions(data.id)
 end
 
 local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
@@ -46,7 +46,7 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
   result.__withoutheader = true
   result["subregiontypespace"] = {
     type = "description",
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     name = "",
     order = order,
   }
@@ -56,7 +56,7 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       hasSubRegions = true
       result[subRegionType] = {
         type = "execute",
-        width = WeakAuras.normalWidth,
+        width = BlindAuras.normalWidth,
         name = string.format(L["Add %s"], OptionsPrivate.Private.subRegionTypes[subRegionType].displayName),
         order = order,
         func = function()
@@ -178,8 +178,8 @@ function OptionsPrivate.GetDisplayOptions(data)
         else
           base[property] = (v ~= "" and v) or nil;
         end
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.Private.AddParents(data)
         OptionsPrivate.ResetMoverSizer();
       end,
@@ -284,8 +284,8 @@ function OptionsPrivate.GetDisplayOptions(data)
     region.set = function(info, ...)
       setAll(data, info, ...);
       if(type(data.id) == "string") then
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
     end

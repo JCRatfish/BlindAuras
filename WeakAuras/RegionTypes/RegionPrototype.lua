@@ -1,11 +1,11 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L;
+local GetAtlasInfo = BlindAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 
-WeakAuras.regionPrototype = {};
+BlindAuras.regionPrototype = {};
 
 
 local SubRegionEventSystem =
@@ -47,21 +47,21 @@ local function CreateSubRegionEventSystem()
 end
 
 -- Alpha
-function WeakAuras.regionPrototype.AddAlphaToDefault(default)
+function BlindAuras.regionPrototype.AddAlphaToDefault(default)
   default.alpha = 1.0;
 end
 
 -- Adjusted Duration
 
-function WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default)
+function BlindAuras.regionPrototype.AddAdjustedDurationToDefault(default)
   default.useAdjustededMax = false;
   default.useAdjustededMin = false;
 end
 
-function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
+function BlindAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
   options.useAdjustededMin = {
     type = "toggle",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = L["Set Minimum Progress"],
     desc = L["Values/Remaining Time below this value are displayed as no progress."],
     order = order
@@ -69,8 +69,8 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMin = {
     type = "input",
-    validate = WeakAuras.ValidateNumericOrPercent,
-    width = WeakAuras.normalWidth,
+    validate = BlindAuras.ValidateNumericOrPercent,
+    width = BlindAuras.normalWidth,
     order = order + 0.01,
     name = L["Minimum"],
     hidden = function() return not data.useAdjustededMin end,
@@ -79,7 +79,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMinSpacer = {
     type = "description",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = "",
     order = order + 0.02,
     hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
@@ -87,7 +87,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustededMax = {
     type = "toggle",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = L["Set Maximum Progress"],
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = order + 0.03
@@ -95,8 +95,8 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.adjustedMax = {
     type = "input",
-    width = WeakAuras.normalWidth,
-    validate = WeakAuras.ValidateNumericOrPercent,
+    width = BlindAuras.normalWidth,
+    validate = BlindAuras.ValidateNumericOrPercent,
     order = order + 0.04,
     name = L["Maximum"],
     hidden = function() return not data.useAdjustededMax end,
@@ -105,7 +105,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
 
   options.useAdjustedMaxSpacer = {
     type = "description",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = "",
     order = order + 0.05,
     hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
@@ -119,13 +119,13 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 function Private.GetAnchorsForData(parentData, type)
   local result
   if not parentData.controlledChildren then
-    if not WeakAuras.regionOptions[parentData.regionType] then
+    if not BlindAuras.regionOptions[parentData.regionType] then
       return
     end
 
     local anchors
-    if WeakAuras.regionOptions[parentData.regionType].getAnchors then
-      anchors = WeakAuras.regionOptions[parentData.regionType].getAnchors(parentData)
+    if BlindAuras.regionOptions[parentData.regionType].getAnchors then
+      anchors = BlindAuras.regionOptions[parentData.regionType].getAnchors(parentData)
     else
       anchors = Private.default_types_for_anchor
     end
@@ -140,7 +140,7 @@ function Private.GetAnchorsForData(parentData, type)
 end
 
 -- Sound / Chat Message / Custom Code
-function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
+function BlindAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
   properties["sound"] = {
     display = L["Sound"],
     action = "SoundPlay",
@@ -194,7 +194,7 @@ end
 local function SoundRepeatStop(self)
   Private.StartProfileSystem("sound");
   if (self.soundRepeatTimer) then
-    WeakAuras.timer:CancelTimer(self.soundRepeatTimer);
+    BlindAuras.timer:CancelTimer(self.soundRepeatTimer);
     self.soundRepeatTimer = nil;
   end
   Private.StopProfileSystem("sound");
@@ -217,7 +217,7 @@ local function SoundPlayHelper(self)
     return;
   end
 
-  if (WeakAuras.IsOptionsOpen() or Private.SquelchingActions() or WeakAuras.InLoadingScreen()) then
+  if (BlindAuras.IsOptionsOpen() or Private.SquelchingActions() or BlindAuras.InLoadingScreen()) then
     Private.StopProfileSystem("sound");
     return;
   end
@@ -246,7 +246,7 @@ local function SoundPlayHelper(self)
 end
 
 local function SoundPlay(self, options)
-  if (not options or WeakAuras.IsOptionsOpen()) then
+  if (not options or BlindAuras.IsOptionsOpen()) then
     return
   end
   Private.StartProfileSystem("sound");
@@ -258,20 +258,20 @@ local function SoundPlay(self, options)
 
   local loop = options.do_loop or options.sound_type == "Loop";
   if (loop and options.sound_repeat and options.sound_repeat < Private.maxTimerDuration) then
-    self.soundRepeatTimer = WeakAuras.timer:ScheduleRepeatingTimer(SoundPlayHelper, options.sound_repeat, self);
+    self.soundRepeatTimer = BlindAuras.timer:ScheduleRepeatingTimer(SoundPlayHelper, options.sound_repeat, self);
   end
   Private.StopProfileSystem("sound");
 end
 
 local function SendChat(self, options)
-  if (not options or WeakAuras.IsOptionsOpen()) then
+  if (not options or BlindAuras.IsOptionsOpen()) then
     return
   end
   Private.HandleChatAction(options.message_type, options.message, options.message_dest, options.message_dest_isunit, options.message_channel, options.r, options.g, options.b, self, options.message_custom, nil, options.message_formaters, options.message_voice);
 end
 
 local function RunCode(self, func)
-  if func and not WeakAuras.IsOptionsOpen() then
+  if func and not BlindAuras.IsOptionsOpen() then
     Private.ActivateAuraEnvironment(self.id, self.cloneId, self.state, self.states);
     xpcall(func, Private.GetErrorHandlerId(self.id, L["Custom Condition Code"]));
     Private.ActivateAuraEnvironment(nil);
@@ -279,7 +279,7 @@ local function RunCode(self, func)
 end
 
 local function GlowExternal(self, options)
-  if (not options or WeakAuras.IsOptionsOpen()) then
+  if (not options or BlindAuras.IsOptionsOpen()) then
     return
   end
   Private.HandleGlowAction(options, self)
@@ -393,7 +393,7 @@ local function SetAnimAlpha(self, alpha)
     return;
   end
   self.animAlpha = alpha;
-  if (WeakAuras.IsOptionsOpen()) then
+  if (BlindAuras.IsOptionsOpen()) then
     self:SetAlpha(max(self.animAlpha or self.alpha or 1, 0.5));
   else
     self:SetAlpha(self.animAlpha or self.alpha or 1);
@@ -466,10 +466,10 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
   end
 end
 
-WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
+BlindAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
 
-function WeakAuras.regionPrototype.create(region)
-  local defaultsForRegion = WeakAuras.regionTypes[region.regionType] and WeakAuras.regionTypes[region.regionType].default;
+function BlindAuras.regionPrototype.create(region)
+  local defaultsForRegion = BlindAuras.regionTypes[region.regionType] and BlindAuras.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
@@ -514,12 +514,12 @@ end
 
 -- SetDurationInfo
 
-function WeakAuras.regionPrototype.modify(parent, region, data)
+function BlindAuras.regionPrototype.modify(parent, region, data)
   region.state = nil
   region.states = nil
   region.subRegionEvents:ClearSubscribers()
 
-  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
+  local defaultsForRegion = BlindAuras.regionTypes[data.regionType] and BlindAuras.regionTypes[data.regionType].default;
 
   if region.SetRegionAlpha then
     region:SetRegionAlpha(data.alpha)
@@ -559,7 +559,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   region:SetOffsetAnim(0, 0);
 
   if data.anchorFrameType == "CUSTOM" and data.customAnchor then
-    region.customAnchorFunc = WeakAuras.LoadFunction("return " .. data.customAnchor)
+    region.customAnchorFunc = BlindAuras.LoadFunction("return " .. data.customAnchor)
   else
     region.customAnchorFunc = nil
   end
@@ -600,7 +600,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
 end
 
-function WeakAuras.regionPrototype.modifyFinish(parent, region, data)
+function BlindAuras.regionPrototype.modifyFinish(parent, region, data)
   -- Sync subRegions
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
@@ -644,10 +644,10 @@ local regionsForFrameTick = {}
 
 local frameForFrameTick = CreateFrame("Frame");
 
-WeakAuras.frames["Frame Tick Frame"] = frameForFrameTick
+BlindAuras.frames["Frame Tick Frame"] = frameForFrameTick
 
 local function FrameTick()
-  if WeakAuras.IsOptionsOpen() then
+  if BlindAuras.IsOptionsOpen() then
     return
   end
   Private.StartProfileSystem("frame tick")
@@ -709,11 +709,11 @@ local function TimerTickForSetDuration(self)
   self:SetTime(max - adjustMin, self.expirationTime - adjustMin, self.inverse);
 end
 
-function WeakAuras.regionPrototype.AddSetDurationInfo(region)
+function BlindAuras.regionPrototype.AddSetDurationInfo(region)
   if (region.SetValue and region.SetTime) then
     region.generatedSetDurationInfo = true;
 
-    -- WeakAuras no longer calls SetDurationInfo, but some people do that,
+    -- BlindAuras no longer calls SetDurationInfo, but some people do that,
     -- In that case we also need to overwrite TimerTick
     region.SetDurationInfo = function(self, duration, expirationTime, customValue, inverse)
       self.duration = duration or 0
@@ -739,7 +739,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
 end
 
 -- Expand/Collapse function
-function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
+function BlindAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
   local uid = data.uid
   local id = data.id
   local inDynamicGroup = parentRegionType == "dynamicgroup";
@@ -757,7 +757,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   function region:ClickToPick()
     region:EnableMouse(true)
     region:SetScript("OnMouseDown", function()
-      WeakAuras.PickDisplay(region.id, nil, true)
+      BlindAuras.PickDisplay(region.id, nil, true)
     end)
     if region.GetFrameStrata and region:GetFrameStrata() == "TOOLTIP" then
       region:SetFrameStrata("HIGH")
@@ -975,7 +975,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 end
 
-function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
+function BlindAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
   if type(path) == "string" and GetAtlasInfo(path) then
     return texture:SetAtlas(path);
   else

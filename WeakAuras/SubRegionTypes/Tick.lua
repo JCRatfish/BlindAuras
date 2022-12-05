@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local default = function()
   return {
@@ -45,7 +45,7 @@ local properties = {
     display = L["Placement"],
     setter = "SetTickPlacement",
     type = "number",
-    validate = WeakAuras.ValidateNumeric,
+    validate = BlindAuras.ValidateNumeric,
   },
   automatic_length = {
     display = L["Automatic Length"],
@@ -385,7 +385,7 @@ local function modify(parent, region, parentData, data, first)
   end
 
   if data.use_texture then
-    WeakAuras.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    BlindAuras.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
   end
 
   region:SetVisible(data.tick_visible)
@@ -409,4 +409,4 @@ local function supports(regionType)
   return regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subtick", L["Tick"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+BlindAuras.RegisterSubRegionType("subtick", L["Tick"], supports, create, modify, onAcquire, onRelease, default, nil, properties);

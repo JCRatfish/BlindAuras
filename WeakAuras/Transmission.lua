@@ -18,7 +18,7 @@ Imports an aura from a table, which may or may not be encoded as a B64 string.
 If target is installed data, or is a uid which points to installed data, then the import will be an update to that aura
 
 ]]--
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 -- Lua APIs
@@ -28,10 +28,10 @@ local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L;
 
-local versionString = WeakAuras.versionString;
+local versionString = BlindAuras.versionString;
 
 -- Local functions
 local decodeB64, GenerateUniqueID
@@ -98,7 +98,7 @@ function GenerateUniqueID()
   end
   return table.concat(s)
 end
-WeakAuras.GenerateUniqueID = GenerateUniqueID
+BlindAuras.GenerateUniqueID = GenerateUniqueID
 
 local function stripNonTransmissableFields(datum, fieldMap)
   for k, v in pairs(fieldMap) do
@@ -134,7 +134,7 @@ function CompressDisplay(data, version)
   local copiedData = CopyTable(data)
   local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
   stripNonTransmissableFields(copiedData, non_transmissable_fields)
-  copiedData.tocversion = WeakAuras.BuildInfo
+  copiedData.tocversion = BlindAuras.BuildInfo
   return copiedData;
 end
 
@@ -147,12 +147,12 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   local remaining = msg;
   local done;
   repeat
-    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]");
+    local start, finish, characterName, displayName = remaining:find("%[BlindAuras: ([^%s]+) %- (.*)%]");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       newMsg = newMsg..remaining:sub(1, start-1);
-      newMsg = newMsg.."|Hgarrmission:weakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
+      newMsg = newMsg.."|Hgarrmission:blindauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
       remaining = remaining:sub(finish + 1);
     else
       done = true;
@@ -218,30 +218,30 @@ local tooltipLoading;
 local receivedData;
 
 hooksecurefunc("SetItemRef", function(link, text)
-  if(link == "garrmission:weakauras") then
-    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h");
+  if(link == "garrmission:blindauras") then
+    local _, _, characterName, displayName = text:find("|Hgarrmission:blindauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h");
     if(characterName and displayName) then
       characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
       if(IsShiftKeyDown()) then
         local editbox = GetCurrentKeyBoardFocus();
         if(editbox) then
-          editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
+          editbox:Insert("[BlindAuras: "..characterName.." - "..displayName.."]");
         end
       else
         characterName = characterName:gsub("%.", "")
         ShowTooltip({
-          {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+          {2, "BlindAuras", displayName, 0.5, 0, 1, 1, 1, 1},
           {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
           {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
         });
         tooltipLoading = true;
         receivedData = false;
         RequestDisplay(characterName, displayName);
-        WeakAuras.timer:ScheduleTimer(function()
+        BlindAuras.timer:ScheduleTimer(function()
           if (tooltipLoading and not receivedData and ItemRefTooltip:IsVisible()) then
             ShowTooltip({
-              {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+              {2, "BlindAuras", displayName, 0.5, 0, 1, 1, 1, 1},
               {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0},
               {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
             })
@@ -250,8 +250,8 @@ hooksecurefunc("SetItemRef", function(link, text)
       end
     else
       ShowTooltip({
-        {1, "WeakAuras", 0.5, 0, 1},
-        {1, L["Malformed WeakAuras link"], 1, 0, 0}
+        {1, "BlindAuras", 0.5, 0, 1},
+        {1, L["Malformed BlindAuras link"], 1, 0, 0}
       });
     end
   end
@@ -340,7 +340,7 @@ end
 Private.StringToTable = StringToTable
 
 function Private.DisplayToString(id, forChat)
-  local data = WeakAuras.GetData(id);
+  local data = BlindAuras.GetData(id);
   if(data) then
     data.uid = data.uid or GenerateUniqueID()
     -- Check which transmission version we want to use
@@ -413,7 +413,7 @@ local function recurseStringify(data, level, lines)
 end
 
 function Private.DataToString(id)
-  local data = WeakAuras.GetData(id)
+  local data = BlindAuras.GetData(id)
   if data then
     return Private.SerializeTable(data):gsub("|", "||")
   end
@@ -447,7 +447,7 @@ local delayedImport = CreateFrame("Frame")
 
 local function ImportNow(data, children, target, sender, callbackFunc)
   if InCombatLockdown() then
-    WeakAuras.prettyPrint(L["Importing will start after combat ends."])
+    BlindAuras.prettyPrint(L["Importing will start after combat ends."])
 
     delayedImport:RegisterEvent("PLAYER_REGEN_ENABLED")
     delayedImport:SetScript("OnEvent", function()
@@ -458,14 +458,14 @@ local function ImportNow(data, children, target, sender, callbackFunc)
   end
 
   if Private.LoadOptions() then
-    if not WeakAuras.IsOptionsOpen() then
-      WeakAuras.OpenOptions()
+    if not BlindAuras.IsOptionsOpen() then
+      BlindAuras.OpenOptions()
     end
     Private.OpenUpdate(data, children, target, sender, callbackFunc)
   end
 end
 
-function WeakAuras.Import(inData, target, callbackFunc)
+function BlindAuras.Import(inData, target, callbackFunc)
   local data, children, version
   if type(inData) == 'string' then
     -- encoded data
@@ -473,7 +473,7 @@ function WeakAuras.Import(inData, target, callbackFunc)
     if type(received) == 'string' then
       -- this is probably an error message from LibDeflate. Display it.
       ShowTooltip{
-        {1, "WeakAuras", 0.5333, 0, 1},
+        {1, "BlindAuras", 0.5333, 0, 1},
         {1, received, 1, 0, 0, 1}
       }
       return nil, received
@@ -511,10 +511,10 @@ function WeakAuras.Import(inData, target, callbackFunc)
       target = targetData
     end
   end
-  WeakAuras.PreAdd(data)
+  BlindAuras.PreAdd(data)
   if children then
     for _, child in ipairs(children) do
-      WeakAuras.PreAdd(child)
+      BlindAuras.PreAdd(child)
     end
   end
 
@@ -545,7 +545,7 @@ function RequestDisplay(characterName, displayName)
     d = displayName
   };
   local transmitString = TableToString(transmit);
-  crossRealmSendCommMessage("WeakAuras", transmitString, characterName);
+  crossRealmSendCommMessage("BlindAuras", transmitString, characterName);
 end
 
 function TransmitError(errorMsg, characterName)
@@ -553,21 +553,21 @@ function TransmitError(errorMsg, characterName)
     m = "dE",
     eM = errorMsg
   };
-  crossRealmSendCommMessage("WeakAuras", TableToString(transmit), characterName);
+  crossRealmSendCommMessage("BlindAuras", TableToString(transmit), characterName);
 end
 
 function TransmitDisplay(id, characterName)
   local encoded = Private.DisplayToString(id);
   if(encoded ~= "") then
-    crossRealmSendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
-      crossRealmSendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
+    crossRealmSendCommMessage("BlindAuras", encoded, characterName, "BULK", function(displayName, done, total)
+      crossRealmSendCommMessage("BlindAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
     end, id);
   else
     TransmitError("dne", characterName);
   end
 end
 
-Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
+Comm:RegisterComm("BlindAurasProg", function(prefix, message, distribution, sender)
   if distribution == "PARTY" or distribution == "RAID" then
     local dest, msg = string.match(message, "^§§(.+):(.+)$")
     if dest then
@@ -589,7 +589,7 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
       local red = min(255, (1 - done / total) * 511)
       local green = min(255, (done / total) * 511)
       ShowTooltip({
-        {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+        {2, "BlindAuras", displayName, 0.5, 0, 1, 1, 1, 1},
         {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
         {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
       })
@@ -597,7 +597,7 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
   end
 end)
 
-Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
+Comm:RegisterComm("BlindAuras", function(prefix, message, distribution, sender)
   if distribution == "PARTY" or distribution == "RAID" then
     local dest, msg = string.match(message, "^§§([^:]+):(.+)$")
     if dest then
@@ -631,10 +631,10 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
     if(received.m == "d") then
       tooltipLoading = nil;
       local data, children, version = received.d, received.c, received.v
-      WeakAuras.PreAdd(data)
+      BlindAuras.PreAdd(data)
       if children then
         for _, child in ipairs(children) do
-          WeakAuras.PreAdd(child)
+          BlindAuras.PreAdd(child)
         end
       end
       if version < 2000 then
@@ -657,19 +657,19 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       tooltipLoading = nil;
       if(received.eM == "dne") then
         ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, "BlindAuras", 0.5333, 0, 1},
           {1, L["Requested display does not exist"], 1, 0, 0}
         });
       elseif(received.eM == "na") then
         ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
+          {1, "BlindAuras", 0.5333, 0, 1},
           {1, L["Requested display not authorized"], 1, 0, 0}
         });
       end
     end
-  elseif(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible()) then
+  elseif(ItemRefTooltip.BlindAuras_Tooltip_Thumbnail and ItemRefTooltip.BlindAuras_Tooltip_Thumbnail:IsVisible()) then
     ShowTooltip({
-      {1, "WeakAuras", 0.5333, 0, 1},
+      {1, "BlindAuras", 0.5333, 0, 1},
       {1, L["Transmission error"], 1, 0, 0}
     });
   end

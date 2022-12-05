@@ -1,11 +1,11 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
-local defaultFont = WeakAuras.defaultFont
-local defaultFontSize = WeakAuras.defaultFontSize
+local defaultFont = BlindAuras.defaultFont
+local defaultFontSize = BlindAuras.defaultFontSize
 
 local default = {
   displayText = "%p",
@@ -47,7 +47,7 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+BlindAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   return properties;
@@ -66,13 +66,13 @@ local function create(parent)
   region.duration = 0;
   region.expirationTime = math.huge;
 
-  WeakAuras.regionPrototype.create(region);
+  BlindAuras.regionPrototype.create(region);
 
   return region;
 end
 
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   local fontPath = SharedMedia:Fetch("font", data.font);
@@ -128,7 +128,7 @@ local function modify(parent, region, data)
     region.width = data.fixedWidth;
     SetText = function(textStr)
       if text:GetFont() then
-        text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr));
+        text:SetText(BlindAuras.ReplaceRaidMarkerSymbols(textStr));
       end
 
       local height = text:GetStringHeight();
@@ -136,8 +136,8 @@ local function modify(parent, region, data)
       if(region.height ~= height) then
         region.height = height
         region:SetHeight(height)
-        if(data.parent and WeakAuras.regions[data.parent].region.PositionChildren) then
-          WeakAuras.regions[data.parent].region:PositionChildren();
+        if(data.parent and BlindAuras.regions[data.parent].region.PositionChildren) then
+          BlindAuras.regions[data.parent].region:PositionChildren();
         end
       end
     end
@@ -148,7 +148,7 @@ local function modify(parent, region, data)
     SetText = function(textStr)
       if(textStr ~= text.displayText) then
         if text:GetFont() then
-          text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr));
+          text:SetText(BlindAuras.ReplaceRaidMarkerSymbols(textStr));
         end
       end
       local width = text:GetWidth();
@@ -158,8 +158,8 @@ local function modify(parent, region, data)
         region.height = height;
         region:SetWidth(region.width);
         region:SetHeight(region.height);
-        if(data.parent and WeakAuras.regions[data.parent].region.PositionChildren) then
-          WeakAuras.regions[data.parent].region:PositionChildren();
+        if(data.parent and BlindAuras.regions[data.parent].region.PositionChildren) then
+          BlindAuras.regions[data.parent].region:PositionChildren();
         end
       end
     end
@@ -188,7 +188,7 @@ local function modify(parent, region, data)
 
   local customTextFunc = nil
   if(Private.ContainsCustomPlaceHolder(data.displayText) and data.customText) then
-    customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+    customTextFunc = BlindAuras.LoadFunction("return "..data.customText)
   end
 
   local Update
@@ -261,24 +261,24 @@ local function modify(parent, region, data)
     region.text:SetTextHeight(size)
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
 local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("text", create, modify, default, GetProperties, validate);
+BlindAuras.RegisterRegionType("text", create, modify, default, GetProperties, validate);
 
 -- Fallback region type
 
 local function fallbackmodify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or nil);
   if text:GetFont() then
-    text:SetText(WeakAuras.L["Region type %s not supported"]:format(data.regionType));
+    text:SetText(BlindAuras.L["Region type %s not supported"]:format(data.regionType));
   end
 
   text:ClearAllPoints();
@@ -289,7 +289,7 @@ local function fallbackmodify(parent, region, data)
 
   region.Update = function() end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);
+BlindAuras.RegisterRegionType("fallback", create, fallbackmodify, default);

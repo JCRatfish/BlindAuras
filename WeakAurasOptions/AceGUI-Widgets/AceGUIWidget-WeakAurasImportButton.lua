@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasImportButton", 21
+local Type, Version = "BlindAurasImportButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function Hide_Tooltip()
   GameTooltip:Hide();
@@ -123,7 +123,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-  local name = "WeakAurasImportButton"..AceGUI:GetNextWidgetNum(Type);
+  local name = "BlindAurasImportButton"..AceGUI:GetNextWidgetNum(Type);
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(18);
   button:SetWidth(380);

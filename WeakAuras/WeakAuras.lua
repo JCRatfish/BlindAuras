@@ -21,14 +21,14 @@ local debugstack = debugstack
 local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
-local ADDON_NAME = "WeakAuras"
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
-local versionString = WeakAuras.versionString
-local prettyPrint = WeakAuras.prettyPrint
+local ADDON_NAME = "BlindAuras"
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
+local versionString = BlindAuras.versionString
+local prettyPrint = BlindAuras.prettyPrint
 
-WeakAurasTimers = setmetatable({}, {__tostring=function() return "WeakAuras" end})
-LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
+BlindAurasTimers = setmetatable({}, {__tostring=function() return "BlindAuras" end})
+LibStub("AceTimer-3.0"):Embed(BlindAurasTimers)
 
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
@@ -53,10 +53,10 @@ function Private.callbacks:Fire(event, ...)
   end
 end
 
-function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
+function BlindAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < Private.maxTimerDuration) then
     if delay + GetTime() > maxUpTime then
-      WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."]:format(delay, GetTime()))
+      BlindAuras.prettyPrint(BlindAuras.L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."]:format(delay, GetTime()))
       return
     end
     return self:ScheduleTimer(func, delay, ...)
@@ -68,13 +68,13 @@ local LDBIcon = LibStub("LibDBIcon-1.0")
 local LCG = LibStub("LibCustomGlow-1.0")
 local LGF = LibStub("LibGetFrame-1.0")
 
-local timer = WeakAurasTimers
-WeakAuras.timer = timer
+local timer = BlindAurasTimers
+BlindAuras.timer = timer
 
 local loginQueue = {}
 local queueshowooc
 
-function WeakAuras.InternalVersion()
+function BlindAuras.InternalVersion()
   return internalVersion;
 end
 
@@ -86,7 +86,7 @@ do
     local prefix = ""
     local data
     if currentErrorHandlerId then
-      data = WeakAuras.GetData(currentErrorHandlerId)
+      data = BlindAuras.GetData(currentErrorHandlerId)
     elseif currentErrorHandlerUid then
       data = Private.GetDataByUID(currentErrorHandlerUid)
     end
@@ -97,7 +97,7 @@ do
     else
       prefix = L["Lua error"] .. "\n"
     end
-    prefix = prefix .. L["WeakAuras Version: %s"]:format(WeakAuras.versionString) .. "\n"
+    prefix = prefix .. L["BlindAuras Version: %s"]:format(BlindAuras.versionString) .. "\n"
     local version = data and (data.semver or data.version)
     if version then
       prefix = prefix .. L["Aura Version: %s"]:format(version) .. "\n"
@@ -121,21 +121,21 @@ do
 end
 
 function Private.LoadOptions(msg)
-  if not(IsAddOnLoaded("WeakAurasOptions")) then
-    if not WeakAuras.IsLoginFinished() then
+  if not(IsAddOnLoaded("BlindAurasOptions")) then
+    if not BlindAuras.IsLoginFinished() then
       prettyPrint(Private.LoginMessage())
-      loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
+      loginQueue[#loginQueue + 1] = BlindAuras.OpenOptions
     elseif InCombatLockdown() then
       -- inform the user and queue ooc
       prettyPrint(L["Options will finish loading after combat ends."])
       queueshowooc = msg or "";
-      WeakAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
+      BlindAuras.frames["Addon Initialization Handler"]:RegisterEvent("PLAYER_REGEN_ENABLED")
       return false;
     else
-      local loaded, reason = LoadAddOn("WeakAurasOptions");
+      local loaded, reason = LoadAddOn("BlindAurasOptions");
       if not(loaded) then
         reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-        WeakAuras.prettyPrint(string.format(L["Options could not be loaded, the addon is %s"], reason));
+        BlindAuras.prettyPrint(string.format(L["Options could not be loaded, the addon is %s"], reason));
         return false;
       end
     end
@@ -143,26 +143,26 @@ function Private.LoadOptions(msg)
   return true;
 end
 
-function WeakAuras.OpenOptions(msg)
+function BlindAuras.OpenOptions(msg)
   if Private.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
-  elseif (WeakAuras.IsLoginFinished() and Private.LoadOptions(msg)) then
-    WeakAuras.ToggleOptions(msg, Private);
+  elseif (BlindAuras.IsLoginFinished() and Private.LoadOptions(msg)) then
+    BlindAuras.ToggleOptions(msg, Private);
   end
 end
 
 function Private.PrintHelp()
   print(L["Usage:"])
-  print(L["/wa help - Show this message"])
-  print(L["/wa minimap - Toggle the minimap icon"])
-  print(L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."])
-  print(L["/wa pstop - Finish profiling"])
-  print(L["/wa pprint - Show the results from the most recent profiling"])
-  print(L["/wa repair - Repair tool"])
+  print(L["/ba help - Show this message"])
+  print(L["/ba minimap - Toggle the minimap icon"])
+  print(L["/ba pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."])
+  print(L["/ba pstop - Finish profiling"])
+  print(L["/ba pprint - Show the results from the most recent profiling"])
+  print(L["/ba repair - Repair tool"])
   print(L["If you require additional assistance, please open a ticket on GitHub or visit our Discord at https://discord.gg/weakauras!"])
 end
 
-SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
+SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/blindauras", "/ba";
 function SlashCmdList.WEAKAURAS(input)
   local args, msg = {}, nil
 
@@ -175,13 +175,13 @@ function SlashCmdList.WEAKAURAS(input)
   end
 
   if msg == "pstart" then
-    WeakAuras.StartProfile(args[1]);
+    BlindAuras.StartProfile(args[1]);
   elseif msg == "pstop" then
-    WeakAuras.StopProfile();
+    BlindAuras.StopProfile();
   elseif msg == "pprint" then
-    WeakAuras.PrintProfile();
+    BlindAuras.PrintProfile();
   elseif msg == "pcancel" then
-    WeakAuras.CancelScheduledProfile()
+    BlindAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
     Private.ToggleMinimap();
   elseif msg == "help" then
@@ -189,19 +189,19 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
   else
-    WeakAuras.OpenOptions(msg);
+    BlindAuras.OpenOptions(msg);
   end
 end
 
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
 function Private.ToggleMinimap()
-  WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
-  if WeakAurasSaved.minimap.hide then
-    LDBIcon:Hide("WeakAuras");
-    prettyPrint(L["Use /wa minimap to show the minimap icon again."])
+  BlindAurasSaved.minimap.hide = not BlindAurasSaved.minimap.hide
+  if BlindAurasSaved.minimap.hide then
+    LDBIcon:Hide("BlindAuras");
+    prettyPrint(L["Use /ba minimap to show the minimap icon again."])
   else
-    LDBIcon:Show("WeakAuras");
+    LDBIcon:Show("BlindAuras");
   end
 end
 
@@ -210,13 +210,13 @@ BINDING_NAME_WEAKAURASTOGGLE = L["Toggle Options Window"]
 BINDING_NAME_WEAKAURASPROFILINGTOGGLE = L["Toggle Performance Profiling Window"]
 BINDING_NAME_WEAKAURASPRINTPROFILING = L["Print Profiling Results"]
 
--- An alias for WeakAurasSaved, the SavedVariables
+-- An alias for BlindAurasSaved, the SavedVariables
 -- Noteable properties:
 --  debug: If set to true, WeakAura.debug() outputs messages to the chat frame
 --  displays: All aura settings, keyed on their id
 local db;
 
--- While true no events are handled. E.g. WeakAuras is paused while the Options dialog is open
+-- While true no events are handled. E.g. BlindAuras is paused while the Options dialog is open
 local paused = true;
 local importing = false;
 
@@ -233,30 +233,30 @@ local loadFuncsForOptions = {};
 local loadEvents = {}
 
 -- All regions keyed on id, has properties: region, regionType, also see clones
-WeakAuras.regions = {};
-local regions = WeakAuras.regions;
+BlindAuras.regions = {};
+local regions = BlindAuras.regions;
 
 -- keyed on id, contains bool indicating whether the aura is loaded
 Private.loaded = {};
 local loaded = Private.loaded;
 
 -- contains regions for clones
-WeakAuras.clones = {};
-local clones = WeakAuras.clones;
+BlindAuras.clones = {};
+local clones = BlindAuras.clones;
 
 -- Unused regions that are kept around for clones
 local clonePool = {}
 
 -- One table per regionType, see RegisterRegionType, notable properties: create, modify and default
-WeakAuras.regionTypes = {};
-local regionTypes = WeakAuras.regionTypes;
+BlindAuras.regionTypes = {};
+local regionTypes = BlindAuras.regionTypes;
 
 Private.subRegionTypes = {}
 local subRegionTypes = Private.subRegionTypes
 
 -- One table per regionType, see RegisterRegionOptions
-WeakAuras.regionOptions = {};
-local regionOptions = WeakAuras.regionOptions;
+BlindAuras.regionOptions = {};
+local regionOptions = BlindAuras.regionOptions;
 
 Private.subRegionOptions = {}
 local subRegionOptions = Private.subRegionOptions
@@ -300,35 +300,35 @@ local fallbacksStates = {};
 local triggerSystems = {}
 
 local timers = {}; -- Timers for autohiding, keyed on id, triggernum, cloneid
-WeakAuras.timers = timers;
+BlindAuras.timers = timers;
 
-WeakAuras.raidUnits = {};
-WeakAuras.raidpetUnits = {};
-WeakAuras.partyUnits = {};
-WeakAuras.partypetUnits = {};
-WeakAuras.petUnitToUnit = {
+BlindAuras.raidUnits = {};
+BlindAuras.raidpetUnits = {};
+BlindAuras.partyUnits = {};
+BlindAuras.partypetUnits = {};
+BlindAuras.petUnitToUnit = {
   pet = "player"
 }
-WeakAuras.unitToPetUnit = {
+BlindAuras.unitToPetUnit = {
   player = "pet"
 }
 do
   for i=1,40 do
-    WeakAuras.raidUnits[i] = "raid"..i
-    WeakAuras.raidpetUnits[i] = "raidpet"..i
-    WeakAuras.petUnitToUnit["raidpet"..i] = "raid"..i
-    WeakAuras.unitToPetUnit["raid"..i] = "raidpet"..i
+    BlindAuras.raidUnits[i] = "raid"..i
+    BlindAuras.raidpetUnits[i] = "raidpet"..i
+    BlindAuras.petUnitToUnit["raidpet"..i] = "raid"..i
+    BlindAuras.unitToPetUnit["raid"..i] = "raidpet"..i
   end
   for i=1,4 do
-    WeakAuras.partyUnits[i] = "party"..i
-    WeakAuras.partypetUnits[i] = "partypet"..i
-    WeakAuras.petUnitToUnit["partypet"..i] = "party"..i
-    WeakAuras.unitToPetUnit["party"..i] = "partypet"..i
+    BlindAuras.partyUnits[i] = "party"..i
+    BlindAuras.partypetUnits[i] = "partypet"..i
+    BlindAuras.petUnitToUnit["partypet"..i] = "party"..i
+    BlindAuras.unitToPetUnit["party"..i] = "partypet"..i
   end
 end
 
-WeakAuras.UnitIsPet = function(unit)
-  return WeakAuras.petUnitToUnit[unit] ~= nil
+BlindAuras.UnitIsPet = function(unit)
+  return BlindAuras.petUnitToUnit[unit] ~= nil
 end
 
 local playerLevel = UnitLevel("player");
@@ -338,13 +338,13 @@ local currentInstanceType = "none"
 Private.customActionsFunctions = {};
 
 -- Custom Functions used in conditions, keyed on id, condition number, "changes", property number
-WeakAuras.customConditionsFunctions = {};
+BlindAuras.customConditionsFunctions = {};
 -- Text format functions for chat messages, keyed on id, condition number, changes, property number
-WeakAuras.conditionTextFormatters = {}
+BlindAuras.conditionTextFormatters = {}
 
 -- Helpers for conditions, that is custom run functions and preamble objects for built in checks
 -- keyed on UID not on id!
-WeakAuras.conditionHelpers = {}
+BlindAuras.conditionHelpers = {}
 
 local load_prototype = Private.load_prototype;
 
@@ -355,7 +355,7 @@ local levelColors = {
   [3] = "|cFFFF4040"
 };
 
-function WeakAuras.validate(input, default)
+function BlindAuras.validate(input, default)
   for field, defaultValue in pairs(default) do
     if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
       input[field] = {};
@@ -363,32 +363,32 @@ function WeakAuras.validate(input, default)
       input[field] = defaultValue;
     end
     if(type(input[field]) == "table") then
-      WeakAuras.validate(input[field], defaultValue);
+      BlindAuras.validate(input[field], defaultValue);
     end
   end
 end
 
-function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
+function BlindAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - name is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - name is not a string", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - creation function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - creation function is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - creation function is not a function", 2);
   elseif not(modifyFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - modification function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - modification function is not defined", 2);
   elseif(type(modifyFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - modification function is not a function", 2)
+    error("Improper arguments to BlindAuras.RegisterRegionType - modification function is not a function", 2)
   elseif not(default) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - default options are not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - default options are not defined", 2);
   elseif(type(default) ~= "table") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - default options are not a table", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - default options are not a table", 2);
   elseif(type(default) ~= "table" and type(default) ~= "nil") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - properties options are not a table", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - properties options are not a table", 2);
   elseif(regionTypes[name]) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionType - region type \""..name.."\" already defined", 2);
   else
     regionTypes[name] = {
       create = createFunction,
@@ -400,43 +400,43 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
+function BlindAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - name is not a string", 2);
   elseif not(displayName) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - display name is not defined".." "..name, 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - display name is not defined".." "..name, 2);
   elseif(type(displayName) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - display name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - display name is not a string", 2);
   elseif not(supportFunction) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - support function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - support function is not defined", 2);
   elseif(type(supportFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - support function is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - support function is not a function", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - creation function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - creation function is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - creation function is not a function", 2);
   elseif not(modifyFunction) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - modification function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - modification function is not defined", 2);
   elseif(type(modifyFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - modification function is not a function", 2)
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - modification function is not a function", 2)
   elseif not(onAcquire) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - onAcquire function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - onAcquire function is not defined", 2);
   elseif(type(onAcquire) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - onAcquire function is not a function", 2)
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - onAcquire function is not a function", 2)
   elseif not(onRelease) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - onRelease function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - onRelease function is not defined", 2);
   elseif(type(onRelease) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - onRelease function is not a function", 2)
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - onRelease function is not a function", 2)
   elseif not(default) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - default options are not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - default options are not defined", 2);
   elseif(type(default) ~= "table" and type(default) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - default options are not a table or a function", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - default options are not a table or a function", 2);
   elseif(addDefaultsForNewAura and type(addDefaultsForNewAura) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - addDefaultsForNewAura function is not nil or a function", 2)
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - addDefaultsForNewAura function is not nil or a function", 2)
   elseif(subRegionTypes[name]) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionType - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionType - region type \""..name.."\" already defined", 2);
   else
     local pool = CreateObjectPool(createFunction)
 
@@ -462,27 +462,27 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
   end
 end
 
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates, getAnchors)
+function BlindAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates, getAnchors)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - name is not a string", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - creation function is not a function", 2);
   elseif not(icon) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - icon is not defined", 2);
   elseif not(type(icon) == "string" or type(icon) == "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not a string or a function", 2)
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - icon is not a string or a function", 2)
   elseif not(displayName) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not defined".." "..name, 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - display name is not defined".." "..name, 2);
   elseif(type(displayName) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - display name is not a string", 2);
   elseif (getAnchors and type(getAnchors) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - anchors is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - anchors is not a function", 2);
   elseif(regionOptions[name]) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to BlindAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
     local templateIcon
     if (type(icon) == "function") then
@@ -525,17 +525,17 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   end
 end
 
-function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
+function BlindAuras.RegisterSubRegionOptions(name, createFunction, description)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionOptions - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not a string", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionOptions - name is not a string", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionOptions - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not a function", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionOptions - creation function is not a function", 2);
   elseif(subRegionOptions[name]) then
-    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to BlindAuras.RegisterSubRegionOptions - region type \""..name.."\" already defined", 2);
   else
     subRegionOptions[name] = {
       create = createFunction,
@@ -544,8 +544,8 @@ function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
   end
 end
 
--- This function is replaced in WeakAurasOptions.lua
-function WeakAuras.IsOptionsOpen()
+-- This function is replaced in BlindAurasOptions.lua
+function BlindAuras.IsOptionsOpen()
   return false;
 end
 
@@ -796,7 +796,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
   return ret, events;
 end
 
-function WeakAuras.GetActiveConditions(id, cloneId)
+function BlindAuras.GetActiveConditions(id, cloneId)
   triggerState[id].activatedConditions[cloneId] = triggerState[id].activatedConditions[cloneId] or {};
   return triggerState[id].activatedConditions[cloneId];
 end
@@ -807,30 +807,30 @@ local function LoadCustomActionFunctions(data)
 
   if (data.actions) then
     if (data.actions.init and data.actions.init.do_custom and data.actions.init.custom) then
-      local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end");
+      local func = BlindAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end");
       Private.customActionsFunctions[id]["init"] = func;
     end
 
     if (data.actions.start) then
       if (data.actions.start.do_custom and data.actions.start.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end");
+        local func = BlindAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end");
         Private.customActionsFunctions[id]["start"] = func;
       end
 
       if (data.actions.start.do_message and data.actions.start.message_custom) then
-        local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom));
+        local func = BlindAuras.LoadFunction("return "..(data.actions.start.message_custom));
         Private.customActionsFunctions[id]["start_message"] = func;
       end
     end
 
     if (data.actions.finish) then
       if (data.actions.finish.do_custom and data.actions.finish.custom) then
-        local func = WeakAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end");
+        local func = BlindAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end");
         Private.customActionsFunctions[id]["finish"] = func;
       end
 
       if (data.actions.finish.do_message and data.actions.finish.message_custom) then
-        local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom));
+        local func = BlindAuras.LoadFunction("return "..(data.actions.finish.message_custom));
         Private.customActionsFunctions[id]["finish_message"] = func;
       end
     end
@@ -844,7 +844,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassicOrBCCOrWrath() then
+  if BlindAuras.IsClassicOrBCCOrWrath() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -863,7 +863,7 @@ local function CreateTalentCache()
         -- Get name and icon info for the current talent of the current class and save it
         local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
         local talentId = (tier-1)*3+column
-        -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+        -- Get the icon and name from the talent cache and record it in the table that will be used by BlindAurasOptions
         if (talentName and talentIcon) then
           Private.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
         end
@@ -902,16 +902,16 @@ end
 
 Private.CompanionData = {}
 -- use this function to not overwrite data from other companion compatible addons
--- when using this function, do not name your global data table "WeakAurasCompanion"
-function WeakAuras.AddCompanionData(data)
-  WeakAuras.DeepMixin(Private.CompanionData, data)
+-- when using this function, do not name your global data table "BlindAurasCompanion"
+function BlindAuras.AddCompanionData(data)
+  BlindAuras.DeepMixin(Private.CompanionData, data)
 end
 
--- add data from versions of companion compatible addon that does not use WeakAuras.AddCompanionData yet
+-- add data from versions of companion compatible addon that does not use BlindAuras.AddCompanionData yet
 local function AddLegacyCompanionData()
-  local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
+  local CompanionData = BlindAurasCompanion and BlindAurasCompanion.BlindAuras or BlindAurasCompanion
   if CompanionData then
-    WeakAuras.AddCompanionData(CompanionData)
+    BlindAuras.AddCompanionData(CompanionData)
   end
 end
 
@@ -921,11 +921,11 @@ function Private.PostAddCompanion()
   -- nag if updates
   local count = Private.CountWagoUpdates()
   if count and count > 0 then
-    WeakAuras.prettyPrint(L["There are %i updates to your auras ready to be installed!"]:format(count))
+    BlindAuras.prettyPrint(L["There are %i updates to your auras ready to be installed!"]:format(count))
   end
   -- nag if new installs
   if Private.CompanionData.stash and next(Private.CompanionData.stash) then
-    WeakAuras.prettyPrint(L["You have new auras ready to be installed!"])
+    BlindAuras.prettyPrint(L["You have new auras ready to be installed!"])
   end
 end
 
@@ -959,7 +959,7 @@ end
 local function tooltip_draw()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
-  tooltip:AddDoubleLine("WeakAuras", versionString);
+  tooltip:AddDoubleLine("BlindAuras", versionString);
   if Private.CompanionData.slugs then
     local count = Private.CountWagoUpdates()
     if count > 0 then
@@ -969,7 +969,7 @@ local function tooltip_draw()
   end
   tooltip:AddLine(" ");
   tooltip:AddLine(L["|cffeda55fLeft-Click|r to toggle showing the main window."], 0.2, 1, 0.2);
-  if not WeakAuras.IsOptionsOpen() then
+  if not BlindAuras.IsOptionsOpen() then
     if paused then
       tooltip:AddLine("|cFFFF0000"..L["Paused"].." - "..L["Shift-Click to resume addon execution."], 0.2, 1, 0.2);
     else
@@ -982,7 +982,7 @@ local function tooltip_draw()
 end
 
 local colorFrame = CreateFrame("Frame");
-WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
+BlindAuras.frames["LDB Icon Recoloring"] = colorFrame;
 
 local colorElapsed = 0;
 local colorDelay = 2;
@@ -990,7 +990,7 @@ local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
 
 local tooltip_update_frame = CreateFrame("Frame");
-WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
+BlindAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 
 -- function copied from LibDBIcon-1.0.lua
 local function getAnchors(frame)
@@ -1001,24 +1001,24 @@ local function getAnchors(frame)
 	return vHalf..hHalf, frame, (vHalf == "TOP" and "BOTTOM" or "TOP")..hHalf
 end
 
-local Broker_WeakAuras;
-Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
+local Broker_BlindAuras;
+Broker_BlindAuras = LDB:NewDataObject("BlindAuras", {
   type = "launcher",
-  text = "WeakAuras",
-  icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
+  text = "BlindAuras",
+  icon = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\icon.blp",
   OnClick = function(self, button)
     if button == 'LeftButton' then
       if(IsShiftKeyDown()) then
-        if not(WeakAuras.IsOptionsOpen()) then
-          WeakAuras.Toggle();
+        if not(BlindAuras.IsOptionsOpen()) then
+          BlindAuras.Toggle();
         end
       else
-        WeakAuras.OpenOptions();
+        BlindAuras.OpenOptions();
       end
     elseif(button == 'MiddleButton') then
       Private.ToggleMinimap();
     else
-      WeakAuras.RealTimeProfilingWindow:Toggle()
+      BlindAuras.RealTimeProfilingWindow:Toggle()
     end
     tooltip_draw()
   end,
@@ -1030,9 +1030,9 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
         r, g, b = r2, g2, b2;
         r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
       end
-      Broker_WeakAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
-      Broker_WeakAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
-      Broker_WeakAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
+      Broker_BlindAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
+      Broker_BlindAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
+      Broker_BlindAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
     end);
     local elapsed = 0;
     local delay = 1;
@@ -1063,19 +1063,19 @@ do -- Archive stuff
     if Archivist:IsInitialized() then
       return Archivist
     else
-      if not IsAddOnLoaded("WeakAurasArchive") then
-        local ok, reason = LoadAddOn("WeakAurasArchive")
+      if not IsAddOnLoaded("BlindAurasArchive") then
+        local ok, reason = LoadAddOn("BlindAurasArchive")
         if not ok then
           reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-          error(string.format(L["Could not load WeakAuras Archive, the addon is %s"], reason))
+          error(string.format(L["Could not load BlindAuras Archive, the addon is %s"], reason))
         end
       end
-      Archivist:Initialize(WeakAurasArchive)
+      Archivist:Initialize(BlindAurasArchive)
     end
     return Archivist
   end
 
-  function WeakAuras.LoadFromArchive(storeType, storeID)
+  function BlindAuras.LoadFromArchive(storeType, storeID)
     local Archive = OpenArchive()
     return Archive:Load(storeType, storeID)
   end
@@ -1083,7 +1083,7 @@ end
 
 local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
-function WeakAuras.IsLoginFinished()
+function BlindAuras.IsLoginFinished()
   return loginFinished
 end
 
@@ -1098,7 +1098,7 @@ local function CheckForPreviousEncounter()
         local guid = UnitGUID ("boss" .. i)
         if (guid and db.CurrentEncounter.boss_guids [guid]) then
           -- we are in the same encounter
-          WeakAuras.CurrentEncounter = db.CurrentEncounter
+          BlindAuras.CurrentEncounter = db.CurrentEncounter
           return true
         end
       end
@@ -1114,14 +1114,14 @@ function Private.Login(initialTime, takeNewSnapshots)
     Private.Pause();
 
     if db.history then
-      local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
-      local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")
+      local histRepo = BlindAuras.LoadFromArchive("Repository", "history")
+      local migrationRepo = BlindAuras.LoadFromArchive("Repository", "migration")
       for uid, hist in pairs(db.history) do
         local histStore = histRepo:Set(uid, hist.data)
         local migrationStore = migrationRepo:Set(uid, hist.migration)
         coroutine.yield()
       end
-      -- history is now in archive so we can shrink WeakAurasSaved
+      -- history is now in archive so we can shrink BlindAurasSaved
       db.history = nil
       coroutine.yield();
     end
@@ -1131,14 +1131,14 @@ function Private.Login(initialTime, takeNewSnapshots)
     loginMessage = L["Options will open after the login process has completed."]
     for id, data in pairs(db.displays) do
       if(id ~= data.id) then
-        print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
+        print("|cFF8800FFBlindAuras|r detected a corrupt entry in BlindAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
         data.id = id;
       end
       tinsert(toAdd, data);
     end
     coroutine.yield();
 
-    WeakAuras.AddMany(toAdd, takeNewSnapshots);
+    BlindAuras.AddMany(toAdd, takeNewSnapshots);
     coroutine.yield();
 
     -- check in case of a disconnect during an encounter.
@@ -1179,7 +1179,7 @@ function Private.Login(initialTime, takeNewSnapshots)
       Private.dynFrame:AddAction('login', loginThread)
     end
     if not ok then
-      loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
+      loginMessage = L["BlindAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
         .. "\nMessage:" .. msg
         geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
     end
@@ -1188,18 +1188,18 @@ function Private.Login(initialTime, takeNewSnapshots)
   end
 end
 
-local WeakAurasFrame = CreateFrame("Frame", "WeakAurasFrame", UIParent);
-WeakAuras.frames["WeakAuras Main Frame"] = WeakAurasFrame;
-WeakAurasFrame:SetAllPoints(UIParent);
+local BlindAurasFrame = CreateFrame("Frame", "BlindAurasFrame", UIParent);
+BlindAuras.frames["BlindAuras Main Frame"] = BlindAurasFrame;
+BlindAurasFrame:SetAllPoints(UIParent);
 
 local loadedFrame = CreateFrame("Frame");
-WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
+BlindAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 else
@@ -1209,8 +1209,8 @@ end
 loadedFrame:SetScript("OnEvent", function(self, event, addon)
   if(event == "ADDON_LOADED") then
     if(addon == ADDON_NAME) then
-      WeakAurasSaved = WeakAurasSaved or {};
-      db = WeakAurasSaved;
+      BlindAurasSaved = BlindAurasSaved or {};
+      db = BlindAurasSaved;
 
       -- Defines the action squelch period after login
       -- Stored in SavedVariables so it can be changed by the user if they find it necessary
@@ -1236,7 +1236,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         Private.CleanArchive(db.historyCutoff, db.migrationCutoff);
       end
       db.minimap = db.minimap or { hide = false };
-      LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
+      LDBIcon:Register("BlindAuras", Broker_BlindAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
     local dbIsValid, takeNewSnapshots
@@ -1287,13 +1287,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     elseif(event == "PLAYER_REGEN_ENABLED") then
       callback = function()
         if (queueshowooc) then
-          WeakAuras.OpenOptions(queueshowooc)
+          BlindAuras.OpenOptions(queueshowooc)
           queueshowooc = nil
-          WeakAuras.frames["Addon Initialization Handler"]:UnregisterEvent("PLAYER_REGEN_ENABLED")
+          BlindAuras.frames["Addon Initialization Handler"]:UnregisterEvent("PLAYER_REGEN_ENABLED")
         end
       end
     end
-    if WeakAuras.IsLoginFinished() then
+    if BlindAuras.IsLoginFinished() then
       callback()
     else
       loginQueue[#loginQueue + 1] = callback
@@ -1305,11 +1305,11 @@ function Private.SetImporting(b)
   importing = b;
 end
 
-function WeakAuras.IsImporting()
+function BlindAuras.IsImporting()
   return importing;
 end
 
-function WeakAuras.IsPaused()
+function BlindAuras.IsPaused()
   return paused;
 end
 
@@ -1327,7 +1327,7 @@ function Private.Pause()
   paused = true;
 end
 
-function WeakAuras.Toggle()
+function BlindAuras.Toggle()
   if(paused) then
     Private.Resume();
   else
@@ -1339,7 +1339,7 @@ function Private.SquelchingActions()
   return squelch_actions;
 end
 
-function WeakAuras.InLoadingScreen()
+function BlindAuras.InLoadingScreen()
   return in_loading_screen;
 end
 
@@ -1362,38 +1362,38 @@ end
 -- Encounter stuff
 local function StoreBossGUIDs()
   Private.StartProfileSystem("boss_guids")
-  if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
+  if (BlindAuras.CurrentEncounter and BlindAuras.CurrentEncounter.boss_guids) then
     for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid) then
-          WeakAuras.CurrentEncounter.boss_guids [guid] = true
+          BlindAuras.CurrentEncounter.boss_guids [guid] = true
         end
       end
     end
-    db.CurrentEncounter = WeakAuras.CurrentEncounter
+    db.CurrentEncounter = BlindAuras.CurrentEncounter
   end
   Private.StopProfileSystem("boss_guids")
 end
 
 local function DestroyEncounterTable()
-  if (WeakAuras.CurrentEncounter) then
-    wipe(WeakAuras.CurrentEncounter)
+  if (BlindAuras.CurrentEncounter) then
+    wipe(BlindAuras.CurrentEncounter)
   end
-  WeakAuras.CurrentEncounter = nil
+  BlindAuras.CurrentEncounter = nil
   db.CurrentEncounter = nil
 end
 
 local function CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
-  WeakAuras.CurrentEncounter = {
+  BlindAuras.CurrentEncounter = {
     id = encounter_id,
     zone_id = ZoneMapID,
     boss_guids = {},
   }
   timer:ScheduleTimer(StoreBossGUIDs, 2)
 
-  return WeakAuras.CurrentEncounter
+  return BlindAuras.CurrentEncounter
 end
 
 local encounterScriptsDeferred = {}
@@ -1419,7 +1419,7 @@ local function LoadEncounterInitScriptsImpl(id)
 end
 
 local function LoadEncounterInitScripts(id)
-  if not WeakAuras.IsLoginFinished() then
+  if not BlindAuras.IsLoginFinished() then
     if encounterScriptsDeferred[id] then
       return
     end
@@ -1447,7 +1447,7 @@ function Private.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
-function WeakAuras.GroupType()
+function BlindAuras.GroupType()
   if (IsInRaid()) then
     return "raid";
   end
@@ -1467,7 +1467,7 @@ local function GetInstanceTypeAndSize()
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
     else
-      if WeakAuras.IsRetail() then
+      if BlindAuras.IsRetail() then
         if size == "arena" then
           if C_PvP.IsRatedArena() and not IsArenaSkirmish() then
             size = "ratedarena"
@@ -1484,15 +1484,15 @@ local function GetInstanceTypeAndSize()
   return "none", "none", nil, nil, nil
 end
 
-function WeakAuras.InstanceType()
+function BlindAuras.InstanceType()
   return GetInstanceTypeAndSize(), nil
 end
 
-function WeakAuras.InstanceDifficulty()
+function BlindAuras.InstanceDifficulty()
   return select(2, GetInstanceTypeAndSize())
 end
 
-function WeakAuras.InstanceTypeRaw()
+function BlindAuras.InstanceTypeRaw()
   return select(5, GetInstanceTypeAndSize())
 end
 
@@ -1517,7 +1517,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   -- encounter id stuff, we are holding the current combat id to further load checks.
   -- there is three ways to unload: encounter_end / zone changed (hearthstone used) / reload or disconnect
   -- regen_enabled isn't good due to combat drop abilities such invisibility, vanish, fake death, etc.
-  local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
+  local encounter_id = BlindAuras.CurrentEncounter and BlindAuras.CurrentEncounter.id or 0
 
   if (event == "ENCOUNTER_START") then
     encounter_id = tonumber (arg1)
@@ -1544,14 +1544,14 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local alive = not UnitIsDeadOrGhost('player')
   local isLeader = UnitIsGroupLeader("player")
 
-  if WeakAuras.IsClassicOrBCCOrWrath() then
+  if BlindAuras.IsClassicOrBCCOrWrath() then
     local raidID = UnitInRaid("player")
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
     end
     spec = 1
     role = "none"
-    if WeakAuras.IsWrathClassic() then
+    if BlindAuras.IsWrathClassic() then
       role = UnitGroupRolesAssigned("player")
       if role == "NONE" then
         role = GetTalentGroupRole(GetActiveTalentGroup()) or "NONE"
@@ -1574,8 +1574,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local size, difficulty, instanceType, ZoneMapID, difficultyIndex = GetInstanceTypeAndSize()
   Private.UpdateCurrentInstanceType(instanceType)
 
-  if (WeakAuras.CurrentEncounter) then
-    if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not inCombat) then
+  if (BlindAuras.CurrentEncounter) then
+    if (ZoneMapID ~= BlindAuras.CurrentEncounter.zone_id and not inCombat) then
       encounter_id = 0
       DestroyEncounterTable()
     end
@@ -1585,10 +1585,10 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     LoadEncounterInitScripts();
   end
 
-  local group = WeakAuras.GroupType()
+  local group = BlindAuras.GroupType()
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
-  if WeakAuras.IsRetail() then
+  if BlindAuras.IsRetail() then
     effectiveLevel = UnitEffectiveLevel("player")
     affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
     warmodeActive = C_PvP.IsWarModeDesired();
@@ -1601,20 +1601,20 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   wipe(toUnload);
 
   for id in pairs(toCheck) do
-    local data = WeakAuras.GetData(id)
+    local data = BlindAuras.GetData(id)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      if WeakAuras.IsClassic() then
+      if BlindAuras.IsClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader);
-      elseif WeakAuras.IsBCC() then
+      elseif BlindAuras.IsBCC() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, raidRole, isLeader);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, raidRole, isLeader);
-      elseif WeakAuras.IsWrathClassic() then
+      elseif BlindAuras.IsWrathClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, isLeader);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, isLeader);
-      elseif WeakAuras.IsRetail() then
+      elseif BlindAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes);
       end
@@ -1659,7 +1659,7 @@ end
 
 function Private.ScanForLoadsGroup(toCheck)
   for id in pairs(toCheck) do
-    local data = WeakAuras.GetData(id)
+    local data = BlindAuras.GetData(id)
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
         local any_loaded = false;
@@ -1680,20 +1680,20 @@ function Private.ScanForLoadsGroup(toCheck)
 end
 
 function Private.ScanForLoads(toCheck, event, arg1, ...)
-  if not WeakAuras.IsLoginFinished() then
+  if not BlindAuras.IsLoginFinished() then
     return
   end
   scanForLoadsImpl(toCheck, event, arg1, ...)
 end
 
 local loadFrame = CreateFrame("Frame");
-WeakAuras.loadFrame = loadFrame;
-WeakAuras.frames["Display Load Handling"] = loadFrame;
+BlindAuras.loadFrame = loadFrame;
+BlindAuras.frames["Display Load Handling"] = loadFrame;
 
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
@@ -1708,7 +1708,7 @@ if WeakAuras.IsRetail() then
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
-if WeakAuras.IsWrathClassic() then
+if BlindAuras.IsWrathClassic() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
@@ -1731,11 +1731,11 @@ loadFrame:RegisterEvent("PLAYER_UNGHOST")
 loadFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 
 local unitLoadFrame = CreateFrame("Frame");
-WeakAuras.unitLoadFrame = unitLoadFrame;
-WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
+BlindAuras.unitLoadFrame = unitLoadFrame;
+BlindAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if WeakAuras.IsWrathOrRetail() then
+if BlindAuras.IsWrathOrRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", "player");
@@ -1770,7 +1770,7 @@ end
 local function UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
-    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    Private.CancelAnimation(BlindAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
@@ -1832,7 +1832,7 @@ end
 
 function Private.LoadDisplays(toLoad, ...)
   for id in pairs(toLoad) do
-    local uid = WeakAuras.GetData(id).uid
+    local uid = BlindAuras.GetData(id).uid
     Private.RegisterForGlobalConditions(uid);
     triggerState[id].triggers = {};
     triggerState[id].triggerCount = 0;
@@ -1840,7 +1840,7 @@ function Private.LoadDisplays(toLoad, ...)
     triggerState[id].activeTrigger = nil;
     triggerState[id].activatedConditions = {};
     if Private.DebugLog.IsEnabled(uid) then
-      WeakAuras.prettyPrint(L["Debug Logging enabled for '%s'"]:format(id))
+      BlindAuras.prettyPrint(L["Debug Logging enabled for '%s'"]:format(id))
       Private.DebugLog.Print(uid, L["Aura loaded"])
     end
   end
@@ -1875,14 +1875,14 @@ function Private.UnloadDisplays(toUnload, ...)
       timers[id] = nil;
     end
 
-    local uid = WeakAuras.GetData(id).uid
+    local uid = BlindAuras.GetData(id).uid
     Private.UnloadConditions(uid)
 
-    WeakAuras.regions[id].region:Collapse();
+    BlindAuras.regions[id].region:Collapse();
     Private.CollapseAllClones(id);
 
     -- Even though auras are collapsed, their finish animation can be running
-    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    Private.CancelAnimation(BlindAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
       for _, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
@@ -1904,14 +1904,14 @@ end
 local UIDtoID = {}
 
 function Private.GetDataByUID(uid)
-  return WeakAuras.GetData(UIDtoID[uid])
+  return BlindAuras.GetData(UIDtoID[uid])
 end
 
 function Private.UIDtoID(uid)
   return UIDtoID[uid]
 end
 
-function WeakAuras.Delete(data)
+function BlindAuras.Delete(data)
   local id = data.id;
   local uid = data.uid
   local parentId = data.parent
@@ -1942,7 +1942,7 @@ function WeakAuras.Delete(data)
       local childData = db.displays[childId];
       if(childData) then
         childData.parent = nil;
-        WeakAuras.Add(childData);
+        BlindAuras.Add(childData);
       end
     end
   end
@@ -1950,7 +1950,7 @@ function WeakAuras.Delete(data)
   regions[id].region:Collapse()
   Private.CollapseAllClones(id);
 
-  Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+  Private.CancelAnimation(BlindAuras.regions[id].region, true, true, true, true, true, true)
 
   if clones[id] then
     for _, region in pairs(clones[id]) do
@@ -1992,10 +1992,10 @@ function WeakAuras.Delete(data)
   end
 
   Private.customActionsFunctions[id] = nil;
-  WeakAuras.customConditionsFunctions[id] = nil;
-  WeakAuras.conditionTextFormatters[id] = nil
+  BlindAuras.customConditionsFunctions[id] = nil;
+  BlindAuras.conditionTextFormatters[id] = nil
   Private.frameLevels[id] = nil;
-  WeakAuras.conditionHelpers[data.uid] = nil
+  BlindAuras.conditionHelpers[data.uid] = nil
 
   Private.RemoveHistory(data.uid)
 
@@ -2003,7 +2003,7 @@ function WeakAuras.Delete(data)
   Private.callbacks:Fire("Delete", uid, id, parentUid, parentId)
 end
 
-function WeakAuras.Rename(data, newid)
+function BlindAuras.Rename(data, newid)
   local oldid = data.id
   if(data.parent) then
     local parentData = db.displays[data.parent];
@@ -2018,7 +2018,7 @@ function WeakAuras.Rename(data, newid)
         parentData.sortHybridTable[oldid] = nil
       end
     end
-    local parentRegion = WeakAuras.GetRegion(data.parent)
+    local parentRegion = BlindAuras.GetRegion(data.parent)
     if parentRegion and parentRegion.ReloadControlledChildren then
       parentRegion:ReloadControlledChildren()
     end
@@ -2090,11 +2090,11 @@ function WeakAuras.Rename(data, newid)
   Private.customActionsFunctions[newid] = Private.customActionsFunctions[oldid];
   Private.customActionsFunctions[oldid] = nil;
 
-  WeakAuras.customConditionsFunctions[newid] = WeakAuras.customConditionsFunctions[oldid];
-  WeakAuras.customConditionsFunctions[oldid] = nil;
+  BlindAuras.customConditionsFunctions[newid] = BlindAuras.customConditionsFunctions[oldid];
+  BlindAuras.customConditionsFunctions[oldid] = nil;
 
-  WeakAuras.conditionTextFormatters[newid] = WeakAuras.conditionTextFormatters[oldid]
-  WeakAuras.conditionTextFormatters[oldid] = nil
+  BlindAuras.conditionTextFormatters[newid] = BlindAuras.conditionTextFormatters[oldid]
+  BlindAuras.conditionTextFormatters[oldid] = nil
 
   Private.frameLevels[newid] = Private.frameLevels[oldid];
   Private.frameLevels[oldid] = nil;
@@ -2102,7 +2102,7 @@ function WeakAuras.Rename(data, newid)
   Private.ProfileRenameAura(oldid, newid);
 
   -- TODO: This should not be necessary
-  WeakAuras.Add(data)
+  BlindAuras.Add(data)
 
   Private.callbacks:Fire("Rename", data.uid, oldid, newid)
 end
@@ -2157,18 +2157,18 @@ function Private.Convert(data, newType)
   end
 
 
-  WeakAuras.Add(data);
+  BlindAuras.Add(data);
 
   Private.FakeStatesFor(id, true)
 
-  local parentRegion = WeakAuras.GetRegion(data.parent)
+  local parentRegion = BlindAuras.GetRegion(data.parent)
   if parentRegion and parentRegion.ReloadControlledChildren then
     parentRegion:ReloadControlledChildren()
   end
 end
 
 -- The default mixin doesn't recurse, this does
-function WeakAuras.DeepMixin(dest, source)
+function BlindAuras.DeepMixin(dest, source)
   local function recurse(source, dest)
     for i,v in pairs(source) do
       if(type(v) == "table") then
@@ -2187,14 +2187,14 @@ local function LastUpgrade()
 end
 
 function Private.NeedToRepairDatabase()
-  return db.dbVersion and db.dbVersion > WeakAuras.InternalVersion()
+  return db.dbVersion and db.dbVersion > BlindAuras.InternalVersion()
 end
 
 local function RepairDatabase(loginAfter)
   local coro = coroutine.create(function()
     Private.SetImporting(true)
     -- set db version to current code version
-    db.dbVersion = WeakAuras.InternalVersion()
+    db.dbVersion = BlindAuras.InternalVersion()
     -- reinstall snapshots from history
     local newDB = Mixin({}, db.displays)
     coroutine.yield()
@@ -2222,7 +2222,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
      RepairDatabase()
   end,
   OnShow = function(self)
-    local AutomaticRepairText = L["WeakAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
+    local AutomaticRepairText = L["BlindAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
     local ManualRepairText = L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
 
     if self.data.reason == "user" then
@@ -2251,7 +2251,7 @@ function Private.ValidateUniqueDataIds(silent)
         if not silent then
           prettyPrint("Duplicate uid \""..data.uid.."\" detected in saved variables between \""..data.id.."\" and \""..seenUIDs[data.uid].id.."\".")
         end
-        data.uid = WeakAuras.GenerateUniqueID()
+        data.uid = BlindAuras.GenerateUniqueID()
         seenUIDs[data.uid] = data
       else
         seenUIDs[data.uid] = data
@@ -2260,7 +2260,7 @@ function Private.ValidateUniqueDataIds(silent)
       if not silent then
         prettyPrint("Invalid uid detected in saved variables for \""..data.id.."\"")
       end
-      data.uid = WeakAuras.GenerateUniqueID()
+      data.uid = BlindAuras.GenerateUniqueID()
       seenUIDs[data.uid] = data
     end
   end
@@ -2358,7 +2358,7 @@ function Private.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(table, takeSnapshots)
+function BlindAuras.AddMany(table, takeSnapshots)
   local idtable = {};
   for _, data in ipairs(table) do
     idtable[data.id] = data;
@@ -2369,7 +2369,7 @@ function WeakAuras.AddMany(table, takeSnapshots)
     if(data.parent) then
       if(idtable[data.parent]) then
         if(tContains(depends, data.parent)) then
-          error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
+          error("Circular dependency in BlindAuras.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
             local dependsOut = {};
@@ -2385,7 +2385,7 @@ function WeakAuras.AddMany(table, takeSnapshots)
       end
     end
     if not(loaded[id]) then
-      WeakAuras.Add(data, takeSnapshots);
+      BlindAuras.Add(data, takeSnapshots);
       coroutine.yield();
       loaded[id] = true;
     end
@@ -2401,7 +2401,7 @@ function WeakAuras.AddMany(table, takeSnapshots)
     if data.type == "dynamicgroup" then
       regions[data.id].region:ReloadControlledChildren()
     else
-      WeakAuras.Add(data)
+      BlindAuras.Add(data)
     end
     coroutine.yield();
   end
@@ -2440,7 +2440,7 @@ local function validateUserConfig(data, options, config)
       end
       if optionClass == "simple" then
         if not option.key then
-          option.key = WeakAuras.GenerateUniqueID()
+          option.key = BlindAuras.GenerateUniqueID()
         end
         if config[option.key] == nil then
           if type(option.default) ~= "table" then
@@ -2704,26 +2704,26 @@ function Private.UpdateSoundIcon(data)
 
 end
 
-function WeakAuras.PreAdd(data)
+function BlindAuras.PreAdd(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
-    WeakAuras.validate(data, oldDataStub)
+    BlindAuras.validate(data, oldDataStub)
   elseif (data.internalVersion < 8) then
-    WeakAuras.validate(data, oldDataStub2)
+    BlindAuras.validate(data, oldDataStub2)
   end
 
-  local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
+  local default = data.regionType and BlindAuras.regionTypes[data.regionType] and BlindAuras.regionTypes[data.regionType].default
   if default then
-    WeakAuras.validate(data, default)
+    BlindAuras.validate(data, default)
   end
 
-  local regionValidate = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].validate
+  local regionValidate = data.regionType and BlindAuras.regionTypes[data.regionType] and BlindAuras.regionTypes[data.regionType].validate
   if regionValidate then
     regionValidate(data)
   end
 
   Private.Modernize(data);
-  WeakAuras.validate(data, WeakAuras.data_stub);
+  BlindAuras.validate(data, BlindAuras.data_stub);
   if data.subRegions then
     for _, subRegionData in ipairs(data.subRegions) do
       local subType = subRegionData.type
@@ -2734,10 +2734,10 @@ function WeakAuras.PreAdd(data)
             default = default(data.regionType)
           end
           if default then
-            WeakAuras.validate(subRegionData, default)
+            BlindAuras.validate(subRegionData, default)
           end
         else
-          WeakAuras.prettyPrint(L["ERROR in '%s' unknown or incompatible sub element type '%s'"]:format(data.id, subType))
+          BlindAuras.prettyPrint(L["ERROR in '%s' unknown or incompatible sub element type '%s'"]:format(data.id, subType))
         end
       end
     end
@@ -2752,16 +2752,16 @@ end
 local function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
-    error("Improper arguments to WeakAuras.Add - id not defined");
+    error("Improper arguments to BlindAuras.Add - id not defined");
     return;
   end
 
-  data.uid = data.uid or WeakAuras.GenerateUniqueID()
+  data.uid = data.uid or BlindAuras.GenerateUniqueID()
   if db.displays[id] and db.displays[id].uid ~= data.uid then
-    print("Improper? arguments to WeakAuras.Add - id", id, "is assigned to a different uid.", data.uid, db.displays[id].uid)
+    print("Improper? arguments to BlindAuras.Add - id", id, "is assigned to a different uid.", data.uid, db.displays[id].uid)
   end
   if UIDtoID[data.uid] and UIDtoID[data.uid] ~= id then
-    print("Improper? arguments to WeakAuras.Add - uid is assigned to a id. Uid:", data.uid, "assigned too:", UIDtoID[data.uid], "assigning now to", data.id)
+    print("Improper? arguments to BlindAuras.Add - uid is assigned to a id. Uid:", data.uid, "assigned too:", UIDtoID[data.uid], "assigning now to", data.id)
   end
 
   local otherID = UIDtoID[data.uid]
@@ -2769,16 +2769,16 @@ local function pAdd(data, simpleChange)
     UIDtoID[data.uid] = id
   elseif otherID ~= id then
     -- duplicate uid
-    data.uid = WeakAuras.GenerateUniqueID()
+    data.uid = BlindAuras.GenerateUniqueID()
     UIDtoID[data.uid] = id
   end
 
   if simpleChange then
     db.displays[id] = data
-    WeakAuras.SetRegion(data)
+    BlindAuras.SetRegion(data)
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
-        WeakAuras.SetRegion(data, cloneId)
+        BlindAuras.SetRegion(data, cloneId)
       end
     end
     Private.UpdatedTriggerState(id)
@@ -2791,17 +2791,17 @@ local function pAdd(data, simpleChange)
         Private.ClearAuraEnvironment(parent.id);
       end
       db.displays[id] = data;
-      WeakAuras.SetRegion(data);
+      BlindAuras.SetRegion(data);
       Private.ScanForLoadsGroup({[id] = true});
       loadEvents["GROUP"] = loadEvents["GROUP"] or {}
       loadEvents["GROUP"][id] = true
     else -- Non group aura
       local visible
-      if (WeakAuras.IsOptionsOpen()) then
+      if (BlindAuras.IsOptionsOpen()) then
         visible = Private.FakeStatesFor(id, false)
       else
-        if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
-          WeakAuras.regions[id].region:Collapse()
+        if (BlindAuras.regions[id] and BlindAuras.regions[id].region) then
+          BlindAuras.regions[id].region:Collapse()
         else
           Private.CollapseAllClones(id)
         end
@@ -2834,11 +2834,11 @@ local function pAdd(data, simpleChange)
       loadEvents["SCAN_ALL"][id] = true
 
       local loadForOptionsFuncStr = ConstructFunction(load_prototype, data.load, true);
-      local loadFunc = WeakAuras.LoadFunction(loadFuncStr);
-      local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr);
+      local loadFunc = BlindAuras.LoadFunction(loadFuncStr);
+      local loadForOptionsFunc = BlindAuras.LoadFunction(loadForOptionsFuncStr);
       local triggerLogicFunc;
       if data.triggers.disjunctive == "custom" then
-        triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""));
+        triggerLogicFunc = BlindAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""));
       end
 
       LoadCustomActionFunctions(data);
@@ -2860,7 +2860,7 @@ local function pAdd(data, simpleChange)
         timers[id] = nil;
       end
 
-      WeakAuras.SetRegion(data);
+      BlindAuras.SetRegion(data);
 
       triggerState[id] = {
         disjunctive = data.triggers.disjunctive or "all",
@@ -2874,7 +2874,7 @@ local function pAdd(data, simpleChange)
 
       LoadEncounterInitScripts(id);
 
-      if (WeakAuras.IsOptionsOpen()) then
+      if (BlindAuras.IsOptionsOpen()) then
         Private.FakeStatesFor(id, visible)
       end
 
@@ -2887,7 +2887,7 @@ local function pAdd(data, simpleChange)
   end
 end
 
-function WeakAuras.Add(data, takeSnapshot, simpleChange)
+function BlindAuras.Add(data, takeSnapshot, simpleChange)
   local snapshot
   if takeSnapshot or (data.internalVersion or 0) < internalVersion then
     snapshot = CopyTable(data)
@@ -2895,7 +2895,7 @@ function WeakAuras.Add(data, takeSnapshot, simpleChange)
   if takeSnapshot then
     Private.SetMigrationSnapshot(data.uid, snapshot)
   end
-  local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
+  local ok = xpcall(BlindAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
   if ok then
     pAdd(data, simpleChange)
   end
@@ -2904,25 +2904,25 @@ end
 function Private.AddParents(data)
   local parent = data.parent
   if (parent) then
-    local parentData = WeakAuras.GetData(parent)
-    WeakAuras.Add(parentData)
+    local parentData = BlindAuras.GetData(parent)
+    BlindAuras.Add(parentData)
     Private.AddParents(parentData)
   end
 end
 
-function WeakAuras.SetRegion(data, cloneId)
+function BlindAuras.SetRegion(data, cloneId)
   local regionType = data.regionType;
   if not(regionType) then
-    error("Improper arguments to WeakAuras.SetRegion - regionType not defined");
+    error("Improper arguments to BlindAuras.SetRegion - regionType not defined");
   else
     if(not regionTypes[regionType]) then
       regionType = "fallback";
-      print("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
+      print("Improper arguments to BlindAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
     end
 
     local id = data.id;
     if not(id) then
-      error("Improper arguments to WeakAuras.SetRegion - id not defined");
+      error("Improper arguments to BlindAuras.SetRegion - id not defined");
     else
       local region;
       if(cloneId) then
@@ -2936,7 +2936,7 @@ function WeakAuras.SetRegion(data, cloneId)
           if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
             clones[id][cloneId] = tremove(clonePool[data.regionType]);
           else
-            local clone = regionTypes[data.regionType].create(WeakAurasFrame, data);
+            local clone = regionTypes[data.regionType].create(BlindAurasFrame, data);
             clone.regionType = data.regionType;
             clone:Hide();
             clones[id][cloneId] = clone;
@@ -2945,7 +2945,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
-          region = regionTypes[regionType].create(WeakAurasFrame, data);
+          region = regionTypes[regionType].create(BlindAurasFrame, data);
           regions[id] = {
             regionType = regionType,
             region = region
@@ -2962,9 +2962,9 @@ function WeakAuras.SetRegion(data, cloneId)
       end
       region.id = id;
       region.cloneId = cloneId or "";
-      WeakAuras.validate(data, regionTypes[regionType].default);
+      BlindAuras.validate(data, regionTypes[regionType].default);
 
-      local parent = WeakAurasFrame;
+      local parent = BlindAurasFrame;
       if(data.parent) then
         if(regions[data.parent]) then
           parent = regions[data.parent].region;
@@ -2972,12 +2972,12 @@ function WeakAuras.SetRegion(data, cloneId)
           data.parent = nil;
         end
       end
-      local loginFinished = WeakAuras.IsLoginFinished();
+      local loginFinished = BlindAuras.IsLoginFinished();
       local anim_cancelled = loginFinished and Private.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
-      WeakAuras.regionPrototype.AddSetDurationInfo(region);
-      WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
+      BlindAuras.regionPrototype.AddSetDurationInfo(region);
+      BlindAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
 
       data.animation = data.animation or {};
       data.animation.start = data.animation.start or {type = "none"};
@@ -3007,17 +3007,17 @@ end
 local function EnsureClone(id, cloneId)
   clones[id] = clones[id] or {};
   if not(clones[id][cloneId]) then
-    local data = WeakAuras.GetData(id);
-    WeakAuras.SetRegion(data, cloneId);
+    local data = BlindAuras.GetData(id);
+    BlindAuras.SetRegion(data, cloneId);
   end
   return clones[id][cloneId];
 end
 
-function WeakAuras.GetRegion(id, cloneId)
+function BlindAuras.GetRegion(id, cloneId)
   if(cloneId and cloneId ~= "") then
     return EnsureClone(id, cloneId);
   end
-  return WeakAuras.regions[id] and WeakAuras.regions[id].region;
+  return BlindAuras.regions[id] and BlindAuras.regions[id].region;
 end
 
 -- Note, does not create a clone!
@@ -3026,7 +3026,7 @@ function Private.GetRegionByUID(uid, cloneId)
   if(cloneId and cloneId ~= "") then
     return id and clones[id] and clones[id][cloneId];
   end
-  return id and WeakAuras.regions[id] and WeakAuras.regions[id].region
+  return id and BlindAuras.regions[id] and BlindAuras.regions[id].region
 end
 
 function Private.CollapseAllClones(id, triggernum)
@@ -3038,7 +3038,7 @@ function Private.CollapseAllClones(id, triggernum)
 end
 
 function Private.SetAllStatesHidden(id, triggernum)
-  local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local triggerState = BlindAuras.GetTriggerStateForTrigger(id, triggernum);
   local changed = false
   for _, state in pairs(triggerState) do
     changed = changed or state.show
@@ -3049,7 +3049,7 @@ function Private.SetAllStatesHidden(id, triggernum)
 end
 
 function Private.SetAllStatesHiddenExcept(id, triggernum, list)
-  local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+  local triggerState = BlindAuras.GetTriggerStateForTrigger(id, triggernum);
   for cloneId, state in  pairs(triggerState) do
     if (not (list[cloneId])) then
       state.show = false;
@@ -3065,7 +3065,7 @@ function Private.ReleaseClone(id, cloneId, regionType)
   local region = clones[id][cloneId];
   clones[id][cloneId] = nil;
   if region:IsProtected() then
-    WeakAuras.prettyPrint(L["Error '%s' created a secure clone. We advise deleting the aura. For more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"]:format(id))
+    BlindAuras.prettyPrint(L["Error '%s' created a secure clone. We advise deleting the aura. For more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"]:format(id))
   else
     clonePool[regionType][#clonePool[regionType] + 1] = region;
   end
@@ -3201,7 +3201,7 @@ do
         and (data.frame ~= frame) == update_frame
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+            new_frame = BlindAuras.GetUnitFrame(unit) or BlindAuras.HiddenFrames
           end
           if new_frame and new_frame ~= data.frame then
             local id = region.id .. (region.cloneId or "")
@@ -3229,7 +3229,7 @@ do
         and (data.frame ~= frame) == update_frame
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+            new_frame = BlindAuras.GetUnitFrame(unit) or BlindAuras.HiddenFrames
           end
           if new_frame and new_frame ~= data.frame then
             Private.AnchorFrame(data.data, region, data.parent)
@@ -3242,7 +3242,7 @@ do
       and (data_frame ~= frame) == update_frame
       then
         if not new_frame then
-          new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+          new_frame = BlindAuras.GetUnitFrame(unit) or BlindAuras.HiddenFrames
         end
         if new_frame and new_frame ~= data_frame then
           dynamicGroupsToUpdate[regionData.parent] = true
@@ -3256,8 +3256,8 @@ do
 
   end
 
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
+  LGF.RegisterCallback("BlindAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
+  LGF.RegisterCallback("BlindAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
 end
 
 function Private.HandleGlowAction(actions, region)
@@ -3272,7 +3272,7 @@ function Private.HandleGlowAction(actions, region)
   then
     local glow_frame, should_glow_frame
     if actions.glow_frame_type == "FRAMESELECTOR" then
-      if actions.glow_frame:sub(1, 10) == "WeakAuras:" then
+      if actions.glow_frame:sub(1, 10) == "BlindAuras:" then
         local frame_name = actions.glow_frame:sub(11)
         if regions[frame_name] then
           glow_frame = regions[frame_name].region
@@ -3283,10 +3283,10 @@ function Private.HandleGlowAction(actions, region)
         should_glow_frame = true
       end
     elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
-      glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+      glow_frame = BlindAuras.GetUnitFrame(region.state.unit)
       should_glow_frame = true
     elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
-      glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
+      glow_frame = BlindAuras.GetUnitNameplate(region.state.unit)
       should_glow_frame = true
     end
 
@@ -3335,7 +3335,7 @@ function Private.HandleGlowAction(actions, region)
 end
 
 function Private.PerformActions(data, when, region)
-  if (paused or WeakAuras.IsOptionsOpen()) then
+  if (paused or BlindAuras.IsOptionsOpen()) then
     return;
   end;
   local actions;
@@ -3393,7 +3393,7 @@ function Private.PerformActions(data, when, region)
   end
 end
 
-function WeakAuras.GetData(id)
+function BlindAuras.GetData(id)
   return id and db.displays[id];
 end
 
@@ -3465,8 +3465,8 @@ end
 Private.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
 Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 Private.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
--- This has to be in WeakAuras for now, because GetNameAndIcon can be called from the options
-WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
+-- This has to be in BlindAuras for now, because GetNameAndIcon can be called from the options
+BlindAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
@@ -3569,7 +3569,7 @@ end
 
 function Private.ShowMouseoverTooltip(region, owner)
   if region:IsAnchoringRestricted() then
-    local data = region.id and WeakAuras.GetData(region.id)
+    local data = region.id and BlindAuras.GetData(region.id)
     if data then
       Private.AuraWarnings.UpdateWarning(data.uid, "anchoring", "warning", L["This aura tried to show a tooltip on a anchoring restricted region"])
     end
@@ -3617,9 +3617,9 @@ end
 
 do
   local hiddenTooltip;
-  function WeakAuras.GetHiddenTooltip()
+  function BlindAuras.GetHiddenTooltip()
     if not(hiddenTooltip) then
-      hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
+      hiddenTooltip = CreateFrame("GameTooltip", "BlindAurasTooltip", nil, "GameTooltipTemplate");
       hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE");
       hiddenTooltip:AddFontStrings(
         hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
@@ -3630,8 +3630,8 @@ do
   end
 end
 
-function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
-  local tooltip = WeakAuras.GetHiddenTooltip();
+function BlindAuras.GetAuraTooltipInfo(unit, index, filter)
+  local tooltip = BlindAuras.GetHiddenTooltip();
   tooltip:ClearLines();
   tooltip:SetUnitAura(unit, index, filter);
   local tooltipTextLine = select(5, tooltip:GetRegions())
@@ -3660,9 +3660,9 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
 end
 
 local FrameTimes = {};
-function WeakAuras.ProfileFrames(all)
+function BlindAuras.ProfileFrames(all)
   UpdateAddOnCPUUsage();
-  for name, frame in pairs(WeakAuras.frames) do
+  for name, frame in pairs(BlindAuras.frames) do
     local FrameTime = GetFrameCPUUsage(frame);
     FrameTimes[name] = FrameTimes[name] or 0;
     if(all or FrameTime > FrameTimes[name]) then
@@ -3673,9 +3673,9 @@ function WeakAuras.ProfileFrames(all)
 end
 
 local DisplayTimes = {};
-function WeakAuras.ProfileDisplays(all)
+function BlindAuras.ProfileDisplays(all)
   UpdateAddOnCPUUsage();
-  for id, regionData in pairs(WeakAuras.regions) do
+  for id, regionData in pairs(BlindAuras.regions) do
     local DisplayTime = GetFrameCPUUsage(regionData.region, true);
     DisplayTimes[id] = DisplayTimes[id] or 0;
     if(all or DisplayTime > DisplayTimes[id]) then
@@ -3722,8 +3722,8 @@ local function SetFrameLevel(id, frameLevel)
   if (Private.frameLevels[id] == frameLevel) then
     return;
   end
-  if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
-    Private.ApplyFrameLevel(WeakAuras.regions[id].region, frameLevel)
+  if (BlindAuras.regions[id] and BlindAuras.regions[id].region) then
+    Private.ApplyFrameLevel(BlindAuras.regions[id].region, frameLevel)
   end
   if (clones[id]) then
     for i,v in pairs(clones[id]) do
@@ -3764,7 +3764,7 @@ function Private.ApplyFrameLevel(region, frameLevel)
   end
 end
 
-function WeakAuras.EnsureString(input)
+function BlindAuras.EnsureString(input)
   if (input == nil) then
     return "";
   end
@@ -3836,20 +3836,20 @@ end
 
 Private.dynFrame = dynFrame;
 
-function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
+function BlindAuras.RegisterTriggerSystem(types, triggerSystem)
   for _, v in ipairs(types) do
     triggerTypes[v] = triggerSystem;
   end
   tinsert(triggerSystems, triggerSystem);
 end
 
-function WeakAuras.RegisterTriggerSystemOptions(types, func)
+function BlindAuras.RegisterTriggerSystemOptions(types, func)
   for _, v in ipairs(types) do
     Private.triggerTypesOptions[v] = func;
   end
 end
 
-function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+function BlindAuras.GetTriggerStateForTrigger(id, triggernum)
   if (triggernum == -1) then
     return Private.GetGlobalConditionState();
   end
@@ -3857,11 +3857,11 @@ function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   return triggerState[id][triggernum];
 end
 
-function WeakAuras.GetActiveStates(id)
+function BlindAuras.GetActiveStates(id)
   return triggerState[id].activeStates
 end
 
-function WeakAuras.GetActiveTriggers(id)
+function BlindAuras.GetActiveTriggers(id)
   return triggerState[id].triggers
 end
 
@@ -3937,8 +3937,8 @@ do
   end
 
   function Private.UpdateFakeStatesFor(id)
-    if (WeakAuras.IsOptionsOpen() and visibleFakeStates[id]) then
-      local data = WeakAuras.GetData(id)
+    if (BlindAuras.IsOptionsOpen() and visibleFakeStates[id]) then
+      local data = BlindAuras.GetData(id)
       if (data) then
         for triggernum in ipairs(data.triggers) do
           Private.SetAllStatesHidden(id, triggernum)
@@ -3948,8 +3948,8 @@ do
           end
         end
         Private.UpdatedTriggerState(id)
-        if WeakAuras.GetMoverSizerId() == id then
-          WeakAuras.SetMoverSizer(id)
+        if BlindAuras.GetMoverSizerId() == id then
+          BlindAuras.SetMoverSizer(id)
         end
       end
     end
@@ -4043,7 +4043,7 @@ local function evaluateTriggerStateTriggers(id)
   local result = false;
   Private.ActivateAuraEnvironment(id);
 
-  if WeakAuras.IsOptionsOpen() then
+  if BlindAuras.IsOptionsOpen() then
     -- While the options are open ignore the combination function
     return triggerState[id].triggerCount > 0
   end
@@ -4066,17 +4066,17 @@ end
 
 local function ApplyStatesToRegions(id, activeTrigger, states)
   -- Show new clones
-  local data = WeakAuras.GetData(id)
+  local data = BlindAuras.GetData(id)
   local parent
   if data and data.parent then
-    parent = WeakAuras.GetRegion(data.parent)
+    parent = BlindAuras.GetRegion(data.parent)
   end
   if parent and parent.Suspend then
     parent:Suspend()
   end
   for cloneId, state in pairs(states) do
     if (state.show) then
-      local region = WeakAuras.GetRegion(id, cloneId);
+      local region = BlindAuras.GetRegion(id, cloneId);
       local applyChanges = not region.toShow or state.changed or region.state ~= state
       region.state = state
       region.states = region.states or {}
@@ -4086,7 +4086,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
         if triggernum == activeTrigger then
           triggerState = state
         else
-          local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+          local triggerStates = BlindAuras.GetTriggerStateForTrigger(id, triggernum)
           triggerState = triggerStates[cloneId] or triggerStates[""] or {}
         end
         if triggernum > 0 then
@@ -4179,7 +4179,7 @@ function Private.UpdatedTriggerState(id)
   triggerState[id].show = show;
   triggerState[id].fallbackStates = nil
 
-  local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
+  local activeTriggerState = BlindAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
   if (not next(activeTriggerState)) then
     if (show) then
       activeTriggerState = CreateFallbackState(id, newActiveTrigger)
@@ -4208,7 +4208,7 @@ function Private.UpdatedTriggerState(id)
     for _, clone in pairs(clones[id]) do
       clone:Collapse()
     end
-    WeakAuras.regions[id].region:Collapse()
+    BlindAuras.regions[id].region:Collapse()
   elseif (show and oldShow) then -- Already shown, update regions
     -- Hide old clones
     for cloneId, clone in pairs(clones[id]) do
@@ -4217,7 +4217,7 @@ function Private.UpdatedTriggerState(id)
       end
     end
     if (not activeTriggerState[""] or not activeTriggerState[""].show) then
-      WeakAuras.regions[id].region:Collapse()
+      BlindAuras.regions[id].region:Collapse()
     end
     -- Show new states
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
@@ -4293,7 +4293,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     end
 
     if custom then
-      value = WeakAuras.EnsureString(value)
+      value = BlindAuras.EnsureString(value)
     end
   else
     local variable = Private.dynamic_texts[textStr];
@@ -4613,7 +4613,7 @@ function Private.IsAuraActive(uid)
   return active and active.show;
 end
 
-function WeakAuras.IsAuraActive(id)
+function BlindAuras.IsAuraActive(id)
   local active = triggerState[id]
 
   return active and active.show
@@ -4652,7 +4652,7 @@ end
 
 local function xPositionNextToOptions()
   local xOffset;
-  local optionsFrame = WeakAuras.OptionsFrame();
+  local optionsFrame = BlindAuras.OptionsFrame();
   local centerX = (optionsFrame:GetLeft() + optionsFrame:GetRight()) / 2;
   if (centerX > GetScreenWidth() / 2) then
     if (optionsFrame:GetLeft() > 400) then
@@ -4676,12 +4676,12 @@ local function ensureMouseFrame()
   if (mouseFrame) then
     return;
   end
-  mouseFrame = CreateFrame("Frame", "WeakAurasAttachToMouseFrame", UIParent);
+  mouseFrame = CreateFrame("Frame", "BlindAurasAttachToMouseFrame", UIParent);
   mouseFrame.attachedVisibleFrames = {};
   mouseFrame:SetWidth(1);
   mouseFrame:SetHeight(1);
 
-  local moverFrame = CreateFrame("Frame", "WeakAurasMousePointerFrame", mouseFrame);
+  local moverFrame = CreateFrame("Frame", "BlindAurasMousePointerFrame", mouseFrame);
   mouseFrame.moverFrame = moverFrame;
   moverFrame:SetPoint("TOPLEFT", mouseFrame, "CENTER");
   moverFrame:SetWidth(32);
@@ -4715,7 +4715,7 @@ local function ensureMouseFrame()
   label:SetJustifyH("LEFT")
   label:SetJustifyV("TOP")
   label:SetPoint("TOPLEFT", moverFrame, "BOTTOMLEFT");
-  label:SetText("WeakAuras Anchor");
+  label:SetText("BlindAuras Anchor");
 
   moverFrame:Hide();
 
@@ -4726,7 +4726,7 @@ local function ensureMouseFrame()
       mouseFrame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", db.mousePointerFrame.xOffset, db.mousePointerFrame.yOffset);
     else
       -- Fnd a suitable position
-      local optionsFrame = WeakAuras.OptionsFrame();
+      local optionsFrame = BlindAuras.OptionsFrame();
       local yOffset = (optionsFrame:GetTop() + optionsFrame:GetBottom()) / 2;
       local xOffset = xPositionNextToOptions();
       -- We use the top right, because the main frame uses the top right as the reference too
@@ -4754,7 +4754,7 @@ local function ensureMouseFrame()
   end
 
   mouseFrame.expand = function(self, id)
-    local data = WeakAuras.GetData(id);
+    local data = BlindAuras.GetData(id);
     if (data.anchorFrameType == "MOUSE") then
       self.attachedVisibleFrames[id] = true;
       self:updateVisible();
@@ -4787,7 +4787,7 @@ local function ensureMouseFrame()
   end
 
   mouseFrame.updateVisible = function(self)
-    if (not WeakAuras.IsOptionsOpen()) then
+    if (not BlindAuras.IsOptionsOpen()) then
       return;
     end
 
@@ -4798,7 +4798,7 @@ local function ensureMouseFrame()
     end
   end
 
-  if (WeakAuras.IsOptionsOpen()) then
+  if (BlindAuras.IsOptionsOpen()) then
     mouseFrame:OptionsOpened();
   else
     mouseFrame:OptionsClosed();
@@ -4812,12 +4812,12 @@ function Private.ensurePRDFrame()
   if (personalRessourceDisplayFrame) then
     return;
   end
-  personalRessourceDisplayFrame = CreateFrame("Frame", "WeakAurasAttachToPRD", UIParent);
+  personalRessourceDisplayFrame = CreateFrame("Frame", "BlindAurasAttachToPRD", UIParent);
   personalRessourceDisplayFrame:Hide();
   personalRessourceDisplayFrame.attachedVisibleFrames = {};
   Private.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
 
-  local moverFrame = CreateFrame("Frame", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);
+  local moverFrame = CreateFrame("Frame", "BlindAurasPRDMoverFrame", personalRessourceDisplayFrame);
   personalRessourceDisplayFrame.moverFrame = moverFrame;
   moverFrame:SetPoint("TOPLEFT", personalRessourceDisplayFrame, "TOPLEFT", -2, 2);
   moverFrame:SetPoint("BOTTOMRIGHT", personalRessourceDisplayFrame, "BOTTOMRIGHT", 2, -2);
@@ -4844,11 +4844,11 @@ function Private.ensurePRDFrame()
   local texture = moverFrame:CreateTexture(nil, "BACKGROUND");
   personalRessourceDisplayFrame.texture = texture;
   texture:SetAllPoints(moverFrame);
-  texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\PRDFrame");
+  texture:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\PRDFrame");
 
   local label = moverFrame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   label:SetPoint("CENTER", moverFrame, "CENTER");
-  label:SetText("WeakAuras Anchor");
+  label:SetText("BlindAuras Anchor");
 
   personalRessourceDisplayFrame:RegisterEvent('NAME_PLATE_UNIT_ADDED');
   personalRessourceDisplayFrame:RegisterEvent('NAME_PLATE_UNIT_REMOVED');
@@ -4895,7 +4895,7 @@ function Private.ensurePRDFrame()
       else
         personalRessourceDisplayFrame:SetScale(1);
       end
-      personalRessourceDisplayFrame.texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\PRDFrameKui");
+      personalRessourceDisplayFrame.texture:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\PRDFrameKui");
     else
       local namePlateVerticalScale = tonumber(GetCVar("NamePlateVerticalScale"));
       local zeroBasedScale = namePlateVerticalScale - 1.0;
@@ -4905,12 +4905,12 @@ function Private.ensurePRDFrame()
       prdWidth = baseNamePlateWidth * horizontalScale * Lerp(1.1, 1.0, clampedZeroBasedScale) - 24;
       prdHeight = 4 * namePlateVerticalScale * Lerp(1.2, 1.0, clampedZeroBasedScale) * 2  + 1;
       personalRessourceDisplayFrame:SetScale(1 / UIParent:GetEffectiveScale());
-      personalRessourceDisplayFrame.texture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\PRDFrame");
+      personalRessourceDisplayFrame.texture:SetTexture("Interface\\AddOns\\BlindAuras\\Media\\Textures\\PRDFrame");
     end
 
     local scale = UIParent:GetEffectiveScale() / personalRessourceDisplayFrame:GetEffectiveScale();
     if (not xOffset or not yOffset) then
-      local optionsFrame = WeakAuras.OptionsFrame();
+      local optionsFrame = BlindAuras.OptionsFrame();
       yOffset = optionsFrame:GetBottom() + prdHeight / scale - GetScreenHeight();
       xOffset = xPositionNextToOptions() + prdWidth / 2 / scale - GetScreenWidth();
     end
@@ -4978,7 +4978,7 @@ function Private.ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.expand = function(self, id)
-    local data = WeakAuras.GetData(id);
+    local data = BlindAuras.GetData(id);
     if (data.anchorFrameType == "PRD") then
       self.attachedVisibleFrames[id] = true;
       self:updateVisible();
@@ -5011,7 +5011,7 @@ function Private.ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.updateVisible = function(self)
-    if (not WeakAuras.IsOptionsOpen()) then
+    if (not BlindAuras.IsOptionsOpen()) then
       return;
     end
 
@@ -5026,7 +5026,7 @@ function Private.ensurePRDFrame()
     end
   end
 
-  if (WeakAuras.IsOptionsOpen()) then
+  if (BlindAuras.IsOptionsOpen()) then
     personalRessourceDisplayFrame.OptionsOpened();
   else
     personalRessourceDisplayFrame.OptionsClosed();
@@ -5043,10 +5043,10 @@ local function tryAnchorAgain()
   anchorTimer = nil;
 
   for id, _ in pairs(delayed) do
-    local data = WeakAuras.GetData(id);
-    local region = WeakAuras.GetRegion(id);
+    local data = BlindAuras.GetData(id);
+    local region = BlindAuras.GetRegion(id);
     if (data and region) then
-      local parent = WeakAurasFrame;
+      local parent = BlindAurasFrame;
       if (data.parent and regions[data.parent]) then
         parent = regions[data.parent].region;
       end
@@ -5062,9 +5062,9 @@ local function postponeAnchor(id)
   end
 end
 
-local HiddenFrames = CreateFrame("Frame", "WeakAurasHiddenFrames")
+local HiddenFrames = CreateFrame("Frame", "BlindAurasHiddenFrames")
 HiddenFrames:Hide()
-WeakAuras.HiddenFrames = HiddenFrames
+BlindAuras.HiddenFrames = HiddenFrames
 
 local function GetAnchorFrame(data, region, parent)
   local id = region.id
@@ -5097,9 +5097,9 @@ local function GetAnchorFrame(data, region, parent)
 
   if (anchorFrameType == "NAMEPLATE") then
     local unit = region.state.unit
-    local frame = unit and WeakAuras.GetUnitNameplate(unit)
+    local frame = unit and BlindAuras.GetUnitNameplate(unit)
     if frame then return frame end
-    if WeakAuras.IsOptionsOpen() then
+    if BlindAuras.IsOptionsOpen() then
       Private.ensurePRDFrame()
       personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType)
       return personalRessourceDisplayFrame
@@ -5109,7 +5109,7 @@ local function GetAnchorFrame(data, region, parent)
   if (anchorFrameType == "UNITFRAME") then
     local unit = region.state.unit
     if unit then
-      local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+      local frame = BlindAuras.GetUnitFrame(unit) or BlindAuras.HiddenFrames
       if frame then
         anchor_unitframe_monitor = anchor_unitframe_monitor or {}
         anchor_unitframe_monitor[region] = {
@@ -5123,7 +5123,7 @@ local function GetAnchorFrame(data, region, parent)
   end
 
   if (anchorFrameType == "SELECTFRAME" and anchorFrameFrame) then
-    if(anchorFrameFrame:sub(1, 10) == "WeakAuras:") then
+    if(anchorFrameFrame:sub(1, 10) == "BlindAuras:") then
       local frame_name = anchorFrameFrame:sub(11);
       if (frame_name == id) then
         return parent;
@@ -5151,7 +5151,7 @@ local function GetAnchorFrame(data, region, parent)
     Private.StopProfileAura(region.id)
     if ok and frame then
       return frame
-    elseif WeakAuras.IsOptionsOpen() then
+    elseif BlindAuras.IsOptionsOpen() then
       return parent
     else
       return HiddenFrames
@@ -5166,7 +5166,7 @@ local anchorFrameDeferred = {}
 function Private.AnchorFrame(data, region, parent)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
-  and not WeakAuras.IsLoginFinished()
+  and not BlindAuras.IsLoginFinished()
   and not anchorFrameDeferred[data.id]
   then
     loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent}}
@@ -5178,7 +5178,7 @@ function Private.AnchorFrame(data, region, parent)
         or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
       xpcall(region.SetParent, Private.GetErrorHandlerId(data.id, L["Anchoring"]), region, anchorParent);
     else
-      region:SetParent(parent or WeakAurasFrame);
+      region:SetParent(parent or BlindAurasFrame);
     end
 
     local anchorPoint = data.anchorPoint
@@ -5204,7 +5204,7 @@ function Private.AnchorFrame(data, region, parent)
   end
 end
 
-function WeakAuras.FindUnusedId(prefix)
+function BlindAuras.FindUnusedId(prefix)
   prefix = prefix or "New"
   local num = 2;
   local id = prefix
@@ -5215,8 +5215,8 @@ function WeakAuras.FindUnusedId(prefix)
   return id
 end
 
-function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  if not WeakAuras.IsRetail() then
+function BlindAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
+  if not BlindAuras.IsRetail() then
     if isDisplayInfo then
       pcall(frame.SetDisplayInfo, frame, tonumber(model_path))
     elseif isUnit then
@@ -5253,7 +5253,7 @@ end
 
 -- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
 -- The C api often takes only 32bit values, and complains if passed a value outside
-function WeakAuras.SafeToNumber(input)
+function BlindAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
 end
@@ -5269,7 +5269,7 @@ local textSymbols = {
   ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
 }
 
-function WeakAuras.ReplaceRaidMarkerSymbols(txt)
+function BlindAuras.ReplaceRaidMarkerSymbols(txt)
   local start = 1
 
   while true do
@@ -5354,21 +5354,21 @@ do
     trackableUnits["nameplate" .. i] = true
   end
 
-  function WeakAuras.UntrackableUnit(unit)
+  function BlindAuras.UntrackableUnit(unit)
     return not trackableUnits[unit]
   end
 end
 
 do
   local ownRealm = select(2, UnitFullName("player"))
-  function WeakAuras.UnitNameWithRealm(unit)
+  function BlindAuras.UnitNameWithRealm(unit)
     ownRealm = ownRealm or select(2, UnitFullName("player"))
     local name, realm = UnitFullName(unit)
     return name or "", realm or ownRealm or ""
   end
 end
 
-function WeakAuras.ParseNameCheck(name)
+function BlindAuras.ParseNameCheck(name)
   local matches = {
     name = {},
     realm = {},
@@ -5449,7 +5449,7 @@ function WeakAuras.ParseNameCheck(name)
   return matches
 end
 
-function WeakAuras.ParseZoneCheck(input)
+function BlindAuras.ParseZoneCheck(input)
   if not input then return end
 
   local matcher = {
@@ -5484,7 +5484,7 @@ function WeakAuras.ParseZoneCheck(input)
   return matcher
 end
 
-function WeakAuras.IsAuraLoaded(id)
+function BlindAuras.IsAuraLoaded(id)
   return Private.loaded[id]
 end
 
@@ -5511,12 +5511,12 @@ end
 
 -- Helper function to make the templates not care, how the generic triggers
 -- are categorized
-function WeakAuras.GetTriggerCategoryFor(triggerType)
+function BlindAuras.GetTriggerCategoryFor(triggerType)
   local prototype = Private.event_prototypes[triggerType]
   return prototype and prototype.type
 end
 
-function WeakAuras.UnitStagger(unit)
+function BlindAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
 
@@ -5536,7 +5536,7 @@ do
 
     if data.controlledChildren then
       for _, child in ipairs(data.controlledChildren) do
-        Traverse(WeakAuras.GetData(child), true, includeGroups, includeLeafs)
+        Traverse(BlindAuras.GetData(child), true, includeGroups, includeLeafs)
       end
     end
   end
@@ -5567,7 +5567,7 @@ do
 
   local function TraverseParents(data)
     while data.parent do
-      local parentData = WeakAuras.GetData(data.parent)
+      local parentData = BlindAuras.GetData(data.parent)
       coroutine.yield(parentData)
       data = parentData
     end

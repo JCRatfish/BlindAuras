@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
-local prettyPrint = WeakAuras.prettyPrint
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
+local prettyPrint = BlindAuras.prettyPrint
 local LGF = LibStub("LibGetFrame-1.0")
 
 local profileData = {}
@@ -13,7 +13,7 @@ profileData.auras = {}
 local currentProfileState, ProfilingTimer
 
 local RealTimeProfilingWindow = CreateFrame("Frame", nil, UIParent)
-WeakAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
+BlindAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
 RealTimeProfilingWindow.width = 500
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20
@@ -23,7 +23,7 @@ RealTimeProfilingWindow.buttonsHeight = 22
 RealTimeProfilingWindow.bars = {}
 RealTimeProfilingWindow:SetMovable(true)
 RealTimeProfilingWindow:Hide()
-WeakAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
+BlindAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
 
 local table_to_string
 table_to_string = function(tbl, depth)
@@ -146,8 +146,8 @@ local function CreateProfilePopup()
   scrollFrame:SetMovable(true)
   scrollFrame:SetFrameStrata("DIALOG")
   scrollFrame:SetSize(450, 300)
-  if WeakAurasSaved.ProfilingWindow then
-    scrollFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.ProfilingWindow.xOffset or 0, WeakAurasSaved.ProfilingWindow.yOffset or 0)
+  if BlindAurasSaved.ProfilingWindow then
+    scrollFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", BlindAurasSaved.ProfilingWindow.xOffset or 0, BlindAurasSaved.ProfilingWindow.yOffset or 0)
   else
     scrollFrame:SetPoint("CENTER")
   end
@@ -179,7 +179,7 @@ local function CreateProfilePopup()
 
   local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
-  titletext:SetText(L["WeakAuras Profiling Report"])
+  titletext:SetText(L["BlindAuras Profiling Report"])
 
   local close = CreateDecoration(bg)
   close:SetPoint("RIGHT", titlebg, 50, 0)
@@ -205,9 +205,9 @@ local function CreateProfilePopup()
       scrollFrame:StopMovingOrSizing()
       local xOffset = scrollFrame:GetLeft()
       local yOffset = scrollFrame:GetTop() - GetScreenHeight()
-      WeakAurasSaved.ProfilingWindow = WeakAurasSaved.ProfilingWindow or {}
-      WeakAurasSaved.ProfilingWindow.xOffset = xOffset
-      WeakAurasSaved.ProfilingWindow.yOffset = yOffset
+      BlindAurasSaved.ProfilingWindow = BlindAurasSaved.ProfilingWindow or {}
+      BlindAurasSaved.ProfilingWindow.xOffset = xOffset
+      BlindAurasSaved.ProfilingWindow.yOffset = yOffset
       scrollFrame.is_moving = nil
     end
   end)
@@ -309,7 +309,7 @@ local RegisterProfile = function(startType)
     RealTimeProfilingWindow:UnregisterAllEvents()
     local time = startType + 0
     prettyPrint(L["Profiling started. It will end automatically in %d seconds"]:format(time))
-    ProfilingTimer = WeakAuras.timer:ScheduleTimer(WeakAuras.StopProfile, time)
+    ProfilingTimer = BlindAuras.timer:ScheduleTimer(BlindAuras.StopProfile, time)
     currentProfileState = "profiling"
   else
     RealTimeProfilingWindow:UnregisterAllEvents()
@@ -320,7 +320,7 @@ local RegisterProfile = function(startType)
   return delayedStart
 end
 
-function WeakAuras.StartProfile(startType)
+function BlindAuras.StartProfile(startType)
   if currentProfileState == "profiling" then
     prettyPrint(L["Profiling already started."])
     return
@@ -349,7 +349,7 @@ end
 local function doNothing()
 end
 
-function WeakAuras.StopProfile()
+function BlindAuras.StopProfile()
   if (currentProfileState ~= "profiling") then
     prettyPrint(L["Profiling not running."])
     return
@@ -372,16 +372,16 @@ function WeakAuras.StopProfile()
   RealTimeProfilingWindow:UnregisterAllEvents()
   RealTimeProfilingWindow:UpdateButtons()
   if ProfilingTimer then
-    WeakAuras.timer:CancelTimer(ProfilingTimer)
+    BlindAuras.timer:CancelTimer(ProfilingTimer)
     ProfilingTimer = nil
   end
 end
 
-function WeakAuras.ToggleProfile()
+function BlindAuras.ToggleProfile()
   if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
-    WeakAuras.StartProfile()
+    BlindAuras.StartProfile()
   else
-    WeakAuras.StopProfile()
+    BlindAuras.StopProfile()
   end
 end
 
@@ -392,13 +392,13 @@ local function CancelScheduledProfile()
   RealTimeProfilingWindow:UpdateButtons()
 end
 
-WeakAuras.CancelScheduledProfile = CancelScheduledProfile
+BlindAuras.CancelScheduledProfile = CancelScheduledProfile
 
 local function AutoStartStopProfiling(frame, event)
   if event == "ENCOUNTER_START" or event == "PLAYER_REGEN_DISABLED" then
-    WeakAuras.StartProfile("autostart")
+    BlindAuras.StartProfile("autostart")
   elseif event == "ENCOUNTER_END" or event == "PLAYER_REGEN_ENABLED" then
-    WeakAuras.StopProfile()
+    BlindAuras.StopProfile()
   end
 end
 RealTimeProfilingWindow:SetScript("OnEvent", AutoStartStopProfiling)
@@ -439,7 +439,7 @@ local function TotalProfileTime(map)
   return total
 end
 
-function WeakAuras.PrintProfile()
+function BlindAuras.PrintProfile()
   local popup = ProfilePopup()
   if not profileData.systems.time then
     prettyPrint(L["No Profiling information saved."])
@@ -613,8 +613,8 @@ function RealTimeProfilingWindow:Init()
   self:SetSize(self.width, self.height)
   self:SetClampedToScreen(true)
 
-  if WeakAurasSaved.RealTimeProfilingWindow then
-    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.RealTimeProfilingWindow.xOffset or 0, WeakAurasSaved.RealTimeProfilingWindow.yOffset or 0)
+  if BlindAurasSaved.RealTimeProfilingWindow then
+    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", BlindAurasSaved.RealTimeProfilingWindow.xOffset or 0, BlindAurasSaved.RealTimeProfilingWindow.yOffset or 0)
   else
     self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   end
@@ -634,7 +634,7 @@ function RealTimeProfilingWindow:Init()
 
   local titleText = self.titleFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   self.titleFrameText = titleText
-  titleText:SetText(L["WeakAuras Profiling"])
+  titleText:SetText(L["BlindAuras Profiling"])
   titleText:SetPoint("CENTER", self.titleFrame)
 
   local barsFrame = CreateFrame("Frame", nil, self)
@@ -698,9 +698,9 @@ function RealTimeProfilingWindow:Init()
     local parent = self:GetParent():GetParent()
     if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
       parent:ResetBars()
-      WeakAuras.StartProfile()
+      BlindAuras.StartProfile()
     else
-      WeakAuras.StopProfile()
+      BlindAuras.StopProfile()
     end
   end)
 
@@ -713,7 +713,7 @@ function RealTimeProfilingWindow:Init()
   reportButton:SetWidth(width)
   reportButton:SetText(L["Report Summary"])
   reportButton:SetScript("OnClick", function(self)
-    WeakAuras.PrintProfile()
+    BlindAuras.PrintProfile()
   end)
   reportButton:Hide()
 
@@ -727,7 +727,7 @@ function RealTimeProfilingWindow:Init()
     local parent = self:GetParent():GetParent()
     parent:ResetBars()
     if currentProfileState ~= "combat" then
-      WeakAuras.StartProfile("combat")
+      BlindAuras.StartProfile("combat")
     else
       CancelScheduledProfile()
     end
@@ -743,7 +743,7 @@ function RealTimeProfilingWindow:Init()
     local parent = self:GetParent():GetParent()
     parent:ResetBars()
     if currentProfileState ~= "encounter" then
-      WeakAuras.StartProfile("encounter")
+      BlindAuras.StartProfile("encounter")
     else
       CancelScheduledProfile()
     end
@@ -763,9 +763,9 @@ function RealTimeProfilingWindow:Init()
       self:StopMovingOrSizing()
       local xOffset = self:GetLeft()
       local yOffset = self:GetTop() - GetScreenHeight()
-      WeakAurasSaved.RealTimeProfilingWindow = WeakAurasSaved.RealTimeProfilingWindow or {}
-      WeakAurasSaved.RealTimeProfilingWindow.xOffset = xOffset
-      WeakAurasSaved.RealTimeProfilingWindow.yOffset = yOffset
+      BlindAurasSaved.RealTimeProfilingWindow = BlindAurasSaved.RealTimeProfilingWindow or {}
+      BlindAurasSaved.RealTimeProfilingWindow.xOffset = xOffset
+      BlindAurasSaved.RealTimeProfilingWindow.yOffset = yOffset
       self.is_moving = nil
     end
   end)
@@ -815,7 +815,7 @@ function RealTimeProfilingWindow:Stop()
   self.reportButton:Show()
   self:Hide()
   self:ResetBars()
-  WeakAuras.StopProfile()
+  BlindAuras.StopProfile()
   self.toggleButton:SetText(L["Start Now"])
 end
 

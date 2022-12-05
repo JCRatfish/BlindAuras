@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local screenWidth = math.ceil(GetScreenWidth() / 20) * 20;
 
@@ -17,7 +17,7 @@ local function createOptions(id, data)
     __order = 1,
     displayText = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       desc = function()
         return L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
       end,
@@ -29,15 +29,15 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.displayText = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v);
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end,
     },
     customTextUpdate = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       hidden = function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText); end,
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
@@ -47,7 +47,7 @@ local function createOptions(id, data)
 
     font = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
       order = 45,
@@ -55,7 +55,7 @@ local function createOptions(id, data)
     },
     fontSize = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Size"],
       order = 46,
       min = 6,
@@ -64,7 +64,7 @@ local function createOptions(id, data)
     },
     color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Text Color"],
       hasAlpha = true,
       order = 47
@@ -72,9 +72,9 @@ local function createOptions(id, data)
 
     fontFlagsDescription = {
       order = 48,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       type = "execute",
-      control = "WeakAurasExpandSmall",
+      control = "BlindAurasExpandSmall",
       name = function()
         local textFlags = OptionsPrivate.Private.font_flags[data.outline]
         local color = format("%02x%02x%02x%02x",
@@ -129,7 +129,7 @@ local function createOptions(id, data)
     },
     outline = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Outline"],
       order = 48.2,
       values = OptionsPrivate.Private.font_flags,
@@ -138,7 +138,7 @@ local function createOptions(id, data)
     shadowColor = {
       type = "color",
       hasAlpha = true,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Shadow Color"],
       order = 48.3,
       hidden = hiddenFontExtra
@@ -153,7 +153,7 @@ local function createOptions(id, data)
     },
     shadowXOffset = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Shadow X Offset"],
       softMin = -15,
       softMax = 15,
@@ -163,7 +163,7 @@ local function createOptions(id, data)
     },
     shadowYOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Shadow Y Offset"],
       softMin = -15,
       softMax = 15,
@@ -181,7 +181,7 @@ local function createOptions(id, data)
     },
     justify = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Justify"],
       order = 48.8,
       values = OptionsPrivate.Private.justify_types,
@@ -192,7 +192,7 @@ local function createOptions(id, data)
       name = "",
       order = 48.85,
       hidden = hiddenFontExtra,
-      width = WeakAuras.normalWidth
+      width = BlindAuras.normalWidth
     },
 
     text_font_space5 = {
@@ -204,7 +204,7 @@ local function createOptions(id, data)
     },
     automaticWidth = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Width"],
       order = 49,
       values = OptionsPrivate.Private.text_automatic_width,
@@ -212,7 +212,7 @@ local function createOptions(id, data)
     },
     fixedWidth = {
       name = L["Width"],
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       order = 49.1,
       type = "range",
       min = 1,
@@ -229,7 +229,7 @@ local function createOptions(id, data)
     },
     wordWrap = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Overflow"],
       order = 49.4,
       values = OptionsPrivate.Private.text_word_wrap,
@@ -241,7 +241,7 @@ local function createOptions(id, data)
       name = "",
       order = 50,
       hidden = hiddenFontExtra,
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       arg = {
         expanderName = "text"
       }
@@ -249,7 +249,7 @@ local function createOptions(id, data)
 
     useTooltip = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 51
@@ -282,8 +282,8 @@ local function createOptions(id, data)
       option.reloadOptions = nil
       option.set = function(info, v)
         data["displayText_format_" .. key] = v
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.Add(data)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     end
     options["displayText_format_" .. key] = option
@@ -306,7 +306,7 @@ local function createOptions(id, data)
   addOption("footer", {
     type = "description",
     name = "",
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     hidden = hidden
   })
 
@@ -424,4 +424,4 @@ local templates = {
   }
 }
 
-WeakAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"], templates);
+BlindAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"], templates);

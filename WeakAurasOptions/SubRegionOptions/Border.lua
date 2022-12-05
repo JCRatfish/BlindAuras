@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function createOptions(parentData, data, index, subIndex)
   local options = {
@@ -9,13 +9,13 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     border_visible = {
       type = "toggle",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       name = L["Show Border"],
       order = 2,
     },
     border_edge = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       dialogControl = "LSM30_Border",
       name = L["Border Style"],
       order = 3,
@@ -23,14 +23,14 @@ local function createOptions(parentData, data, index, subIndex)
     },
     border_color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Color"],
       hasAlpha = true,
       order = 4,
     },
     border_offset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Offset"],
       order = 5,
       softMin = 0,
@@ -39,7 +39,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     border_size = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Size"],
       order = 6,
       min = 1,
@@ -48,7 +48,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     border_anchor = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Border Anchor"],
       order = 7,
       values = OptionsPrivate.Private.aurabar_anchor_areas,
@@ -61,4 +61,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subborder", createOptions, L["Shows a border"]);
+BlindAuras.RegisterSubRegionOptions("subborder", createOptions, L["Shows a border"]);

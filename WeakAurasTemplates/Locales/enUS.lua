@@ -1,11 +1,11 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
---@localization(locale="enUS", format="lua_additive_table", namespace="WeakAuras / Templates")@
+--@localization(locale="enUS", format="lua_additive_table", namespace="BlindAuras / Templates")@
 
 -- Make missing translations available
-setmetatable(WeakAuras.L, {__index = function(self, key)
+setmetatable(BlindAuras.L, {__index = function(self, key)
   self[key] = (key or "")
   return key
 end})

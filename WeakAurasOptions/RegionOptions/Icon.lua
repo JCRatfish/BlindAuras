@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local Masque = LibStub("Masque", true)
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local function createOptions(id, data)
   local hiddenIconExtra = function()
@@ -15,27 +15,27 @@ local function createOptions(id, data)
     __order = 1,
     color = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 1
     },
     desaturate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Desaturate"],
       order = 2,
     },
     iconSource = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Icon Source"],
       order = 3,
       values = OptionsPrivate.Private.IconSources(data)
     },
     displayIcon = {
       type = "input",
-      width = WeakAuras.normalWidth - 0.15,
+      width = BlindAuras.normalWidth - 0.15,
       name = L["Fallback Icon"],
       order = 4,
       get = function()
@@ -43,8 +43,8 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.displayIcon = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
       end
     },
     chooseIcon = {
@@ -62,19 +62,19 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      control = "WeakAurasIcon",
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      control = "BlindAurasIcon",
+      image = "Interface\\AddOns\\BlindAuras\\Media\\Textures\\browse",
     },
     useTooltip = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
       hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 6
     },
     iconExtraDescription = {
       type = "execute",
-      control = "WeakAurasExpandSmall",
+      control = "BlindAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
         local changed = false
@@ -99,7 +99,7 @@ local function createOptions(id, data)
         end
         return line
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 7,
       image = function()
         local collapsed = OptionsPrivate.IsCollapsed("icon", "icon", "iconextra", true);
@@ -124,7 +124,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Alpha"],
       order = 7.03,
       min = 0,
@@ -135,7 +135,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Zoom"],
       order = 7.04,
       min = 0,
@@ -153,7 +153,7 @@ local function createOptions(id, data)
     },
     iconInset = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Icon Inset"],
       order = 7.06,
       min = 0,
@@ -166,7 +166,7 @@ local function createOptions(id, data)
     },
     keepAspectRatio = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Keep Aspect Ratio"],
       order = 7.07,
       hidden = hiddenIconExtra,
@@ -176,7 +176,7 @@ local function createOptions(id, data)
       name = "",
       order = 8,
       hidden = hiddenIconExtra,
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       arg = {
         expanderName = "icon"
       }
@@ -188,7 +188,7 @@ local function createOptions(id, data)
     },
     cooldown = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Enable Swipe"],
       order = 11.1,
       desc = L["Enable the \"Swipe\" radial overlay"],
@@ -197,7 +197,7 @@ local function createOptions(id, data)
     },
     inverse = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Inverse"],
       order = 11.2,
       desc = L["Invert the direction of progress"],
@@ -207,34 +207,34 @@ local function createOptions(id, data)
     },
     cooldownSwipe = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show \"Swipe\""],
       order = 11.3,
-      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\swipe-example:30|t\n"..L["Enable \"swipe\" part of the overlay"],
+      desc = "|TInterface\\AddOns\\BlindAuras\\Media\\Textures\\swipe-example:30|t\n"..L["Enable \"swipe\" part of the overlay"],
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownEdge = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Show \"Edge\""],
       order = 11.4,
-      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\edge-example:30|t\n"..L["Enable \"Edge\" part of the overlay"],
+      desc = "|TInterface\\AddOns\\BlindAuras\\Media\\Textures\\edge-example:30|t\n"..L["Enable \"Edge\" part of the overlay"],
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownTextDisabled = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Hide Timer Text"],
       order = 11.5,
-      desc = L["A timer will automatically be displayed according to default Interface Settings (overridden by some addons).\nEnable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer"],
+      desc = L["A timer will automatically be displayed according to default Interface Settings (overridden by some addons).\nEnable this setting if you want this timer to be hidden, or when using a BlindAuras text to display the timer"],
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
     useCooldownModRate = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Blizzard Cooldown Reduction"],
       order = 11.6,
       desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
@@ -276,14 +276,14 @@ local function modifyThumbnail(parent, frame, data)
       iconPath = path or data.displayIcon
     end
     if iconPath and iconPath ~= "" then
-      WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
+      BlindAuras.SetTextureOrAtlas(self.icon, iconPath)
     else
-      WeakAuras.SetTextureOrAtlas(self.icon, "Interface\\Icons\\INV_Misc_QuestionMark")
+      BlindAuras.SetTextureOrAtlas(self.icon, "Interface\\Icons\\INV_Misc_QuestionMark")
     end
   end
 
   if data then
-    local name, icon = WeakAuras.GetNameAndIcon(data);
+    local name, icon = BlindAuras.GetNameAndIcon(data);
     frame:SetIcon(icon)
   end
 end
@@ -465,4 +465,4 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
-WeakAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional cooldown overlay"], templates, GetAnchors);
+BlindAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional cooldown overlay"], templates, GetAnchors);

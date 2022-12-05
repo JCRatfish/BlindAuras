@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasNewHeaderButton", 21
+local Type, Version = "BlindAurasNewHeaderButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local function Hide_Tooltip()
   GameTooltip:Hide();

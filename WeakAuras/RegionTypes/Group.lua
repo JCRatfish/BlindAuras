@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
@@ -35,7 +35,7 @@ local function create(parent)
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate")
   region.border = border;
 
-  WeakAuras.regionPrototype.create(region);
+  BlindAuras.regionPrototype.create(region);
 
   local oldSetFrameLevel = region.SetFrameLevel
   region.SetFrameLevel = function(self, level)
@@ -90,7 +90,7 @@ local function modify(parent, region, data)
   else
     data.selfPoint = "CENTER";
   end
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
 
@@ -100,7 +100,7 @@ local function modify(parent, region, data)
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
   for child in Private.TraverseLeafs(data) do
-    local childRegion = WeakAuras.GetRegion(child.id)
+    local childRegion = BlindAuras.GetRegion(child.id)
     if(child) then
       local blx, bly, trx, try = getRect(child, childRegion);
       leftest = math.min(leftest, blx);
@@ -119,7 +119,7 @@ local function modify(parent, region, data)
 
   local hasDynamicSubGroups = false
   for index, childId in pairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
+    local childData = BlindAuras.GetData(childId);
     if childData.regionType == "dynamicgroup" then
       hasDynamicSubGroups = true
       break;
@@ -138,7 +138,7 @@ local function modify(parent, region, data)
         -- Scan children for visibility
         if not childVisible then
           for child in Private.TraverseLeafs(data) do
-            local childRegion = WeakAuras.regions[child.id] and WeakAuras.regions[child.id].region;
+            local childRegion = BlindAuras.regions[child.id] and BlindAuras.regions[child.id].region;
             if childRegion and childRegion.toShow then
               childVisible = true;
               break;
@@ -179,8 +179,8 @@ local function modify(parent, region, data)
     region.border:Hide()
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
--- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("group", create, modify, default);
+-- Register new region type with BlindAuras
+BlindAuras.RegisterRegionType("group", create, modify, default);

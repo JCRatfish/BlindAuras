@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 Private.barmodels = {}
 
@@ -53,7 +53,7 @@ local function PreShow(self)
 
   -- Adjust model
   local modelId
-  if not WeakAuras.IsRetail() then
+  if not BlindAuras.IsRetail() then
     modelId = data.model_path
   else
     modelId = tonumber(data.model_fileId)
@@ -117,7 +117,7 @@ local function AcquireModel(region, data)
 
   -- Adjust model
   local modelId
-  if not WeakAuras.IsRetail() then
+  if not BlindAuras.IsRetail() then
     modelId = data.model_path
   else
     modelId = tonumber(data.model_fileId)
@@ -265,4 +265,4 @@ local function supports(regionType)
          or regionType == "text"
 end
 
-WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+BlindAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);

@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
@@ -32,20 +32,20 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     text_visible = {
       type = "toggle",
-      width = WeakAuras.halfWidth,
+      width = BlindAuras.halfWidth,
       order = 9,
       name = L["Show Text"],
     },
     text_color = {
       type = "color",
-      width = WeakAuras.halfWidth,
+      width = BlindAuras.halfWidth,
       name = L["Color"],
       hasAlpha = true,
       order = 10,
     },
     text_text = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       desc = function()
         return L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(parentData)
       end,
@@ -53,13 +53,13 @@ local function createOptions(parentData, data, index, subIndex)
       order = 11,
       set = function(info, v)
         data.text_text = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v)
-        WeakAuras.Add(parentData)
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+        BlindAuras.Add(parentData)
+        BlindAuras.ClearAndUpdateOptions(parentData.id)
       end
     },
     text_font = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
       order = 13,
@@ -67,7 +67,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_fontSize = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Size"],
       order = 14,
       min = 6,
@@ -76,7 +76,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_fontFlagsDescription = {
       type = "execute",
-      control = "WeakAurasExpandSmall",
+      control = "BlindAurasExpandSmall",
       name = function()
         local textFlags = OptionsPrivate.Private.font_flags[data.text_fontType]
         local color = format("%02x%02x%02x%02x",
@@ -114,7 +114,7 @@ local function createOptions(parentData, data, index, subIndex)
 
         return secondline
       end,
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 44,
       func = function(info, button)
         local collapsed = OptionsPrivate.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
@@ -141,7 +141,7 @@ local function createOptions(parentData, data, index, subIndex)
 
     text_fontType = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Outline"],
       order = 46,
       values = OptionsPrivate.Private.font_flags,
@@ -150,7 +150,7 @@ local function createOptions(parentData, data, index, subIndex)
     text_shadowColor = {
       type = "color",
       hasAlpha = true,
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Shadow Color"],
       order = 47,
       hidden = hiddenFontExtra
@@ -165,7 +165,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_shadowXOffset = {
       type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Shadow X Offset"],
       softMin = -15,
       softMax = 15,
@@ -175,7 +175,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_shadowYOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Shadow Y Offset"],
       softMin = -15,
       softMax = 15,
@@ -193,7 +193,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     rotateText = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Rotate Text"],
       values = OptionsPrivate.Private.text_rotate_types,
       order = 50,
@@ -201,7 +201,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_justify = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Alignment"],
       values = OptionsPrivate.Private.justify_types,
       order = 50.5,
@@ -216,7 +216,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_automaticWidth = {
       type = "select",
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       name = L["Width"],
       order = 51.5,
       values = OptionsPrivate.Private.text_automatic_width,
@@ -227,7 +227,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 52,
       hidden = hiddenFontExtra,
-      width = WeakAuras.normalWidth
+      width = BlindAuras.normalWidth
     },
     text_font_space7 = {
       type = "description",
@@ -238,7 +238,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_fixedWidth = {
       name = L["Width"],
-      width = WeakAuras.normalWidth - indentWidth,
+      width = BlindAuras.normalWidth - indentWidth,
       order = 53,
       type = "range",
       min = 1,
@@ -248,7 +248,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     text_wordWrap = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Overflow"],
       order = 54,
       values = OptionsPrivate.Private.text_word_wrap,
@@ -260,7 +260,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 55,
       hidden = hiddenFontExtra,
-      control = "WeakAurasExpandAnchor",
+      control = "BlindAurasExpandAnchor",
       arg = {
         expanderName = "subtext" .. index .. "#" .. subIndex
       }
@@ -280,7 +280,7 @@ local function createOptions(parentData, data, index, subIndex)
   -- Anchor Options
   options.text_anchorsDescription = {
     type = "execute",
-    control = "WeakAurasExpandSmall",
+    control = "BlindAurasExpandSmall",
     name = function()
       local selfPoint = data.text_selfPoint ~= "AUTO" and self_point_types[data.text_selfPoint]
       local anchorPoint = anchors[data.text_anchorPoint or "CENTER"] or anchors["CENTER"]
@@ -306,7 +306,7 @@ local function createOptions(parentData, data, index, subIndex)
         end
       end
     end,
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     order = 60,
     image = function()
       local collapsed = OptionsPrivate.IsCollapsed("subregion", "text_anchors", tostring(index), true)
@@ -338,7 +338,7 @@ local function createOptions(parentData, data, index, subIndex)
 
   options.text_selfPoint = {
     type = "select",
-    width = WeakAuras.normalWidth - indentWidth,
+    width = BlindAuras.normalWidth - indentWidth,
     name = L["Anchor"],
     order = 60.2,
     values = self_point_types,
@@ -347,14 +347,14 @@ local function createOptions(parentData, data, index, subIndex)
 
   options.text_anchorPoint = {
     type = "select",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = function()
       return L["To Frame's"]
     end,
     order = 60.3,
     values = anchors,
     hidden = hiddenFunction,
-    control = "WeakAurasTwoColumnDropdown"
+    control = "BlindAurasTwoColumnDropdown"
   }
 
   options.text_anchor_space2 = {
@@ -367,7 +367,7 @@ local function createOptions(parentData, data, index, subIndex)
 
   options.text_anchorXOffset = {
     type = "range",
-    width = WeakAuras.normalWidth - indentWidth,
+    width = BlindAuras.normalWidth - indentWidth,
     name = L["X Offset"],
     order = 60.4,
     softMin = (-1 * screenWidth),
@@ -378,7 +378,7 @@ local function createOptions(parentData, data, index, subIndex)
 
   options.text_anchorYOffset = {
     type = "range",
-    width = WeakAuras.normalWidth,
+    width = BlindAuras.normalWidth,
     name = L["Y Offset"],
     order = 60.5,
     softMin = (-1 * screenHeight),
@@ -392,7 +392,7 @@ local function createOptions(parentData, data, index, subIndex)
     name = "",
     order = 61,
     hidden = hiddenFunction,
-    control = "WeakAurasExpandAnchor",
+    control = "BlindAurasExpandAnchor",
     arg = {
       expanderName = "subtext_anchor" .. index .. "#" .. subIndex
     }
@@ -416,7 +416,7 @@ local function createOptions(parentData, data, index, subIndex)
     __hidden = function() return hideCustomTextOption() end,
     text_customTextUpdate = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       hidden = hideCustomTextOption,
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
@@ -424,8 +424,8 @@ local function createOptions(parentData, data, index, subIndex)
       get = function() return parentData.customTextUpdate or "event" end,
       set = function(info, v)
         parentData.customTextUpdate = v
-        WeakAuras.Add(parentData)
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+        BlindAuras.Add(parentData)
+        BlindAuras.ClearAndUpdateOptions(parentData.id)
       end
     },
   }
@@ -450,8 +450,8 @@ local function createOptions(parentData, data, index, subIndex)
       option.reloadOptions = nil
       option.set = function(info, v)
         data["text_text_format_" .. key] = v
-        WeakAuras.Add(parentData)
-        WeakAuras.ClearAndUpdateOptions(parentData.id, true)
+        BlindAuras.Add(parentData)
+        BlindAuras.ClearAndUpdateOptions(parentData.id, true)
       end
     end
     options["text_text_format_" .. key] = option
@@ -486,7 +486,7 @@ local function createOptions(parentData, data, index, subIndex)
   addOption("footer", {
     type = "description",
     name = "",
-    width = WeakAuras.doubleWidth,
+    width = BlindAuras.doubleWidth,
     hidden = hidden
   })
 
@@ -495,4 +495,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options, commonTextOptions
 end
 
-WeakAuras.RegisterSubRegionOptions("subtext", createOptions, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])
+BlindAuras.RegisterSubRegionOptions("subtext", createOptions, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])

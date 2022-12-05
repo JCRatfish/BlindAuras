@@ -1,7 +1,7 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
 local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
@@ -35,7 +35,7 @@ local function GetGlobalOptions(data)
     disjunctive = {
       type = "select",
       name = L["Required for Activation"],
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 2,
       values = function()
         if #data.triggers > 1 then
@@ -53,14 +53,14 @@ local function GetGlobalOptions(data)
       end,
       set = function(info, v)
         data.triggers.disjunctive = v;
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
       end
     },
     -- custom trigger combiner text editor added below
     activeTriggerMode = {
       type = "select",
       name = L["Dynamic Information"],
-      width = WeakAuras.doubleWidth,
+      width = BlindAuras.doubleWidth,
       order = 2.3,
       values = function()
         local vals = {};
@@ -75,8 +75,8 @@ local function GetGlobalOptions(data)
       end,
       set = function(info, v)
         data.triggers.activeTriggerMode = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        BlindAuras.Add(data);
+        BlindAuras.UpdateThumbnail(data);
       end,
       hidden = function() return #data.triggers <= 1 end
     }
@@ -123,7 +123,7 @@ local function AddOptions(allOptions, data)
     __collapsed = false,
     addTrigger = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = BlindAuras.normalWidth,
       name = L["Add Trigger"],
       order = 1,
       func = function()
@@ -136,10 +136,10 @@ local function AddOptions(allOptions, data)
             untrigger = {
             }
           })
-        WeakAuras.Add(data)
+        BlindAuras.Add(data)
         OptionsPrivate.SetCollapsed(collapsedId, "trigger", #data.triggers, false)
         maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        BlindAuras.ClearAndUpdateOptions(data.id)
       end
     }
   }
@@ -276,9 +276,9 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum - 1)) then
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.MoveCollapseDataUp(collapsedId, "trigger", {triggernum})
-        WeakAuras.ClearAndUpdateOptions(data.id);
+        BlindAuras.ClearAndUpdateOptions(data.id);
       end
     end
   }
@@ -289,17 +289,17 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum)) then
-        WeakAuras.Add(data);
+        BlindAuras.Add(data);
         OptionsPrivate.MoveCollapseDataDown(collapsedId, "trigger", {triggernum})
-        WeakAuras.ClearAndUpdateOptions(data.id);
+        BlindAuras.ClearAndUpdateOptions(data.id);
       end
     end
   }
   options.__duplicate = function()
     local trigger = CopyTable(data.triggers[triggernum])
     tinsert(data.triggers, trigger)
-    WeakAuras.Add(data)
-    WeakAuras.ClearAndUpdateOptions(data.id)
+    BlindAuras.Add(data)
+    BlindAuras.ClearAndUpdateOptions(data.id)
   end
   options.__delete = {
     disabled = function()
@@ -331,13 +331,13 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
               if #child.triggers > 1 and #child.triggers >= triggernum then
                 tremove(child.triggers, triggernum)
                 DeleteConditionsForTrigger(child, triggernum)
-                WeakAuras.Add(child)
+                BlindAuras.Add(child)
                 OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
                 OptionsPrivate.ClearOptions(child.id)
               end
             end
 
-            WeakAuras.FillOptions()
+            BlindAuras.FillOptions()
             triggerDeleteDialogOpen = false
           end,
           OnCancel = function()
@@ -352,7 +352,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
       end
     end
   }
-  if (GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
+  if (GetAddOnEnableState(UnitName("player"), "BlindAurasTemplates") ~= 0) then
     options.__applyTemplate = function()
       -- If we have more than a single aura selected,
       -- we want to open the template view with the group/multi selection

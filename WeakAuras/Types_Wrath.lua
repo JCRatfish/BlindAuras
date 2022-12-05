@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local BlindAuras = BlindAuras;
+local L = BlindAuras.L;
 
 local encounter_list = ""
 function Private.InitializeEncounterAndZoneLists()

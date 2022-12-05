@@ -1,13 +1,13 @@
-if not WeakAuras.IsLibsOK() then
+if not BlindAuras.IsLibsOK() then
   return
 end
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
+local widgetType, widgetVersion = "BlindAurasMiniTalent", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
 end
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local buttonSize = 32
 local buttonSizePadded = 45
@@ -127,7 +127,7 @@ local function TalentFrame_Update(self)
         if spellId == nil then
           local talentId = button.index - (button.tab - 1) * MAX_NUM_TALENTS
           local name = GetTalentInfo(button.tab, talentId)
-          print("Please report on WeakAuras Discord:\nspell missing", button.tab, tier, column, name)
+          print("Please report on BlindAuras Discord:\nspell missing", button.tab, tier, column, name)
         end
         button.tier = tier
         button.column = column
@@ -286,7 +286,7 @@ local function Constructor()
     self.obj:ToggleView()
   end)
 
-  local toggle = AceGUI:Create("WeakAurasToolbarButton")
+  local toggle = AceGUI:Create("BlindAurasToolbarButton")
   toggle:SetText(L["Select Talent"])
   toggle:SetTexture("interface/buttons/ui-microbutton-talents-up")
   toggle.icon:ClearAllPoints()

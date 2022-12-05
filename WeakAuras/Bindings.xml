@@ -1,11 +1,11 @@
 <Bindings>
   <Binding name="WEAKAURASTOGGLE" header="WEAKAURAS" Category="ADDONS">
-    WeakAuras.OpenOptions()
+    BlindAuras.OpenOptions()
   </Binding>
   <Binding name="WEAKAURASPROFILINGTOGGLE" Category="ADDONS">
-    WeakAuras.RealTimeProfilingWindow:Toggle()
+    BlindAuras.RealTimeProfilingWindow:Toggle()
   </Binding>
   <Binding name="WEAKAURASPRINTPROFILING" Category="ADDONS">
-    WeakAuras.PrintProfile()
+    BlindAuras.PrintProfile()
   </Binding>
 </Bindings>

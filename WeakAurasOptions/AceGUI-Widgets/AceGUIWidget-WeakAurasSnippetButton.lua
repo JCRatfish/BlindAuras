@@ -1,9 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 --[[-----------------------------------------------------------------------------
 SnippetButton Widget, based on AceGUI Button (and WA ToolbarButton)
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasSnippetButton", 2
+local Type, Version = "BlindAurasSnippetButton", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
@@ -16,7 +16,7 @@ local pairs = pairs
 local _G = _G
 local PlaySound, CreateFrame, UIParent = PlaySound, CreateFrame, UIParent
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 --[[-----------------------------------------------------------------------------
 Scripts
@@ -126,7 +126,7 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
-  local name = "WeakAurasSnippetButton" .. AceGUI:GetNextWidgetNum(Type)
+  local name = "BlindAurasSnippetButton" .. AceGUI:GetNextWidgetNum(Type)
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate")
   button:Hide()
 

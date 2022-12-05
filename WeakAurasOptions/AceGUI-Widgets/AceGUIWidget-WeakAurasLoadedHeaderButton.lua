@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasLoadedHeaderButton", 21
+local Type, Version = "BlindAurasLoadedHeaderButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local L = WeakAuras.L
+local L = BlindAuras.L
 
 local function Hide_Tooltip()
   GameTooltip:Hide();
@@ -97,7 +97,7 @@ local methods = {
     self.view:SetScript("OnClick", func);
   end,
   ["PriorityShow"] = function(self, priority)
-    if (not WeakAuras.IsOptionsOpen()) then
+    if (not BlindAuras.IsOptionsOpen()) then
       return;
     end
     if(priority >= self.view.visibility and self.view.visibility ~= priority) then
@@ -106,7 +106,7 @@ local methods = {
     end
   end,
   ["PriorityHide"] = function(self, priority)
-    if (not WeakAuras.IsOptionsOpen()) then
+    if (not BlindAuras.IsOptionsOpen()) then
       return;
     end
     if(priority >= self.view.visibility and self.view.visibility ~= 0) then

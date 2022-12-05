@@ -26,7 +26,7 @@ Modernize(data)
 Updates all buff triggers in data.
 
 #####################################################
-# Helper functions mainly for the WeakAuras Options #
+# Helper functions mainly for the BlindAuras Options #
 #####################################################
 
 CanHaveDuration(data, triggernum)
@@ -50,7 +50,7 @@ Returns the tooltip text for additional properties.
 GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 -- Lua APIs
@@ -59,21 +59,21 @@ local pairs, next, type = pairs, next, type
 local UnitAura = UnitAura
 
 local LCD
-if WeakAuras.IsClassic() then
+if BlindAuras.IsClassic() then
   LCD = LibStub("LibClassicDurations")
-  LCD:Register("WeakAuras")
+  LCD:Register("BlindAuras")
   UnitAura = LCD.UnitAuraWithBuffs
 end
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
-local timer = WeakAuras.timer
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
+local timer = BlindAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
 local watched_trigger_events = Private.watched_trigger_events
 
-local UnitGroupRolesAssigned = WeakAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
+local UnitGroupRolesAssigned = BlindAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -138,9 +138,9 @@ local function UnitInSubgroupOrPlayer(unit, includePets)
   if includePets == nil then
     return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
   elseif includePets == "PlayersAndPets" then
-    return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit) or UnitIsUnit("pet", unit)
+    return UnitInSubgroup(BlindAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit) or UnitIsUnit("pet", unit)
   elseif includePets == "PetsOnly" then
-    return UnitInSubgroup(WeakAuras.petUnitToUnit[unit]) or UnitIsUnit("pet", unit)
+    return UnitInSubgroup(BlindAuras.petUnitToUnit[unit]) or UnitIsUnit("pet", unit)
   end
 end
 
@@ -259,7 +259,7 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   local changed = false
 
   if matchData.unit and matchData.index and matchData.filter then
-    local tooltip, _, tooltip1, tooltip2, tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
+    local tooltip, _, tooltip1, tooltip2, tooltip3 = BlindAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
 
     changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
       or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3
@@ -277,7 +277,7 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   if not matchData[unit][filter] then
     matchData[unit][filter] = {}
   end
-  local debuffClassIcon = WeakAuras.EJIcons[debuffClass]
+  local debuffClassIcon = BlindAuras.EJIcons[debuffClass]
   if not matchData[unit][filter][index] then
     matchData[unit][filter][index] = {
       name = name,
@@ -504,7 +504,7 @@ local roleIcons = {
 }
 
 local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, unaffected, role, raidMark)
-  local debuffClassIcon = WeakAuras.EJIcons[bestMatch.debuffClass]
+  local debuffClassIcon = BlindAuras.EJIcons[bestMatch.debuffClass]
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
       show = true,
@@ -736,7 +736,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 end
 
 local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, unaffected, role, raidMark)
-  local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(WeakAuras.GetData(triggerInfo.id), triggerInfo.triggernum)
+  local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(BlindAuras.GetData(triggerInfo.id), triggerInfo.triggernum)
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
       show = true,
@@ -941,16 +941,16 @@ local function GetAllUnits(unit, allUnits, includePets)
           if i <= 40 then
             local ret
             if includePets == "PlayersAndPets" then
-              ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+              ret = pets and BlindAuras.raidpetUnits[i] or BlindAuras.raidUnits[i]
               pets = not pets
               if pets then
                 i = i + 1
               end
             elseif includePets == "PetsOnly" then
-              ret = WeakAuras.raidpetUnits[i]
+              ret = BlindAuras.raidpetUnits[i]
               i = i + 1
             else -- raid
-              ret = WeakAuras.raidUnits[i]
+              ret = BlindAuras.raidUnits[i]
               i = i + 1
             end
             return ret
@@ -967,16 +967,16 @@ local function GetAllUnits(unit, allUnits, includePets)
         if i <= 4 then
           local ret
           if includePets == "PlayersAndPets" then
-            ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+            ret = pets and BlindAuras.partypetUnits[i] or BlindAuras.partyUnits[i]
             pets = not pets
             if pets then
               i = i + 1
             end
           elseif includePets == "PetsOnly" then
-            ret = WeakAuras.partypetUnits[i]
+            ret = BlindAuras.partypetUnits[i]
             i = i + 1
           else -- group
-            ret = WeakAuras.partyUnits[i]
+            ret = BlindAuras.partyUnits[i]
             i = i + 1
           end
           return ret
@@ -996,16 +996,16 @@ local function GetAllUnits(unit, allUnits, includePets)
         if i <= max then
           local ret
           if includePets == "PlayersAndPets" then
-            ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+            ret = pets and BlindAuras.raidpetUnits[i] or BlindAuras.raidUnits[i]
             pets = not pets
             if pets then
               i = i + 1
             end
           elseif includePets == "PetsOnly" then
-            ret = WeakAuras.raidpetUnits[i]
+            ret = BlindAuras.raidpetUnits[i]
             i = i + 1
           else -- raid
-            ret = WeakAuras.raidUnits[i]
+            ret = BlindAuras.raidUnits[i]
             i = i + 1
           end
           return ret
@@ -1036,16 +1036,16 @@ local function GetAllUnits(unit, allUnits, includePets)
           if i <= max then
             local ret
             if includePets == "PlayersAndPets" then
-              ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+              ret = pets and BlindAuras.partypetUnits[i] or BlindAuras.partyUnits[i]
               pets = not pets
               if pets then
                 i = i + 1
               end
             elseif includePets == "PetsOnly" then
-              ret = WeakAuras.partypetUnits[i]
+              ret = BlindAuras.partypetUnits[i]
               i = i + 1
             else -- group
-              ret = WeakAuras.partyUnits[i]
+              ret = BlindAuras.partyUnits[i]
               i = i + 1
             end
             return ret
@@ -1104,8 +1104,8 @@ end
 
 local function TriggerInfoApplies(triggerInfo, unit)
   local controllingUnit = unit
-  if WeakAuras.UnitIsPet(unit) then
-    controllingUnit = WeakAuras.petUnitToUnit[unit]
+  if BlindAuras.UnitIsPet(unit) then
+    controllingUnit = BlindAuras.petUnitToUnit[unit]
   end
 
 
@@ -1129,7 +1129,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.raidRole and not triggerInfo.raidRole[WeakAuras.UnitRaidRole(controllingUnit) or ""] then
+  if triggerInfo.raidRole and not triggerInfo.raidRole[BlindAuras.UnitRaidRole(controllingUnit) or ""] then
     return false
   end
 
@@ -1148,12 +1148,12 @@ local function TriggerInfoApplies(triggerInfo, unit)
     end
   end
 
-  if triggerInfo.hostility and WeakAuras.GetPlayerReaction(unit) ~= triggerInfo.hostility then
+  if triggerInfo.hostility and BlindAuras.GetPlayerReaction(unit) ~= triggerInfo.hostility then
     return false
   end
 
   if triggerInfo.unit == "group" then
-    local isPet = WeakAuras.UnitIsPet(unit)
+    local isPet = BlindAuras.UnitIsPet(unit)
     if triggerInfo.includePets == "PetsOnly" and not isPet then
       return false
     elseif triggerInfo.includePets == nil and isPet then -- exclude pets
@@ -1191,7 +1191,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.nameChecker and not triggerInfo.nameChecker:Check(WeakAuras.UnitNameWithRealm(unit)) then
+  if triggerInfo.nameChecker and not triggerInfo.nameChecker:Check(BlindAuras.UnitNameWithRealm(unit)) then
     return false
   end
 
@@ -1267,7 +1267,7 @@ local function SortMatchDataByUnitIndex(a, b)
 end
 
 local function UpdateTriggerState(time, id, triggernum)
-  local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+  local triggerStates = BlindAuras.GetTriggerStateForTrigger(id, triggernum)
   local triggerInfo = triggerInfos[id][triggernum]
   local updated
   local nextCheck
@@ -1843,7 +1843,7 @@ local function RecheckActiveForUnitType(unitType, unit, unitsToRemoveScan)
 end
 
 local Buff2Frame = CreateFrame("Frame")
-WeakAuras.frames["WeakAuras Buff2 Frame"] = Buff2Frame
+BlindAuras.frames["BlindAuras Buff2 Frame"] = Buff2Frame
 
 local function EventHandler(frame, event, arg1, arg2, ...)
   Private.StartProfileSystem("bufftrigger2")
@@ -1863,7 +1863,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       tinsert(unitsToRemove, "focus")
     end
   elseif event == "UNIT_PET" then
-    local pet = WeakAuras.unitToPetUnit[arg1]
+    local pet = BlindAuras.unitToPetUnit[arg1]
     if pet then
       ScanGroupUnit(time, matchDataChanged, "group", pet)
       RecheckActiveForUnitType("group", pet, deactivatedTriggerInfos)
@@ -1944,13 +1944,13 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   Private.StopProfileSystem("bufftrigger2")
 end
 
-if WeakAuras.IsRetail() then
+if BlindAuras.IsRetail() then
   Private.LibSpecWrapper.Register(function(unit)
     Private.StartProfileSystem("bufftrigger2")
 
     local deactivatedTriggerInfos = {}
     RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
-    RecheckActiveForUnitType("group", WeakAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
+    RecheckActiveForUnitType("group", BlindAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
     DeactivateScanFuncs(deactivatedTriggerInfos)
 
     Private.StopProfileSystem("bufftrigger2")
@@ -1964,15 +1964,15 @@ Buff2Frame:RegisterEvent("UNIT_FLAGS")
 Buff2Frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 Buff2Frame:RegisterEvent("UNIT_PET")
 Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
-if not WeakAuras.IsClassic() then
+if not BlindAuras.IsClassic() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-  if WeakAuras.IsRetail() then
+  if BlindAuras.IsRetail() then
     Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   end
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
   Buff2Frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 else
-  LCD.RegisterCallback("WeakAuras", "UNIT_BUFF", function(event, unit)
+  LCD.RegisterCallback("BlindAuras", "UNIT_BUFF", function(event, unit)
     EventHandler(Buff2Frame, "UNIT_AURA", unit)
   end)
 end
@@ -1989,7 +1989,7 @@ Buff2Frame:RegisterEvent("PARTY_MEMBER_ENABLE")
 Buff2Frame:SetScript("OnEvent", EventHandler)
 
 Buff2Frame:SetScript("OnUpdate", function()
-  if WeakAuras.IsPaused() then
+  if BlindAuras.IsPaused() then
     return
   end
   Private.StartProfileSystem("bufftrigger2")
@@ -2435,7 +2435,7 @@ local function createScanFunc(trigger)
   if use_ignore_name then
     local names = {}
     for index, spellName in ipairs(trigger.ignoreAuraNames) do
-      local spellId = WeakAuras.SafeToNumber(spellName)
+      local spellId = BlindAuras.SafeToNumber(spellName)
       local name = GetSpellInfo(spellId) or spellName
       tinsert(names, name)
     end
@@ -2455,7 +2455,7 @@ local function createScanFunc(trigger)
   if use_ignore_spellId then
     preamble = preamble .. "local ignoreSpellId = {\n"
     for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
-      local spell = WeakAuras.SafeToNumber(spellId)
+      local spell = BlindAuras.SafeToNumber(spellId)
       if spell then
         preamble = preamble .. string.format("  [%s]  = true,\n", spell)
       end
@@ -2535,14 +2535,14 @@ function BuffTrigger.Add(data)
       local remFunc
       if trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem then
         local remFuncStr = Private.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0)
-        remFunc = WeakAuras.LoadFunction(remFuncStr)
+        remFunc = BlindAuras.LoadFunction(remFuncStr)
       end
 
       local names
       if trigger.useName and trigger.auranames then
         names = {}
         for index, spellName in ipairs(trigger.auranames) do
-          local spellId = WeakAuras.SafeToNumber(spellName)
+          local spellId = BlindAuras.SafeToNumber(spellName)
           names[index] = GetSpellInfo(spellId) or spellName
         end
       end
@@ -2565,14 +2565,14 @@ function BuffTrigger.Add(data)
         else
           group_countFuncStr = Private.function_strings.count:format(">", 0)
         end
-        groupCountFunc = WeakAuras.LoadFunction(group_countFuncStr)
+        groupCountFunc = BlindAuras.LoadFunction(group_countFuncStr)
       end
 
       local matchCountFunc
       if HasMatchCount(trigger) and trigger.match_countOperator and trigger.match_count and tonumber(trigger.match_count) then
         local count = tonumber(trigger.match_count)
         local match_countFuncStr = Private.function_strings.count:format(trigger.match_countOperator, count)
-        matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
+        matchCountFunc = BlindAuras.LoadFunction(match_countFuncStr)
       elseif IsGroupTrigger(trigger) then
         if trigger.showClones and not trigger.combinePerUnit then
           matchCountFunc = GreaterEqualOne
@@ -2590,16 +2590,16 @@ function BuffTrigger.Add(data)
          and tonumber(trigger.matchPerUnit_count) and trigger.matchPerUnit_countOperator then
         local count = tonumber(trigger.matchPerUnit_count)
         local match_countFuncStr = Private.function_strings.count:format(trigger.matchPerUnit_countOperator, count)
-        matchPerUnitCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
+        matchPerUnitCountFunc = BlindAuras.LoadFunction(match_countFuncStr)
       end
 
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
       local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
-      local effectiveGroupRole = WeakAuras.IsWrathOrRetail() and (groupTrigger and trigger.useGroupRole and trigger.group_role) or nil
-      local effectiveRaidRole = WeakAuras.IsClassicOrBCCOrWrath() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
+      local effectiveGroupRole = BlindAuras.IsWrathOrRetail() and (groupTrigger and trigger.useGroupRole and trigger.group_role) or nil
+      local effectiveRaidRole = BlindAuras.IsClassicOrBCCOrWrath() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
-      local effectiveSpecId = WeakAuras.IsRetail() and (groupTrigger and trigger.useActualSpec and trigger.actualSpec) or nil
-      local effectiveArenaSpec = WeakAuras.IsRetail() and (trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec) or nil
+      local effectiveSpecId = BlindAuras.IsRetail() and (groupTrigger and trigger.useActualSpec and trigger.actualSpec) or nil
+      local effectiveArenaSpec = BlindAuras.IsRetail() and (trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec) or nil
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
@@ -2654,7 +2654,7 @@ function BuffTrigger.Add(data)
         compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
-        fetchRole = WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
+        fetchRole = BlindAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
         fetchRaidMark = trigger.unit ~= "multi" and trigger.fetchRaidMark,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
@@ -2673,7 +2673,7 @@ function BuffTrigger.Add(data)
         matchPerUnitCountFunc = matchPerUnitCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
-        nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName),
+        nameChecker = effectiveNameCheck and BlindAuras.ParseNameCheck(trigger.unitName),
         includePets = trigger.use_includePets and trigger.includePets or nil,
         npcId = effectiveNpcId
       }
@@ -2739,7 +2739,7 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
 
   if trigger.useName and trigger.auranames then
     for index, spellName in ipairs(trigger.auranames) do
-      local spellId = WeakAuras.SafeToNumber(spellName)
+      local spellId = BlindAuras.SafeToNumber(spellName)
       if spellId then
         name, _, icon = GetSpellInfo(spellName)
         if name and icon then
@@ -2773,11 +2773,11 @@ end
 -- @return name and icon
 function BuffTrigger.GetNameAndIcon(data, triggernum)
   local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
-  if (not name or not icon and WeakAuras.spellCache) then
+  if (not name or not icon and BlindAuras.spellCache) then
     local trigger = data.triggers[triggernum].trigger
     if trigger.useName and trigger.auranames then
       for index, spellName in ipairs(trigger.auranames) do
-        icon = WeakAuras.spellCache.GetIcon(spellName)
+        icon = BlindAuras.spellCache.GetIcon(spellName)
         if icon then
           return spellName, icon
         end
@@ -2819,7 +2819,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
   end
 
-  if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
+  if BlindAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
     ret = ret .. "|cFFFF0000%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
     ret = ret .. "|cFFFF0000%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
   end
@@ -3333,7 +3333,7 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true
   end
 
-  local debuffClassIcon = WeakAuras.EJIcons[debuffClass]
+  local debuffClassIcon = BlindAuras.EJIcons[debuffClass]
   if matchData.debuffClassIcon ~= debuffClassIcon then
     matchData.debuffClassIcon = debuffClassIcon
     changed = true
@@ -3526,14 +3526,14 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if not WeakAuras.IsClassic() then
+    if not BlindAuras.IsClassic() then
       multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     multiAuraFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
     multiAuraFrame:SetScript("OnEvent", BuffTrigger.HandleMultiEvent)
-    WeakAuras.frames["Multi-target 2 Aura Trigger Handler"] = multiAuraFrame
+    BlindAuras.frames["Multi-target 2 Aura Trigger Handler"] = multiAuraFrame
   end
 end
 
@@ -3588,11 +3588,11 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
         end
       end
       local icon
-      local spellId = WeakAuras.SafeToNumber(name)
+      local spellId = BlindAuras.SafeToNumber(name)
       if spellId then
         icon = select(3, GetSpellInfo(spellId))
       else
-        icon = WeakAuras.spellCache.GetIcon(name)
+        icon = BlindAuras.spellCache.GetIcon(name)
       end
       icon = icon or "Interface\\Icons\\INV_Misc_QuestionMark"
       tinsert(namestable, {left, name, icon})
@@ -3619,8 +3619,8 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
 end
 
 function BuffTrigger.CreateFakeStates(id, triggernum)
-  local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  local data = WeakAuras.GetData(id)
+  local allStates = BlindAuras.GetTriggerStateForTrigger(id, triggernum);
+  local data = BlindAuras.GetData(id)
   local state = {}
   BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.expirationTime = GetTime() + 60
@@ -3641,4 +3641,4 @@ function BuffTrigger.CreateFakeStates(id, triggernum)
   end
 end
 
-WeakAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger)
+BlindAuras.RegisterTriggerSystem({"aura2"}, BuffTrigger)

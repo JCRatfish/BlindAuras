@@ -1,8 +1,8 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
+local BlindAuras = BlindAuras
+local L = BlindAuras.L
 
 -- keyed on uid, key, { severity, message }
 local warnings = {}
@@ -17,13 +17,13 @@ Private.callbacks:RegisterCallback("Delete", OnDelete)
 
 local function UpdateWarning(uid, key, severity, message, printOnConsole)
   if not uid then
-    WeakAuras.prettyPrint(L["Warning for unknown aura:"], message)
+    BlindAuras.prettyPrint(L["Warning for unknown aura:"], message)
     return
   end
   if printOnConsole then
     printedWarnings[uid] = printedWarnings[uid] or {}
     if printedWarnings[uid][key] == nil then
-      WeakAuras.prettyPrint(string.format(L["Aura '%s': %s"], Private.UIDtoID(uid), message))
+      BlindAuras.prettyPrint(string.format(L["Aura '%s': %s"], Private.UIDtoID(uid), message))
       printedWarnings[uid][key] = true
     end
   end

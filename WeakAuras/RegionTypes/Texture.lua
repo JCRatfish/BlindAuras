@@ -1,10 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local L = WeakAuras.L;
+local L = BlindAuras.L;
 
 local default = {
-  texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
+  texture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturate = false,
   width = 200,
   height = 200,
@@ -23,7 +23,7 @@ local default = {
   frameStrata = 1
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+BlindAuras.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -63,7 +63,7 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+BlindAuras.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
   local region = CreateFrame("Frame", nil, UIParent);
@@ -78,14 +78,14 @@ local function create(parent)
   region.texture = texture;
   texture:SetAllPoints(region);
 
-  WeakAuras.regionPrototype.create(region);
+  BlindAuras.regionPrototype.create(region);
 
   return region;
 end
 
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  BlindAuras.regionPrototype.modify(parent, region, data);
+  BlindAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);
@@ -181,7 +181,7 @@ local function modify(parent, region, data)
 
   function region:Update()
     if region.state.texture then
-      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode);
+      BlindAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode);
     end
   end
 
@@ -232,11 +232,11 @@ local function modify(parent, region, data)
     region.GetRotation = nil;
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  BlindAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
 local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, properties, validate);
+BlindAuras.RegisterRegionType("texture", create, modify, default, properties, validate);

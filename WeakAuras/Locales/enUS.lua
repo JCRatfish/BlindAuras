@@ -1,9 +1,9 @@
-local L = WeakAuras.L
+local L = BlindAuras.L
 
---@localization(locale="enUS", format="lua_additive_table", namespace="WeakAuras", handle-subnamespaces="none")@
+--@localization(locale="enUS", format="lua_additive_table", namespace="BlindAuras", handle-subnamespaces="none")@
 
 -- Make missing translations available
-setmetatable(WeakAuras.L, {__index = function(self, key)
+setmetatable(BlindAuras.L, {__index = function(self, key)
   self[key] = (key or "")
   return key
 end})
