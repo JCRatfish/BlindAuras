@@ -1,0 +1,32 @@
+name: Package
+
+env:
+  CF_API_KEY: ${{ secrets.CF_API_KEY }}
+  GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+  WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+  WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install and run Luacheck
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
+          annotate: warning
+
+      - name: Update Build Date
+        run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
+
+      - name: Create Package
+        uses: BigWigsMods/packager@v2
