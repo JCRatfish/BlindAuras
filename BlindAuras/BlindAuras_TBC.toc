@@ -1,7 +1,7 @@
 ## Interface: 20504
 ## Title: BlindAuras
 ## Author: The WeakAuras Team
-## Version: @project-version@ tbc
+## Version: @project-version@
 ## X-Flavor: TBC
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
@@ -10,10 +10,7 @@
 ## Notes-zhTW: 一個強大且全面實用的顯示圖形和訊息基於增益，減益和其它觸發。
 ## X-Category: Interface Enhancements
 ## Globe-Post: BlindAurasOptions, BlindAurasModelPaths, BlindAurasTemplates
-## X-Website: https://www.curseforge.com/wow/addons/weakauras
-## X-Curse-Project-ID: 65387
-## X-WoWI-ID: 24910
-## X-Wago-ID: VBNBxKx5
+## X-Curse-Project-ID: 661503
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: BlindAurasSaved
