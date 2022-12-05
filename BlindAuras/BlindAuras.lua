@@ -1023,17 +1023,17 @@ Broker_BlindAuras = LDB:NewDataObject("BlindAuras", {
     tooltip_draw()
   end,
   OnEnter = function(self)
-    colorFrame:SetScript("OnUpdate", function(self, elaps)
-      colorElapsed = colorElapsed + elaps;
-      if(colorElapsed > colorDelay) then
-        colorElapsed = colorElapsed - colorDelay;
-        r, g, b = r2, g2, b2;
-        r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
-      end
-      Broker_BlindAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
-      Broker_BlindAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
-      Broker_BlindAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
-    end);
+    -- colorFrame:SetScript("OnUpdate", function(self, elaps)
+    --   colorElapsed = colorElapsed + elaps;
+    --   if(colorElapsed > colorDelay) then
+    --     colorElapsed = colorElapsed - colorDelay;
+    --     r, g, b = r2, g2, b2;
+    --     r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
+    --   end
+    --   Broker_BlindAuras.iconR = r + (r2 - r) * colorElapsed / colorDelay;
+    --   Broker_BlindAuras.iconG = g + (g2 - g) * colorElapsed / colorDelay;
+    --   Broker_BlindAuras.iconB = b + (b2 - b) * colorElapsed / colorDelay;
+    -- end);
     local elapsed = 0;
     local delay = 1;
     tooltip_update_frame:SetScript("OnUpdate", function(self, elap)
@@ -1048,13 +1048,13 @@ Broker_BlindAuras = LDB:NewDataObject("BlindAuras", {
     tooltip_draw();
   end,
   OnLeave = function(self)
-    colorFrame:SetScript("OnUpdate", nil);
+    -- colorFrame:SetScript("OnUpdate", nil);
     tooltip_update_frame:SetScript("OnUpdate", nil);
     GameTooltip:Hide();
   end,
-  iconR = 0.6,
-  iconG = 0,
-  iconB = 1
+  -- iconR = 0.6,
+  -- iconG = 0,
+  -- iconB = 1
 });
 
 do -- Archive stuff
