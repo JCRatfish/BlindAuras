@@ -573,12 +573,11 @@ local function GetBuffTriggerOptions(data, triggernum)
       desc = L["Only Match auras cast by a player (not an npc)"],
       width = BlindAuras.doubleWidth,
       order = 64.2,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger)) end,
+      hidden = function() return not (trigger.type == "aura2" --[[and trigger.unit ~= "multi"]] and CanHaveMatchCheck(trigger)) end,
+      disabled = true,
       get = function()
-        local value = trigger.use_castByPlayer
-        if value == nil then return false
-        elseif value == false then return "false"
-        else return "true" end
+        trigger.use_castByPlayer = true
+        return "true"
       end,
       set = function(info, v)
         if v then

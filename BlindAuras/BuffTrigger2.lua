@@ -507,7 +507,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   local debuffClassIcon = BlindAuras.EJIcons[bestMatch.debuffClass]
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
-      show = true,
+      show = bestMatch.isCastByPlayer,
       changed = true,
       name = bestMatch.name,
       icon = bestMatch.icon,
@@ -3306,7 +3306,7 @@ local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceNa
   return updated
 end
 
-local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate)
   if expirationTime == 0 then
     expirationTime = math.huge
   else
@@ -3375,13 +3375,18 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     matchData.spellId = name
     changed = true
   end
+
+  if matchData.isCastByPlayer ~= isCastByPlayer then
+    matchData.isCastByPlayer = isCastByPlayer
+    changed = true
+  end
   return changed
 end
 
 local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKey, spellKey)
   local index = 1
   while true do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate = UnitAura(unit, index, filter)
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate = UnitAura(unit, index, filter)
     if not name then
       return false
     end
@@ -3395,7 +3400,7 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
     end
     local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
     if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
-      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate)
       return changed
     end
     index = index + 1
@@ -3471,7 +3476,7 @@ end
 local function CheckAurasMulti(base, unit, filter)
   local index = 1
   while true do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate = UnitAura(unit, index, filter)
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate = UnitAura(unit, index, filter)
     if not name then
       return false
     end
@@ -3485,7 +3490,7 @@ local function CheckAurasMulti(base, unit, filter)
     end
     local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
     if base[name] and base[name][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate)
       if changed then
         for id, idData in pairs(base[name][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
@@ -3496,7 +3501,7 @@ local function CheckAurasMulti(base, unit, filter)
       end
     end
     if base[spellId] and base[spellId][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, isCastByPlayer, _, modRate)
       if changed then
         for id, idData in pairs(base[spellId][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
