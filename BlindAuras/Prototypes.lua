@@ -799,8 +799,8 @@ function BlindAuras.CheckCombatLogFlags(flags, flagToCheck)
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) == 0
   elseif (flagToCheck == "InParty") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_PARTY) > 0
-  elseif (flagToCheck == "NotInGroup") then
-    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) > 0
+  -- elseif (flagToCheck == "NotInGroup") then
+  --   return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) > 0
   end
 end
 
@@ -3528,6 +3528,8 @@ Private.event_prototypes = {
         init = "arg",
         store = true,
         test = "BlindAuras.CheckCombatLogFlags(sourceFlags, %q)",
+        disabled = true,
+        enable = function(trigger) trigger.use_sourceFlags=true;if not trigger.sourceFlags or trigger.sourceFlags=="NotInGroup"then trigger.sourceFlags="InGroup"end;return trigger.use_sourceFlags end,
         conditionType = "select",
         conditionTest = function(state, needle)
           return state and state.show and BlindAuras.CheckCombatLogFlags(state.sourceFlags, needle);
