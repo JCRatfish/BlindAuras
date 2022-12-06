@@ -213,7 +213,7 @@ local methods = {
       self:ReleaseThumbnail()
       self:AcquireThumbnail()
     else
-      local option = BlindAuras.regionOptions[self.thumbnailType]
+      local option = OptionsPrivate.Private.regionOptions[self.thumbnailType]
       if option and option.modifyThumbnail then
         option.modifyThumbnail(self.frame, self.thumbnail, self.data)
       end
@@ -227,7 +227,7 @@ local methods = {
 
     if self.thumbnail then
       local regionType = self.thumbnailType
-      local option = BlindAuras.regionOptions[regionType]
+      local option = OptionsPrivate.Private.regionOptions[regionType]
       if self.thumbnail.icon then
         self.thumbnail.icon:SetDesaturated(false)
       end
@@ -250,7 +250,7 @@ local methods = {
     local regionType = self.data.regionType
     self.thumbnailType = regionType
 
-    local option = BlindAuras.regionOptions[regionType]
+    local option = OptionsPrivate.Private.regionOptions[regionType]
     if option and option.acquireThumbnail then
       self.thumbnail = option.acquireThumbnail(button, self.data)
       if self.thumbnail.icon then

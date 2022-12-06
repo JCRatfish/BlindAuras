@@ -1,4 +1,5 @@
 if not BlindAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 local L = BlindAuras.L;
 

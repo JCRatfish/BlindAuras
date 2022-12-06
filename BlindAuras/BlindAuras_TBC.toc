@@ -37,13 +37,13 @@ Animations.lua
 Conditions.lua
 
 # Trigger systems
-BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 
 # Helper Systems
 AuraWarnings.lua
 AuraEnvironment.lua
+AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
 
 # Region support
@@ -65,6 +65,3 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
-
-# Misc
-Legendaries.lua

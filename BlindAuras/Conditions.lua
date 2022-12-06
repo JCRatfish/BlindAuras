@@ -1,4 +1,5 @@
 if not BlindAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local L = BlindAuras.L
@@ -126,7 +127,7 @@ end
 
 
 
-function BlindAuras.scheduleConditionCheck(time, uid, cloneId)
+function Private.ExecEnv.ScheduleConditionCheck(time, uid, cloneId)
   conditionChecksTimers.recheckTime[uid] = conditionChecksTimers.recheckTime[uid] or {}
   conditionChecksTimers.recheckHandle[uid] = conditionChecksTimers.recheckHandle[uid] or {};
 
@@ -149,8 +150,8 @@ function BlindAuras.scheduleConditionCheck(time, uid, cloneId)
   end
 end
 
-function BlindAuras.CallCustomConditionTest(uid, testFunctionNumber, ...)
-  local ok, result = xpcall(BlindAuras.conditionHelpers[uid].customTestFunctions[testFunctionNumber],
+function Private.ExecEnv.CallCustomConditionTest(uid, testFunctionNumber, ...)
+  local ok, result = xpcall(Private.ExecEnv.conditionHelpers[uid].customTestFunctions[testFunctionNumber],
                             Private.GetErrorHandlerUid(uid, L["Condition Custom Text"]), ...)
   if (ok) then
     return result
@@ -204,34 +205,34 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     local preambleString
 
     if preamble then
-      BlindAuras.conditionHelpers[uid] = BlindAuras.conditionHelpers[uid] or {}
-      BlindAuras.conditionHelpers[uid].preambles = BlindAuras.conditionHelpers[uid].preambles or {}
-      tinsert(BlindAuras.conditionHelpers[uid].preambles, preamble(value) or "");
-      local preambleNumber = #BlindAuras.conditionHelpers[uid].preambles
-      preambleString = string.format("BlindAuras.conditionHelpers[%q].preambles[%s]", uid, preambleNumber)
+      Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
+      Private.ExecEnv.conditionHelpers[uid].preambles = Private.ExecEnv.conditionHelpers[uid].preambles or {}
+      tinsert(Private.ExecEnv.conditionHelpers[uid].preambles, preamble(value) or "");
+      local preambleNumber = #Private.ExecEnv.conditionHelpers[uid].preambles
+      preambleString = string.format("Private.ExecEnv.conditionHelpers[%q].preambles[%s]", uid, preambleNumber)
     end
 
     if (test) then
       if (value) then
-        BlindAuras.conditionHelpers[uid] = BlindAuras.conditionHelpers[uid] or {}
-        BlindAuras.conditionHelpers[uid].customTestFunctions = BlindAuras.conditionHelpers[uid].customTestFunctions or {}
-        tinsert(BlindAuras.conditionHelpers[uid].customTestFunctions, test);
-        local testFunctionNumber = #(BlindAuras.conditionHelpers[uid].customTestFunctions);
+        Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
+        Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+        tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, test);
+        local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
         local valueString = type(value) == "string" and string.format("%q", value) or value;
         local opString = type(op) == "string" and string.format("%q", op) or op;
-        check = string.format("state and BlindAuras.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
+        check = string.format("state and Private.ExecEnv.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
                               uid, testFunctionNumber, trigger, valueString, (opString or "nil"), preambleString or "nil");
       end
     elseif (cType == "customcheck") then
       if value then
         local customCheck = BlindAuras.LoadFunction("return " .. value)
         if customCheck then
-          BlindAuras.conditionHelpers[uid] = BlindAuras.conditionHelpers[uid] or {}
-          BlindAuras.conditionHelpers[uid].customTestFunctions = BlindAuras.conditionHelpers[uid].customTestFunctions or {}
-          tinsert(BlindAuras.conditionHelpers[uid].customTestFunctions, customCheck);
-          local testFunctionNumber = #(BlindAuras.conditionHelpers[uid].customTestFunctions);
+          Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
+          Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+          tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, customCheck);
+          local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
 
-          check = string.format("state and BlindAuras.CallCustomConditionTest(%q, %s, state)",
+          check = string.format("state and Private.ExecEnv.CallCustomConditionTest(%q, %s, state)",
                                 uid, testFunctionNumber, trigger);
         end
       end
@@ -313,12 +314,12 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       if fn then
         local customCheck = BlindAuras.LoadFunction(fn)
         if customCheck then
-          BlindAuras.conditionHelpers[uid] = BlindAuras.conditionHelpers[uid] or {}
-          BlindAuras.conditionHelpers[uid].customTestFunctions = BlindAuras.conditionHelpers[uid].customTestFunctions or {}
-          tinsert(BlindAuras.conditionHelpers[uid].customTestFunctions, customCheck);
-          local testFunctionNumber = #(BlindAuras.conditionHelpers[uid].customTestFunctions);
+          Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
+          Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+          tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, customCheck);
+          local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
 
-          check = string.format("state and BlindAuras.CallCustomConditionTest(%q, %s, state)",
+          check = string.format("state and Private.ExecEnv.CallCustomConditionTest(%q, %s, state)",
                                 uid, testFunctionNumber, trigger);
         end
       end
@@ -439,17 +440,17 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
             local pathToFormatter = "nil"
-            if (BlindAuras.customConditionsFunctions[id]
-              and BlindAuras.customConditionsFunctions[id][conditionNumber]
-              and  BlindAuras.customConditionsFunctions[id][conditionNumber].changes
-              and BlindAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
-              pathToCustomFunction = string.format("BlindAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+            if (Private.ExecEnv.customConditionsFunctions[id]
+              and Private.ExecEnv.customConditionsFunctions[id][conditionNumber]
+              and  Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes
+              and Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
+              pathToCustomFunction = string.format("Private.ExecEnv.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
-            if BlindAuras.conditionTextFormatters[id]
-              and BlindAuras.conditionTextFormatters[id][conditionNumber]
-              and BlindAuras.conditionTextFormatters[id][conditionNumber].changes
-              and BlindAuras.conditionTextFormatters[id][conditionNumber].changes[changeNum] then
-              pathToFormatter = string.format("BlindAuras.conditionTextFormatters[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+            if Private.ExecEnv.conditionTextFormatters[id]
+              and Private.ExecEnv.conditionTextFormatters[id][conditionNumber]
+              and Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes
+              and Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes[changeNum] then
+              pathToFormatter = string.format("Private.ExecEnv.conditionTextFormatters[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
             ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n";
             if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"; end
@@ -505,7 +506,7 @@ end
 
 function Private.GetProperties(data)
   local properties;
-  local propertiesFunction = BlindAuras.regionTypes[data.regionType] and BlindAuras.regionTypes[data.regionType].properties;
+  local propertiesFunction = Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].properties;
   if (type(propertiesFunction) == "function") then
     properties = propertiesFunction(data);
   elseif propertiesFunction then
@@ -521,7 +522,7 @@ end
 function Private.LoadConditionPropertyFunctions(data)
   local id = data.id;
   if (data.conditions) then
-    BlindAuras.customConditionsFunctions[id] = {};
+    Private.ExecEnv.customConditionsFunctions[id] = {};
     for conditionNumber, condition in ipairs(data.conditions) do
       if (condition.changes) then
         for changeIndex, change in ipairs(condition.changes) do
@@ -535,9 +536,9 @@ function Private.LoadConditionPropertyFunctions(data)
             end
             local customFunc = BlindAuras.LoadFunction(prefix .. custom .. suffix);
             if (customFunc) then
-              BlindAuras.customConditionsFunctions[id][conditionNumber] = BlindAuras.customConditionsFunctions[id][conditionNumber] or {};
-              BlindAuras.customConditionsFunctions[id][conditionNumber].changes = BlindAuras.customConditionsFunctions[id][conditionNumber].changes or {};
-              BlindAuras.customConditionsFunctions[id][conditionNumber].changes[changeIndex] = customFunc;
+              Private.ExecEnv.customConditionsFunctions[id][conditionNumber] = Private.ExecEnv.customConditionsFunctions[id][conditionNumber] or {};
+              Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes = Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes or {};
+              Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes[changeIndex] = customFunc;
             end
           end
           if change.property == "chat" then
@@ -549,10 +550,10 @@ function Private.LoadConditionPropertyFunctions(data)
               return change.value[fullKey]
             end
             local formatters = change.value and Private.CreateFormatters(change.value.message, getter, true)
-            BlindAuras.conditionTextFormatters[id] = BlindAuras.conditionTextFormatters[id] or {}
-            BlindAuras.conditionTextFormatters[id][conditionNumber] = BlindAuras.conditionTextFormatters[id][conditionNumber] or {};
-            BlindAuras.conditionTextFormatters[id][conditionNumber].changes = BlindAuras.conditionTextFormatters[id][conditionNumber].changes or {};
-            BlindAuras.conditionTextFormatters[id][conditionNumber].changes[changeIndex] = formatters;
+            Private.ExecEnv.conditionTextFormatters[id] = Private.ExecEnv.conditionTextFormatters[id] or {}
+            Private.ExecEnv.conditionTextFormatters[id][conditionNumber] = Private.ExecEnv.conditionTextFormatters[id][conditionNumber] or {};
+            Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes = Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes or {};
+            Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes[changeIndex] = formatters;
           end
         end
       end
@@ -635,7 +636,7 @@ local function ConstructConditionFunction(data)
   ret = ret .. "  if (not hideRegion) then\n"
   local recheckCode = ""
   if (data.conditions) then
-    BlindAuras.conditionHelpers[data.uid] = nil
+    Private.ExecEnv.conditionHelpers[data.uid] = nil
     for conditionNumber, condition in ipairs(data.conditions) do
       local nextIsLinked = data.conditions[conditionNumber + 1] and data.conditions[conditionNumber + 1].linked
       local additionalRecheckCode
@@ -649,7 +650,7 @@ local function ConstructConditionFunction(data)
   ret = ret .. "  end\n";
 
   ret = ret .. "  if (recheckTime) then\n"
-  ret = ret .. "    BlindAuras.scheduleConditionCheck(recheckTime, uid, cloneId);\n"
+  ret = ret .. "    Private.ExecEnv.ScheduleConditionCheck(recheckTime, uid, cloneId);\n"
   ret = ret .. "  end\n"
 
   local properties = Private.GetProperties(data);
@@ -712,9 +713,9 @@ function Private.LoadConditionFunction(data)
   CancelTimers(data.uid)
 
   local checkConditionsFuncStr = ConstructConditionFunction(data);
-  local checkCondtionsFunc = checkConditionsFuncStr and BlindAuras.LoadFunction(checkConditionsFuncStr);
+  local checkConditionsFunc = checkConditionsFuncStr and Private.LoadFunction(checkConditionsFuncStr)
 
-  checkConditions[data.uid] = checkCondtionsFunc;
+  checkConditions[data.uid] = checkConditionsFunc;
 end
 
 function Private.RunConditions(region, uid, hideRegion)
@@ -860,7 +861,7 @@ function Private.RegisterForGlobalConditions(uid)
     dynamicConditionsFrame = CreateFrame("Frame");
     dynamicConditionsFrame:SetScript("OnEvent", handleDynamicConditions);
     dynamicConditionsFrame.units = {}
-    BlindAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
+    Private.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
   end
 
   for event in pairs(register) do

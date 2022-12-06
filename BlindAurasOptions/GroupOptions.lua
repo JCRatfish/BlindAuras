@@ -2,15 +2,14 @@ if not BlindAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = BlindAuras.L
-local regionOptions = BlindAuras.regionOptions;
 local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 
 function OptionsPrivate.GetGroupOptions(data)
   local regionOption;
   local id = data.id
-  if (regionOptions[data.regionType]) then
-    regionOption = regionOptions[data.regionType].create(id, data);
+  if (OptionsPrivate.Private.regionOptions[data.regionType]) then
+    regionOption = OptionsPrivate.Private.regionOptions[data.regionType].create(id, data);
   else
     regionOption = {
       [data.regionType] = {

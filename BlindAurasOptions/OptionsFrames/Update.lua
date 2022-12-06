@@ -1676,7 +1676,7 @@ local methods = {
       uidMap:ChangeId(uid, existingData.id)
     else
       if BlindAuras.GetData(uidMap:GetIdFor(uid)) then
-        local newId = BlindAuras.FindUnusedId(uidMap:GetIdFor(uid))
+        local newId = OptionsPrivate.Private.FindUnusedId(uidMap:GetIdFor(uid))
         uidMap:ChangeId(uid, newId)
       end
     end
@@ -1731,7 +1731,7 @@ local methods = {
         if string.sub(data.id, 1, #targetName) == targetName then
           -- Our name is already prefixed with targetName, don't try to improve
         else
-          local newId = BlindAuras.FindUnusedId(targetName)
+          local newId = OptionsPrivate.Private.FindUnusedId(targetName)
           local oldid = data.id
           BlindAuras.Rename(data, newId)
           if targetName[aura.uid] then -- We can hope that the aura the squatter renames itself, so try again
@@ -1855,7 +1855,7 @@ local methods = {
       data.authorMode = nil
       BlindAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
-      local button = BlindAuras.GetDisplayButton(data.id)
+      local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = structureUidMap:GetParentIsDynamicGroup(uid)
@@ -1878,14 +1878,14 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = BlindAuras.GetDisplayButton(data.id)
+      local displayButton = OptionsPrivate.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
   end,
   ImportPhase1 = function(self, uidMap, uid, phase2Order)
     tinsert(phase2Order, uid)
     local data = uidMap:GetPhase1Data(uid)
-    local newId = BlindAuras.FindUnusedId(data.id)
+    local newId = OptionsPrivate.Private.FindUnusedId(data.id)
     uidMap:ChangeId(uid, newId)
 
     data.preferToUpdate = false
@@ -1916,7 +1916,7 @@ local methods = {
       BlindAuras.Add(data)
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
 
-      local button = BlindAuras.GetDisplayButton(data.id)
+      local button = OptionsPrivate.GetDisplayButton(data.id)
       button:SetData(data)
       if (data.parent) then
         local parentIsDynamicGroup = uidMap:GetParentIsDynamicGroup(uid)
@@ -1938,7 +1938,7 @@ local methods = {
     for i = #phase2Order, 1, -1 do
       local uid = phase2Order[i]
       local data = OptionsPrivate.Private.GetDataByUID(uid)
-      local displayButton = BlindAuras.GetDisplayButton(data.id)
+      local displayButton = OptionsPrivate.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
 

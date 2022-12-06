@@ -1,4 +1,5 @@
 if not BlindAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local texture_data = BlindAuras.StopMotion.texture_data;
@@ -92,7 +93,11 @@ local function create(parent)
     frame.regionType = "stopmotion"
     frame:SetMovable(true);
     frame:SetResizable(true);
-    frame:SetMinResize(1, 1);
+    if frame.SetResizeBounds then
+      frame:SetResizeBounds(1, 1)
+    else
+      frame:SetMinResize(1, 1)
+    end
 
     local background = frame:CreateTexture(nil, "BACKGROUND");
     frame.background = background;

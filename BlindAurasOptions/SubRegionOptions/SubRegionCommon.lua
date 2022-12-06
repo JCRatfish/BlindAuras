@@ -23,7 +23,7 @@ local function AdjustConditions(data, replacements)
   end
 end
 
-function BlindAuras.DeleteSubRegion(data, index, regionType)
+function OptionsPrivate.DeleteSubRegion(data, index, regionType)
   if not data.subRegions then
     return
   end
@@ -123,7 +123,7 @@ function OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, sub
   end
   options.__delete = function()
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
-      BlindAuras.DeleteSubRegion(child, index, subRegionType)
+      OptionsPrivate.DeleteSubRegion(child, index, subRegionType)
     end
     BlindAuras.ClearAndUpdateOptions(parentData.id)
   end

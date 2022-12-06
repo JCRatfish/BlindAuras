@@ -4,7 +4,7 @@ local AddonName, OptionsPrivate = ...
 local texture_types = BlindAuras.StopMotion.texture_types;
 local texture_data = BlindAuras.StopMotion.texture_data;
 local animation_types = BlindAuras.StopMotion.animation_types;
-local setTile = BlindAuras.setTile;
+local setTile = BlindAuras.setTile
 
 local function setTextureFunc(textureWidget, texturePath, textureName)
   local data = texture_data[texturePath];

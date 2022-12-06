@@ -1,4 +1,4 @@
-## Interface: 90207
+## Interface: 100000
 ## Title: BlindAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -47,7 +47,6 @@ ActionOptions.lua
 AnimationOptions.lua
 InformationOptions.lua
 
-BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 
@@ -93,3 +92,4 @@ AceGUI-Widgets\AceGUIContainer-BlindAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasExpandAnchor.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasSpacer.lua
 AceGUI-Widgets\AceGuiWidget-BlindAurasProgressBar.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasMiniTalent_Dragonflight.lua

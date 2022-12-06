@@ -1,4 +1,5 @@
 if not BlindAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local BlindAuras = BlindAuras
@@ -13,7 +14,7 @@ profileData.auras = {}
 local currentProfileState, ProfilingTimer
 
 local RealTimeProfilingWindow = CreateFrame("Frame", nil, UIParent)
-BlindAuras.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
+Private.frames["RealTime Profiling Window"] = RealTimeProfilingWindow
 RealTimeProfilingWindow.width = 500
 RealTimeProfilingWindow.height = 300
 RealTimeProfilingWindow.barHeight = 20

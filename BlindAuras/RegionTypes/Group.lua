@@ -1,4 +1,5 @@
 if not BlindAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
@@ -138,7 +139,7 @@ local function modify(parent, region, data)
         -- Scan children for visibility
         if not childVisible then
           for child in Private.TraverseLeafs(data) do
-            local childRegion = BlindAuras.regions[child.id] and BlindAuras.regions[child.id].region;
+            local childRegion = Private.regions[child.id] and Private.regions[child.id].region;
             if childRegion and childRegion.toShow then
               childVisible = true;
               break;
