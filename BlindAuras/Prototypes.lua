@@ -131,11 +131,6 @@ function BlindAuras.SpellSchool(school)
   return Private.combatlog_spell_school_types[school] or ""
 end
 
-function BlindAuras.TestSchool(spellSchool, test)
-  print(spellSchool, test, type(spellSchool), type(test))
-  return spellSchool == test
-end
-
 function BlindAuras.RaidFlagToIndex(flag)
   return Private.combatlog_raidFlags[flag] or 0
 end
@@ -1491,8 +1486,8 @@ Private.load_prototype = {
       display = L["Instance Size Type"],
       type = "multiselect",
       values = "instance_types",
+      sorted = true,
       init = "arg",
-      control = "BlindAurasSortedDropdown",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
@@ -1510,8 +1505,8 @@ Private.load_prototype = {
       display = L["Instance Type"],
       type = "multiselect",
       values = "instance_difficulty_types",
+      sorted = true,
       init = "arg",
-      control = "BlindAurasSortedDropdown",
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
     },
     {
@@ -2112,12 +2107,12 @@ Private.event_prototypes = {
           end
           return ret
         end,
+        sorted = true,
         conditionType = "select",
         enable = function(trigger)
           return not trigger.use_watched
         end,
         test = "true",
-        control = "BlindAurasSortedDropdown"
       },
       {
         name = "name",
@@ -3754,9 +3749,9 @@ Private.event_prototypes = {
         display = BlindAuras.newFeatureString .. L["Spell School"],
         type = "select",
         values = "combatlog_spell_school_types_for_ui",
+        sorted = true,
         test = "spellSchool == %d",
         init = "arg",
-        control = "BlindAurasSortedDropdown",
         conditionType = "select",
         store = true,
         enable = function(trigger)
@@ -6836,8 +6831,8 @@ Private.event_prototypes = {
         display = L["Message Type"],
         type = "select",
         values = "chat_message_types",
+        sorted = true,
         test = "event == %q",
-        control = "BlindAurasSortedDropdown"
       },
       {
         name = "message",
@@ -7417,7 +7412,7 @@ Private.event_prototypes = {
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
           elseif BlindAuras.IsBCC() then
             return L["Set IDs can be found on websites such as tbc.wowhead.com/item-sets"]
-          elseif BlindAuras.IsWrath() then
+          elseif BlindAuras.IsWrathClassic() then
             return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
           end
         end
@@ -8221,8 +8216,8 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
-          if not state.expirationTime or not state.duration then return 0, 0 end
-          return 0, (state.expirationTime - state.duration) - (Private.LAST_CURRENT_SPELL_CAST_CHANGED or 0)
+          if not Private.LAST_CURRENT_SPELL_CAST_START or not Private.LAST_CURRENT_SPELL_CAST_CHANGED then return 0, 0 end
+          return 0, Private.LAST_CURRENT_SPELL_CAST_START - Private.LAST_CURRENT_SPELL_CAST_CHANGED
         end,
         enable = function(trigger)
           return trigger.use_showLatency and trigger.unit == "player"
@@ -8381,6 +8376,56 @@ Private.event_prototypes = {
         init = "GetHaste()",
         store = true,
         conditionType = "number"
+      },
+      {
+        name = "expertiserating",
+        display = L["Expertise Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_EXPERTISE)",
+        store = true,
+        enable = BlindAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not BlindAuras.IsWrathClassic()
+      },
+      {
+        name = "expertisebonus",
+        display = L["Expertise Bonus"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_EXPERTISE)",
+        store = true,
+        conditionType = "number",
+        enable = BlindAuras.IsWrathClassic(),
+        hidden = not BlindAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenrating",
+        display = L["Armor Peneration Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_ARMOR_PENETRATION)",
+        store = true,
+        enable = BlindAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not BlindAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenpercent",
+        display = L["Armor Peneration Percent"],
+        type = "number",
+        init = "GetArmorPenetration()",
+        store = true,
+        conditionType = "number",
+        enable = BlindAuras.IsWrathClassic(),
+        hidden = not BlindAuras.IsWrathClassic()
+      },
+      {
+        name = "spellpenpercent",
+        display = L["Spell Peneration Percent"],
+        type = "number",
+        init = "GetSpellPenetration()",
+        store = true,
+        enable = BlindAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not BlindAuras.IsWrathClassic()
       },
       {
         name = "masteryrating",
@@ -8828,8 +8873,8 @@ Private.event_prototypes = {
         display = L["Instance Size Type"],
         type = "multiselect",
         values = "instance_types",
+        sorted = true,
         init = "BlindAuras.InstanceType()",
-        control = "BlindAurasSortedDropdown",
       },
       {
         name = "instance_difficulty",

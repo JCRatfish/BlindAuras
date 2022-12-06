@@ -48,6 +48,15 @@ function BlindAuras.IsRetail()
   return flavor == 10
 end
 
+function BlindAuras.IsShadowlands()
+  return BlindAuras.IsRetail() and not BlindAuras.IsDragonflight()
+end
+
+local IsDragonflight = floor(select(4, GetBuildInfo()) / 10000) == 10
+function BlindAuras.IsDragonflight()
+  return IsDragonflight
+end
+
 function BlindAuras.IsClassicOrBCC()
   return BlindAuras.IsClassic() or BlindAuras.IsBCC()
 end

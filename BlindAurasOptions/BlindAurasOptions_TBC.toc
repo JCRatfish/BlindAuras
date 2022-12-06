@@ -84,7 +84,6 @@ AceGUI-Widgets\AceGUIWidget-BlindAurasIconButton.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasMultiLineEditBox.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasNewButton.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasImportButton.lua
-AceGUI-Widgets\AceGUIWidget-BlindAurasSortedDropDown.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasToolbarButton.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasTwoColumnDropDown.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasSnippetButton.lua

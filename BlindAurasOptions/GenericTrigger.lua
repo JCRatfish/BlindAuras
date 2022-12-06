@@ -410,9 +410,8 @@ local function GetGenericTriggerOptions(data, triggernum)
       name = "",
       order = 7.1,
       width = BlindAuras.normalWidth,
-      values = function()
-        return subtypes
-      end,
+      values = subtypes,
+      sorting = OptionsPrivate.Private.SortOrderForValues(subtypes),
       get = function(info)
         return trigger.event
       end,
@@ -421,7 +420,6 @@ local function GetGenericTriggerOptions(data, triggernum)
         BlindAuras.Add(data)
         BlindAuras.ClearAndUpdateOptions(data.id)
       end,
-      control = "BlindAurasSortedDropdown",
     }
   end
 
@@ -437,7 +435,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       width = BlindAuras.normalWidth,
       order = 8,
       values = OptionsPrivate.Private.subevent_prefix_types,
-      control = "BlindAurasSortedDropdown",
+      sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.subevent_prefix_types),
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log"); end,
       get = function(info)
         return trigger.subeventPrefix
@@ -453,7 +451,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       name = L["Message Suffix"],
       order = 9,
       values = OptionsPrivate.Private.subevent_suffix_types,
-      control = "BlindAurasSortedDropdown",
+      sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.subevent_suffix_types),
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
         return trigger.subeventSuffix

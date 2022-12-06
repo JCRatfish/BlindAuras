@@ -618,6 +618,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             values = BlindAuras[arg.values];
           end
         end
+        local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
         options[name] = {
           type = "select",
           width = BlindAuras.normalWidth,
@@ -625,6 +626,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order,
           hidden = hidden,
           values = values,
+          sorting = sortOrder,
           desc = arg.desc,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function()
@@ -725,12 +727,14 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             values = BlindAuras[arg.values];
           end
         end
+        local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
         options[name] = {
           type = "select",
           width = BlindAuras.normalWidth,
           name = arg.display,
           order = order,
           values = values,
+          sorting = sortOrder,
           control = arg.control,
           hidden = function()
             return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] == false;
