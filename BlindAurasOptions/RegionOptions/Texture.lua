@@ -252,4 +252,5 @@ if BlindAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-BlindAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail, L["Shows a custom texture"], templates);
+BlindAuras.RegisterRegionOptions("texture", createOptions, createIcon, L["Texture"], createThumbnail, modifyThumbnail,
+                                L["Shows a custom texture"], templates);

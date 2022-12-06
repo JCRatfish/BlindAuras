@@ -23,7 +23,8 @@ do
         region.parent = parent
     end
 
-    BlindAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    BlindAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify,
+                                    noop, noop, {}, nil, {}, false)
 end
 
 -- Foreground for aurabar
@@ -53,5 +54,6 @@ do
         region.parent = parent
     end
 
-    BlindAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    BlindAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify,
+                                    noop, noop, {}, nil, {}, false)
 end

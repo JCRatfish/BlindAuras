@@ -104,7 +104,7 @@ else
 end
 
 if BlindAuras.IsBCCOrWrathOrRetail() then
-  if BlindAuras.IsDragonflight() then
+  if BlindAuras.IsRetail() then
     local cacheEmpowered = {}
     BlindAuras.UnitChannelInfo = function(unit)
       local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
@@ -684,67 +684,28 @@ if BlindAuras.IsClassicOrBCCOrWrath() then
     end
     return result;
   end
-elseif BlindAuras.IsShadowlands() then
-  function BlindAuras.CheckTalentByIndex(index, extraOption)
-    local tier = ceil(index / 3)
-    local column = (index - 1) % 3 + 1
-    local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-    if extraOption == 4 then
-      return selected or known
-    elseif extraOption == 5 then
-      return not (selected or known)
-    end
-    if extraOption == 0 or extraOption == 2 then
-      return selected or known
-    else
-      return selected
-    end
-  end
-elseif BlindAuras.IsDragonflight() then
-  function BlindAuras.CheckTalentByIndex(index, extraOption)
-    local function hasTalentIndex(index)
-      local configId = C_ClassTalents.GetActiveConfigID()
-      local idx = 0
-      if configId then
-        local configInfo = C_Traits.GetConfigInfo(configId)
-        for _, treeId in ipairs(configInfo.treeIDs) do
-          local nodes = C_Traits.GetTreeNodes(treeId)
-          for _, nodeId in ipairs(nodes) do
-            local node = C_Traits.GetNodeInfo(configId, nodeId)
-            if node and node.ID ~= 0 then
-              for _, talentId in ipairs(node.entryIDs) do
-                local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-                local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-                if GetSpellInfo(definitionInfo.spellID) then
-                  idx = idx + 1
-                  if idx == index then
-                    if node.activeEntry
-                    and node.activeEntry.entryID == talentId
-                    and node.currentRank > 0
-                    then
-                      return true
-                    else
-                      return false
-                    end
-                  end
-                end
-              end
+end
+
+if BlindAuras.IsRetail() then
+  function BlindAuras.CheckTalentSpellId(spellId)
+    local configId = C_ClassTalents.GetActiveConfigID()
+    local configInfo = C_Traits.GetConfigInfo(configId)
+    for _, treeId in ipairs(configInfo.treeIDs) do
+      local nodes = C_Traits.GetTreeNodes(treeId)
+      for _, nodeId in ipairs(nodes) do
+        local node = C_Traits.GetNodeInfo(configId, nodeId)
+        if node.ID ~= 0 then
+          for _, talentId in ipairs(node.entryIDs) do
+            local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+            local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+            if definitionInfo.spellID == spellId then
+              local spellName, _, icon = GetSpellInfo(spellId)
+              return spellName, icon, node.activeRank
             end
           end
         end
       end
     end
-
-    local hasTalent = hasTalentIndex(index)
-    if hasTalent == nil then
-      return nil
-    end
-    if extraOption == 4 then
-      return hasTalent
-    elseif extraOption == 5 then
-      return not hasTalent
-    end
-    return hasTalent
   end
 end
 
@@ -915,7 +876,7 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
 end
 
 function BlindAuras.IsSpellKnownForLoad(spell, exact)
-  local result = IsPlayerSpell(spell) or IsSpellKnown(spell, true)
+  local result = IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell, true)
   if exact or result then
     return result
   end
@@ -931,9 +892,9 @@ end
 
 function BlindAuras.IsSpellKnown(spell, pet)
   if (pet) then
-    return IsSpellKnown(spell, pet);
+    return IsSpellKnownOrOverridesKnown(spell, pet);
   end
-  return IsPlayerSpell(spell) or IsSpellKnown(spell);
+  return IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell);
 end
 
 function BlindAuras.IsSpellKnownIncludingPet(spell)
@@ -1005,54 +966,14 @@ local function valuesForTalentFunction(trigger)
       single_class = select(2, UnitClass("player"));
     end
 
-    local single_spec
-    if BlindAuras.IsShadowlands() then
-      single_spec = Private.checkForSingleLoadCondition(trigger, "spec")
-      if single_spec == nil then
-        single_spec = GetSpecialization();
-      end
-    end
-
-    local single_class_and_spec
-    if BlindAuras.IsShadowlands() and trigger.use_spec == nil and trigger.use_class == nil then
-      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-    end
     -- If a single specific class was found, load the specific list for it
-    if BlindAuras.IsDragonflight() then
-      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+    if BlindAuras.IsRetail() then
+      local single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
       if single_class_and_spec then
         return Private.talentInfo[single_class_and_spec]
       else
         -- this should never happen
         return {}
-      end
-    elseif BlindAuras.IsShadowlands() then
-      if single_class_and_spec then
-        local class = select(6, GetSpecializationInfoByID(single_class_and_spec))
-        if class then
-          for classID = 1, GetNumClasses() do -- we have classFile, we need classID
-            local _, classFile = GetClassInfo(classID)
-            if classFile == class then
-              for specIndex = 1, 4 do -- search specIndex
-                if GetSpecializationInfoForClassID(classID, specIndex) == single_class_and_spec then
-                  if Private.talent_types_specific[classFile] and Private.talent_types_specific[classFile][specIndex] then
-                    return Private.talent_types_specific[classFile][specIndex]
-                  end
-                  break
-                end
-              end
-              break
-            end
-          end
-        end
-      end
-      if single_class and single_spec
-      and Private.talent_types_specific[single_class]
-      and Private.talent_types_specific[single_class][single_spec]
-      then
-        return Private.talent_types_specific[single_class][single_spec]
-      else
-        return Private.talent_types
       end
     elseif BlindAuras.IsWrathClassic() then
       return Private.talentInfo[single_class]
@@ -1233,54 +1154,9 @@ Private.load_prototype = {
       display = L["Player Class"],
       type = "multiselect",
       values = "class_types",
-      init = not BlindAuras.IsDragonflight() and "arg" or nil,
-      enable = not BlindAuras.IsDragonflight(),
-      hidden = BlindAuras.IsDragonflight(),
-    },
-    {
-      name = "spec",
-      display = L["Talent Specialization"],
-      type = "multiselect",
-      values = function(trigger)
-        return function()
-          local min_specs = 4;
-          local single_class = Private.checkForSingleLoadCondition(trigger, "class")
-
-          if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
-          end
-
-          -- If a single specific class was found, load the specific list for it
-          if(single_class) then
-            return BlindAuras.spec_types_specific[single_class];
-          else
-            -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
-            if (min_specs < 3) then
-              return Private.spec_types_2;
-            elseif(min_specs < 4) then
-              return Private.spec_types_3;
-            else
-              return Private.spec_types;
-            end
-          end
-        end
-      end,
-      init = BlindAuras.IsShadowlands() and "arg" or nil,
-      enable = function()
-        return BlindAuras.IsShadowlands()
-      end,
-      hidden = function()
-        if BlindAuras.IsClassicOrBCCOrWrath() then
-          return true
-        end
-        if BlindAuras.IsShadowlands() then
-          return false
-        end
-        if BlindAuras.IsDragonflight() then
-          return true
-        end
-      end,
-      events = {"PLAYER_TALENT_UPDATE"}
+      init = not BlindAuras.IsRetail() and "arg" or nil,
+      enable = not BlindAuras.IsRetail(),
+      hidden = BlindAuras.IsRetail(),
     },
     {
       name = "class_and_spec",
@@ -1297,9 +1173,9 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if BlindAuras.IsDragonflight() then
+        if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1312,54 +1188,51 @@ Private.load_prototype = {
           return BlindAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = BlindAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = BlindAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
       events = (BlindAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (BlindAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (BlindAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or (BlindAuras.IsShadowlands() and {"PLAYER_TALENT_UPDATE"}),
+        or (BlindAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
-        return (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
+        return BlindAuras.IsClassicOrBCC() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
       end,
-      extraOption = (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and {
+      extraOption = BlindAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end
       },
-      control = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "BlindAurasMiniTalent" or nil,
-      multiNoSingle = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- no single mode
-      multiTristate = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()),
+      control = BlindAuras.IsWrathOrRetail() and "BlindAurasMiniTalent" or nil,
+      multiNoSingle = BlindAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = BlindAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = BlindAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup = BlindAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = BlindAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return BlindAuras.IsClassicOrBCC()
-            or BlindAuras.IsShadowlands()
             or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-            or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+            or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
       end,
       hidden = function(trigger)
         return not (
             BlindAuras.IsClassicOrBCC()
-            or BlindAuras.IsShadowlands()
             or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-            or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+            or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
       end,
     },
     {
       name = "talent2",
-      display = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
+      display = BlindAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if BlindAuras.IsDragonflight() then
+        if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1372,56 +1245,53 @@ Private.load_prototype = {
           return BlindAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = BlindAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = BlindAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
       events = (BlindAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (BlindAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (BlindAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (BlindAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
+        return BlindAuras.IsClassicOrBCC() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
-      extraOption = (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and {
+      extraOption = BlindAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "BlindAurasMiniTalent" or nil,
-      multiNoSingle = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- no single mode
-      multiTristate = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup  = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()),
+      control = BlindAuras.IsWrathOrRetail() and "BlindAurasMiniTalent" or nil,
+      multiNoSingle = BlindAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = BlindAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = BlindAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = BlindAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = BlindAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           BlindAuras.IsClassicOrBCC()
-          or BlindAuras.IsShadowlands()
           or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           BlindAuras.IsClassicOrBCC()
-          or BlindAuras.IsShadowlands()
           or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+          or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
         )
       end,
     },
     {
       name = "talent3",
-      display = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
+      display = BlindAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if BlindAuras.IsDragonflight() then
+        if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1434,45 +1304,42 @@ Private.load_prototype = {
           return BlindAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = BlindAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = BlindAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
       events = (BlindAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (BlindAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (BlindAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (BlindAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
+        return BlindAuras.IsClassicOrBCC() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
-      extraOption = (BlindAuras.IsClassicOrBCC() or BlindAuras.IsShadowlands()) and {
+      extraOption = BlindAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "BlindAurasMiniTalent" or nil,
-      multiNoSingle = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- no single mode
-      multiTristate = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup  = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (BlindAuras.IsWrathClassic() or BlindAuras.IsDragonflight()),
+      control = BlindAuras.IsWrathOrRetail() and "BlindAurasMiniTalent" or nil,
+      multiNoSingle = BlindAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = BlindAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = BlindAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = BlindAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = BlindAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           BlindAuras.IsClassicOrBCC()
-          or BlindAuras.IsShadowlands()
           or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           BlindAuras.IsClassicOrBCC()
-          or BlindAuras.IsShadowlands()
           or (BlindAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (BlindAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (BlindAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         ))
       end
     },
@@ -1546,16 +1413,6 @@ Private.load_prototype = {
       test = "BlindAuras.IsSpellKnownForLoad(%s, %s)",
       events = BlindAuras.IsWrathClassic() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
-    },
-    {
-      name = "covenant",
-      display = L["Player Covenant"],
-      type = "multiselect",
-      values = "covenant_types",
-      init = BlindAuras.IsShadowlands() and "arg" or nil,
-      enable = BlindAuras.IsShadowlands(),
-      hidden = not BlindAuras.IsShadowlands(),
-      events = {"COVENANT_CHOSEN"}
     },
     {
       name = "race",
@@ -2199,33 +2056,7 @@ Private.event_prototypes = {
            standing = GetText("FACTION_STANDING_LABEL"..standingId, UnitSex("player"))
         end
       ]=]
-      if BlindAuras.IsShadowlands() then
-        ret = ret .. [=[
-          local friendshipRank, friendshipMaxRank
-          if factionID then
-            local friendID, friendRep, friendMaxRep, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
-            if (friendID ~= nil) then
-              standing = friendTextLevel
-              if nextFriendThreshold then
-                bottomValue, topValue, earnedValue = friendThreshold, nextFriendThreshold, friendRep
-              else
-                -- max rank, make it look like a full bar
-                bottomValue, topValue, earnedValue = 0, 1, 1
-              end
-              friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
-            end
-
-            if C_Reputation.IsFactionParagon(factionID) then
-              local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-              bottomValue, topValue = 0, threshold
-              earnedValue = currentValue %% threshold
-              if hasRewardPending then
-                earnedValue = earnedValue + threshold
-              end
-            end
-          end
-        ]=]
-      elseif BlindAuras.IsDragonflight() then
+      if BlindAuras.IsRetail() then
         ret = ret .. [=[
           local friendshipRank, friendshipMaxRank
           if factionID then
@@ -5387,7 +5218,7 @@ Private.event_prototypes = {
                 Private.ExecEnv.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              Private.ExecEnv.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
             end
           end
 
@@ -5636,6 +5467,7 @@ Private.event_prototypes = {
           local triggerRemaining = %s
           local triggerCount = %q
           local triggerCast = %s
+          local triggerIsCooldown = %s
           local cloneId = useClone and id or ""
           local state = states[cloneId]
 
@@ -5669,7 +5501,7 @@ Private.event_prototypes = {
             or event == "BigWigs_PauseBar"
             or event == "BigWigs_ResumeBar"
             then
-              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast, triggerIsCooldown) then
                 local bar = BlindAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5735,6 +5567,7 @@ Private.event_prototypes = {
         trigger.remaining or 0,
         trigger.use_count and trigger.count or "",
         trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
+        trigger.use_isCooldown == nil and "nil" or trigger.use_isCooldown and "true" or "false",
         trigger.remaining_operator or "<"
       )
     end,
@@ -5775,6 +5608,15 @@ Private.event_prototypes = {
         name = "cast",
         display = L["Cast Bar"],
         desc = L["Filter messages with format <message>"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "isCooldown",
+        display = L["Cooldown"],
+        desc = L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"],
         type = "tristate",
         test = "true",
         init = "false",
@@ -6137,7 +5979,7 @@ Private.event_prototypes = {
     type = "unit",
     events = function()
       local events
-      if BlindAuras.IsClassicOrBCCOrWrath() then
+      if BlindAuras.IsClassicOrBCC() then
         events = {
           "CHARACTER_POINTS_CHANGED",
           "SPELLS_CHANGED"
@@ -6148,56 +5990,33 @@ Private.event_prototypes = {
           "SPELLS_CHANGED",
           "PLAYER_TALENT_UPDATE"
         }
-      elseif BlindAuras.IsDragonflight() then
+      elseif BlindAuras.IsRetail() then
         events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
-      else
-        events = { "PLAYER_TALENT_UPDATE" }
       end
       return {
         ["events"] = events
       }
     end,
-    force_events = (BlindAuras.IsDragonflight() and "TRAIT_CONFIG_UPDATED") or (BlindAuras.IsShadowlands() and "PLAYER_TALENT_UPDATE") or "CHARACTER_POINTS_CHANGED",
+    force_events = (BlindAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
-        local tier, column
-        if BlindAuras.IsClassicOrBCCOrWrath() then
-          tier = index and ceil(index / MAX_NUM_TALENTS)
-          column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-        elseif BlindAuras.IsShadowlands() then
-          tier = index and ceil(index / 3)
-          column = index and ((index - 1) % 3 + 1)
-        end
-
+        local tier = index and ceil(index / MAX_NUM_TALENTS)
+        local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
         local ret = [[
           local tier = %s;
           local column = %s;
-        ]]
-        if BlindAuras.IsClassicOrBCCOrWrath() then
-          ret = ret .. [[
-          local active, _, rank
-          _, _, _, _, rank  = GetTalentInfo(tier, column)
-          active = rank > 0
-          ]]
-        else
-          if trigger.use_onlySelected then
-            ret = ret .. [[
-            local active, _, activeName, activeIcon, selected, known
-            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-            active = selected
-            ]]
-          else
-            ret = ret .. [[
-            local active, _, activeName, activeIcon, selected, known
-            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-            active = selected or known
-            ]]
+          local active = false
+          local name, icon, _, _, rank = GetTalentInfo(tier, column)
+          if rank > 0 then
+            active = true;
+            activeName = name;
+            activeIcon = icon;
           end
-        end
+        ]]
         if (inverse) then
           ret = ret .. [[
           active = not (active);
@@ -6208,47 +6027,13 @@ Private.event_prototypes = {
         if (trigger.talent.multi) then
           local ret = [[
             local active = false;
-            local activeIcon;
-            local activeName;
-            local _
+            local activeIcon, activeName, _
           ]]
-          if BlindAuras.IsDragonflight() then
+          if BlindAuras.IsRetail() then
             ret = ret .. [[
-              local function hasTalentIndex(index)
-                local configId = C_ClassTalents.GetActiveConfigID()
-                local idx = 0
-                if configId then
-                  local configInfo = C_Traits.GetConfigInfo(configId)
-                  for _, treeId in ipairs(configInfo.treeIDs) do
-                    local nodes = C_Traits.GetTreeNodes(treeId)
-                    for _, nodeId in ipairs(nodes) do
-                      local node = C_Traits.GetNodeInfo(configId, nodeId)
-                      if node and node.ID ~= 0 then
-                        for _, talentId in ipairs(node.entryIDs) do
-                          local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-                          local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-                          if GetSpellInfo(definitionInfo.spellID) then
-                            idx = idx + 1
-                            if idx == index then
-                              if node.activeEntry
-                              and node.activeEntry.entryID == talentId
-                              and node.currentRank > 0
-                              then
-                                return definitionInfo.spellID, true
-                              else
-                                return definitionInfo.spellID, false
-                              end
-                            end
-                          end
-                        end
-                      end
-                    end
-                  end
-                end
-                return nil
-              end
               local index
               local firstLoop = true
+              local rank = 0
             ]]
           else
             ret = ret .. [[
@@ -6264,7 +6049,7 @@ Private.event_prototypes = {
                 if (not active) then
                   tier = %s
                   column = %s
-                  local name, icon, _, _, rank  = GetTalentInfo(tier, column)
+                  local name, icon, _, _, rank = GetTalentInfo(tier, column)
                   if rank > 0 then
                     active = true;
                     activeName = name;
@@ -6273,69 +6058,39 @@ Private.event_prototypes = {
                 end
               ]]
               ret = ret .. ret2:format(tier, column)
-            elseif BlindAuras.IsShadowlands() then
-              local tier = index and ceil(index / 3)
-              local column = index and ((index - 1) % 3 + 1)
+            elseif BlindAuras.IsRetail() then
               local ret2 = [[
-                if (not active) then
-                  tier = %s
-                  column = %s
-              ]]
-              if trigger.use_onlySelected then
-                ret2 = ret2 .. [[
-                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-                  if (selected) then
-                    active = true;
-                    activeName = name;
-                    activeIcon = icon;
-                  end
-                ]]
-              else
-                ret2 = ret2 .. [[
-                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-                  if (selected or known) then
-                    active = true;
-                    activeName = name;
-                    activeIcon = icon;
-                  end
-                ]]
-              end
-              ret2 = ret2 .. [[
-                end
-              ]]
-              ret = ret .. ret2:format(tier, column)
-            elseif BlindAuras.IsDragonflight() then
-              local ret2 = [[
-                local index = %s
+                local spellId = %s
                 local shouldBeActive = %s
-                local spellId, hasTalent = hasTalentIndex(index)
                 if spellId then
-                  activeName, _, activeIcon = GetSpellInfo(spellId)
-                end
-                if hasTalent then
-                  if shouldBeActive then
-                    if firstLoop then
-                      active = true
+                  local hasTalent = IsPlayerSpell(spellId)
+                  activeName, activeIcon, rank = BlindAuras.CheckTalentSpellId(spellId)
+                  if activeName ~= nil then
+                    local hasTalent = rank > 0
+                    if hasTalent then
+                      if shouldBeActive then
+                        if firstLoop then
+                          active = true
+                        else
+                          active = active and true
+                        end
+                      else
+                        active = false
+                      end
+                      firstLoop = false
                     else
-                      active = active and true
-                    end
-                  else
-                    active = false
-                  end
-                  firstLoop = false
-                elseif hasTalent == false then
-                  if shouldBeActive then
-                    active = false
-                  else
-                    if firstLoop then
-                      active = true
-                    else
-                      active = active and true
+                      if shouldBeActive then
+                        active = false
+                      else
+                        if firstLoop then
+                          active = true
+                        else
+                          active = active and true
+                        end
+                      end
+                      firstLoop = false
                     end
                   end
-                  firstLoop = false
-                else
-                  -- nil case means talent index in data is not known for this class/spec
                 end
               ]]
               ret = ret .. ret2:format(index, value and "true" or "false")
@@ -6361,8 +6116,8 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         required = true,
-        enable = BlindAuras.IsDragonflight(),
-        hidden = not BlindAuras.IsDragonflight(),
+        enable = BlindAuras.IsRetail(),
+        hidden = not BlindAuras.IsRetail(),
         reloadOptions = true,
       },
       {
@@ -6375,7 +6130,7 @@ Private.event_prototypes = {
           return BlindAuras.spec_types_specific[trigger.class]
         end,
         enable = function(trigger)
-          if BlindAuras.IsDragonflight() and trigger.use_class and trigger.class then
+          if BlindAuras.IsRetail() and trigger.use_class and trigger.class then
             return true
           else
             return false
@@ -6389,8 +6144,7 @@ Private.event_prototypes = {
         type = "multiselect",
         values = function(trigger)
           local class = select(2, UnitClass("player"));
-          local spec =  BlindAuras.IsRetail() and GetSpecialization();
-          if BlindAuras.IsDragonflight() then
+          if BlindAuras.IsRetail() then
             local classId
             for i = 1, GetNumClasses() do
               if select(2, GetClassInfo(i)) == trigger.class then
@@ -6404,43 +6158,54 @@ Private.event_prototypes = {
               end
             end
             return {}
-          elseif(Private.talent_types_specific[class] and Private.talent_types_specific[class][spec]) then
-            return Private.talent_types_specific[class][spec];
-          elseif not BlindAuras.IsRetail() and Private.talent_types_specific[class] then
-            return Private.talent_types_specific[class];
-          elseif BlindAuras.IsShadowlands() then
-            return Private.talent_types;
+          else
+            if Private.talent_types_specific[class] then
+              return Private.talent_types_specific[class];
+            else
+              return Private.talent_types;
+            end
           end
         end,
-        multiUseControlWhenFalse = BlindAuras.IsDragonflight(),
-        multiAll = BlindAuras.IsDragonflight(),
-        multiNoSingle = BlindAuras.IsDragonflight(),
-        multiTristate = BlindAuras.IsDragonflight(), -- values can be true/false/nil
-        control = BlindAuras.IsDragonflight() and "BlindAurasMiniTalent" or nil,
+        multiUseControlWhenFalse = BlindAuras.IsRetail(),
+        multiAll = BlindAuras.IsRetail(),
+        multiNoSingle = BlindAuras.IsRetail(),
+        multiTristate = BlindAuras.IsRetail(), -- values can be true/false/nil
+        control = BlindAuras.IsRetail() and "BlindAurasMiniTalent" or nil,
+        multiConvertKey = BlindAuras.IsRetail() and function(trigger, key)
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == trigger.class then
+              classId = i
+            end
+          end
+          if classId and trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+            if specId and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              return Private.talentInfo[specId][key][2]
+            end
+          end
+        end or nil,
         enable = function(trigger)
-          if BlindAuras.IsDragonflight() and trigger.use_class and trigger.class and trigger.use_spec and trigger.spec then
-            return true
+          if BlindAuras.IsRetail() then
+            if trigger.use_class and trigger.class and trigger.use_spec and trigger.spec then
+              return true
+            else
+              return false
+            end
           else
-            return false
+            return true
           end
         end,
         test = "active",
-      },
-      {
-        name = "onlySelected",
-        display = L["Only if selected"],
-        type = "boolean",
-        test = "true",
-        enable = BlindAuras.IsShadowlands(),
-        hidden = not BlindAuras.IsShadowlands(),
+        reloadOptions = true,
       },
       {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = not BlindAuras.IsDragonflight(),
-        hidden = BlindAuras.IsDragonflight(),
+        enable = not BlindAuras.IsRetail(),
+        hidden = BlindAuras.IsRetail(),
       },
       {
         hidden = true,
@@ -6455,6 +6220,32 @@ Private.event_prototypes = {
         init = "activeName",
         store = "true",
         test = "true"
+      },
+      {
+        display = L["Rank"],
+        desc = L["Check if a single talent match a Rank"],
+        name = "stacks",
+        type = "number",
+        conditionType = "number",
+        init = "rank",
+        store = true,
+        enable = function(trigger)
+          if BlindAuras.IsRetail() then
+            if trigger.use_class and trigger.class
+            and trigger.use_spec and trigger.spec
+            and trigger.use_talent == false
+            and trigger.talent and type(trigger.talent.multi) == "table"
+            then
+              local count, value = 0
+              for _, v in pairs(trigger.talent.multi) do
+                value = v
+                count = count + 1
+              end
+              return count == 1 and value == true
+            end
+          end
+          return false
+        end,
       },
     },
     automaticrequired = true,
@@ -7560,20 +7351,12 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      if not trigger.use_inverse then
-        local name = GetItemInfo(trigger.itemName);
-        return name;
-      else
-        return nil;
-      end
+      local name = GetItemInfo(trigger.itemName);
+      return name;
     end,
     iconFunc = function(trigger)
-      if not trigger.use_inverse then
-        local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
-        return icon;
-      else
-        return nil;
-      end
+      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+      return icon;
     end,
     hasItemID = true,
     automaticrequired = true
@@ -8111,7 +7894,7 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if BlindAuras.IsDragonflight() then
+      if BlindAuras.IsRetail() then
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP_FAKE")
@@ -8284,35 +8067,35 @@ Private.event_prototypes = {
         name = "empowered",
         display = L["Empowered"],
         type = "tristate",
-        enable = BlindAuras.IsDragonflight(),
+        enable = BlindAuras.IsRetail(),
         store = true,
         conditionType = "bool",
-        hidden = not BlindAuras.IsDragonflight()
+        hidden = not BlindAuras.IsRetail()
       },
       {
         name = "showChargedDuration",
         display = L["Show charged duration for empowered casts"],
         type = "toggle",
-        enable = BlindAuras.IsDragonflight(),
-        hidden = not BlindAuras.IsDragonflight()
+        enable = BlindAuras.IsRetail(),
+        hidden = not BlindAuras.IsRetail()
       },
       {
         name = "stage",
         display = L["Current Stage"],
         type = "number",
-        enable = BlindAuras.IsDragonflight(),
+        enable = BlindAuras.IsRetail(),
         store = true,
         conditionType = "number",
-        hidden = not BlindAuras.IsDragonflight()
+        hidden = not BlindAuras.IsRetail()
       },
       {
         name = "stageTotal",
         display = L["Total Stages"],
         type = "number",
-        enable = BlindAuras.IsDragonflight(),
+        enable = BlindAuras.IsRetail(),
         store = true,
         conditionType = "number",
-        hidden = not BlindAuras.IsDragonflight()
+        hidden = not BlindAuras.IsRetail()
       },
       {
         name = "charged",
@@ -8320,7 +8103,7 @@ Private.event_prototypes = {
         hidden = true,
         init = "stage == stageTotal",
         test = "true",
-        enable = BlindAuras.IsDragonflight(),
+        enable = BlindAuras.IsRetail(),
         store = true,
         type = "toggle",
         conditionType = "bool",
@@ -8633,7 +8416,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 1 then return 0, 0 end
           return state.duration - state.stagesData[1].start, state.duration - state.stagesData[1].finish
         end,
-        enable = BlindAuras.IsDragonflight
+        enable = BlindAuras.IsRetail
       },
       {
         name = L["Empowered 2"],
@@ -8641,7 +8424,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 2 then return 0, 0 end
           return state.duration - state.stagesData[2].start, state.duration - state.stagesData[2].finish
         end,
-        enable = BlindAuras.IsDragonflight
+        enable = BlindAuras.IsRetail
       },
       {
         name = L["Empowered 3"],
@@ -8649,7 +8432,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 3 then return 0, 0 end
           return state.duration - state.stagesData[3].start, state.duration - state.stagesData[3].finish
         end,
-        enable = BlindAuras.IsDragonflight
+        enable = BlindAuras.IsRetail
       },
       {
         name = L["Empowered 4"],
@@ -8657,7 +8440,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 4 then return 0, 0 end
           return state.duration - state.stagesData[4].start, state.duration - state.stagesData[4].finish
         end,
-        enable = BlindAuras.IsDragonflight
+        enable = BlindAuras.IsRetail
       },
       {
         name = L["Empowered 5"],
@@ -8665,7 +8448,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 5 then return 0, 0 end
           return state.duration - state.stagesData[5].start, state.duration - state.stagesData[5].finish
         end,
-        enable = BlindAuras.IsDragonflight
+        enable = BlindAuras.IsRetail
       }
     },
     automaticrequired = true,
@@ -8820,6 +8603,16 @@ Private.event_prototypes = {
         init = "GetHaste()",
         store = true,
         conditionType = "number"
+      },
+      {
+        name = "meleehastepercent",
+        display = L["Melee Haste (%)"],
+        type = "number",
+        init = "GetMeleeHaste()",
+        store = true,
+        conditionType = "number",
+        enable = BlindAuras.IsWrathClassic(),
+        hidden = not BlindAuras.IsWrathClassic()
       },
       {
         name = "expertiserating",

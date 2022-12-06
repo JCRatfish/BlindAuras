@@ -241,8 +241,7 @@ local function createThumbnail()
 
   local model = CreateFrame("PlayerModel", nil, borderframe);
   borderframe.model = model;
-  model.SetTransformFixed = BlindAuras.IsDragonflight() and ModelSetTransformFixed
-                                                        or model.SetTransform
+  model.SetTransformFixed = BlindAuras.IsRetail() and ModelSetTransformFixed or model.SetTransform
   model:SetFrameStrata("FULLSCREEN");
 
   return borderframe;

@@ -1181,6 +1181,9 @@ Private.subevent_suffix_types = {
   _CAST_START = L["Cast Start"],
   _CAST_SUCCESS = L["Cast Success"],
   _CAST_FAILED = L["Cast Failed"],
+  _EMPOWER_START = L["Empower Cast Start"],
+  _EMPOWER_END = L["Empower Cast End"],
+  _EMPOWER_INTERRUPT = L["Empower Cast Interrupt"],
   _INSTAKILL = L["Instakill"],
   _DURABILITY_DAMAGE = L["Durability Damage"],
   _DURABILITY_DAMAGE_ALL = L["Durability Damage All"],
@@ -1208,8 +1211,6 @@ Private.power_types = {
 }
 if BlindAuras.IsRetail() then
   Private.power_types[99] = STAGGER
-end
-if BlindAuras.IsDragonflight() then
   Private.power_types[19] = POWER_TYPE_ESSENCE
 end
 
@@ -1365,18 +1366,12 @@ Private.spec_types_all = {}
 local function update_specs()
   for classFileName, classID in pairs(BlindAuras.class_ids) do
     BlindAuras.spec_types_specific[classFileName] = {}
-    local classTexcoords = CLASS_ICON_TCOORDS[classFileName]
     local numSpecs = GetNumSpecializationsForClassID(classID)
     for i=1, numSpecs do
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(BlindAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        if BlindAuras.IsShadowlands() then
-          Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
-          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
-          .. ":0|t"
-          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
-        elseif BlindAuras.IsDragonflight() then
+        if BlindAuras.IsRetail() then
           Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
           .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
         end
@@ -1387,28 +1382,10 @@ end
 
 
 Private.talent_types = {}
-if BlindAuras.IsDragonflight() then
+if BlindAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
-elseif BlindAuras.IsRetail() then
-  local spec_frame = CreateFrame("Frame");
-  spec_frame:RegisterEvent("PLAYER_LOGIN")
-  spec_frame:SetScript("OnEvent", update_specs);
-  local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS
-  local talentId, tier, column = 1, 1, 1
-  while talentId <= numTalents do
-    while tier <= numTiers do
-      while column <= numColumns do
-        Private.talent_types[talentId] = L["Tier "]..tier.." - "..column
-        column = column + 1
-        talentId = talentId + 1
-      end
-      column = 1
-      tier = tier + 1
-    end
-    tier = 1
-  end
 else
   for tab = 1, GetNumTalentTabs() do
     for num_talent = 1, GetNumTalents(tab) do
@@ -2137,6 +2114,16 @@ Private.grid_types = {
   DR = L["Down, then Right"],
   LD = L["Left, then Down"],
   DL = L["Down, then Left"],
+  HD = L["Centered Horizontal, then Down"],
+  HU = L["Centered Horizontal, then Up"],
+  VR = L["Centered Vertical, then Right"],
+  VL = L["Centered Vertical, then Left"],
+  DH = L["Down, then Centered Horizontal"],
+  UH = L["Up, then Centered Horizontal"],
+  LV = L["Left, then Centered Vertical"],
+  RV = L["Right, then Centered Vertical"],
+  HV = L["Centered Horizontal, then Centered Vertical"],
+  VH = L["Centered Vertical, then Centered Horizontal"]
 }
 
 Private.text_rotate_types = {
@@ -2332,7 +2319,7 @@ do
         end
       else
         Private.instance_difficulty_types[i] = name
-        BlindAuras.prettyPrint(string.format("Unknown difficulty id found. Please report as a bug: %s %s %s", i, name, type))
+        BlindAuras.prettyPrint(string.format("Unknown difficulty id found. You are probably running an outdated version. Debug Information: %s %s %s", i, name, type))
       end
     end
   end
@@ -3535,6 +3522,169 @@ BlindAuras.StopMotion.texture_data["Interface\\AddOns\\BlindAurasStopMotion\\Tex
      ["columns"] = 4
   }
 
+if BlindAuras.IsRetail() then
+  BlindAuras.StopMotion.texture_types.Blizzard = {
+    ["Skillbar_Fill_Flipbook_Alchemy"] = L["Alchemy Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Blacksmithing"] = L["Blacksmithing Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Jewelcrafting"] = L["Jewelcrafting Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Tailoring"] = L["Tailoring Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Leatherworking"] = L["Leatherworking Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Enchanting"] = L["Enchanting Cast Bar"],
+    ["groupfinder-eye-flipbook-initial"] = L["Group Finder Eye Initial"],
+    ["groupfinder-eye-flipbook-searching"] = L["Group Finder Eye"],
+    ["groupfinder-eye-flipbook-mouseover"] = L["Group Finder Mouse Over"],
+    ["groupfinder-eye-flipbook-foundfx"] = L["Group Finder Found Initial"],
+    ["groupfinder-eye-flipbook-found-loop"] = L["Group Finder Found"],
+    ["groupfinder-eye-flipbook-poke-initial"] = L["Group Finder Poke Initial"],
+    ["groupfinder-eye-flipbook-poke-loop"] = L["Group Finder Poke"],
+    ["groupfinder-eye-flipbook-poke-end"] = L["Group Finder Poke End"],
+    ["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = L["Player Rest"],
+  }
+
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Alchemy"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Blacksmithing"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Jewelcrafting"] = {
+    ["count"] = 44,
+    ["rows"] = 22,
+    ["columns"] = 2
+  }
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Tailoring"] = {
+    ["count"] = 58,
+    ["rows"] = 29,
+    ["columns"] = 2
+  }
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Leatherworking"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  BlindAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Enchanting"] = {
+    ["count"] = 74,
+    ["rows"] = 37,
+    ["columns"] = 2
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-initial"] = {
+    ["count"] = 52,
+    ["rows"] = 5,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-searching"] = {
+    ["count"] = 80,
+    ["rows"] = 8,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-mouseover"] = {
+    ["count"] = 12,
+    ["rows"] = 1,
+    ["columns"] = 12
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-foundfx"] = {
+    ["count"] = 75,
+    ["rows"] = 5,
+    ["columns"] = 15
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-found-loop"] = {
+    ["count"] = 41,
+    ["rows"] = 4,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-initial"] = {
+    ["count"] = 66,
+    ["rows"] = 6,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-loop"] = {
+    ["count"] = 62,
+    ["rows"] = 6,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-end"] = {
+    ["count"] = 38,
+    ["rows"] = 4,
+    ["columns"] = 11
+  }
+  BlindAuras.StopMotion.texture_data["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = {
+    ["count"] = 8,
+    ["rows"] = 1,
+    ["columns"] = 8
+  }
+
+  local professions = {
+    "Blacksmithing",
+    "Enchanting",
+    "Tailoring",
+    "Jewelcrafting",
+    "Alchemy",
+    "Leatherworking",
+    "Engineering",
+    "Herbalism",
+    "Mining",
+    "Skinning",
+    "Inscription",
+  }
+  for _, profession in ipairs(professions) do
+    local name = ("SpecDial_Pip_Flipbook_%s"):format(profession)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 24,
+      ["rows"] = 4,
+      ["columns"] = 4
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("SpecDial_EndPip_Flipbook_%s"):format(profession)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 16,
+      ["rows"] = 4,
+      ["columns"] = 6
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("SpecDial_Fill_Flipbook_%s"):format(profession)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 36,
+      ["rows"] = 6,
+      ["columns"] = 6
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+  for i = 1, 5 do
+    local name = ("GemAppear_T%d_Flipbook"):format(i)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 12,
+      ["rows"] = 3,
+      ["columns"] = 4
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("Quality-BarFill-Flipbook-T%d-x2"):format(i)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 60,
+      ["rows"] = 15,
+      ["columns"] = 4
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+  for i = 1, 4 do
+    local name = ("GemDissolve_T%d_Flipbook"):format(i)
+    BlindAuras.StopMotion.texture_data[name] = {
+      ["count"] = 12,
+      ["rows"] = 3,
+      ["columns"] = 4
+    }
+    BlindAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+end
 
 BlindAuras.StopMotion.animation_types = {
   loop = L["Loop"],

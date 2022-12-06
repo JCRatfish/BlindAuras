@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 58
+local internalVersion = 59
 
 -- Lua APIs
 local insert = table.insert
@@ -1555,7 +1555,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local player, realm, zone = UnitName("player"), GetRealmName(), GetRealZoneText()
-  local spec, specId, covenant, role, raidRole = false, false, false, false, false
+  --- @type boolean|number, boolean|number, boolean|string, boolean|string
+  local spec, specId, role, raidRole = false, false, false, false
   local inPetBattle, vehicle, vehicleUi = false, false, false
   local zoneId = C_Map.GetBestMapForUnit("player")
   local zonegroupId = zoneId and C_Map.GetMapGroupID(zoneId)
@@ -1594,7 +1595,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     spec = GetSpecialization()
     specId = GetSpecializationInfo(spec)
     role = select(5, GetSpecializationInfo(spec))
-    covenant = C_Covenants.GetActiveCovenantID()
     inPetBattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
@@ -1643,10 +1643,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       elseif BlindAuras.IsWrathClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
-      elseif BlindAuras.IsShadowlands() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
-      elseif BlindAuras.IsDragonflight() then
+      elseif BlindAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
       end
@@ -1740,11 +1737,8 @@ if BlindAuras.IsRetail() then
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
   loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
-  if BlindAuras.IsDragonflight() then
-    loadFrame:RegisterEvent("COVENANT_CHOSEN")
-    loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
-    loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
-  end
+  loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
+  loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
@@ -1809,7 +1803,9 @@ end
 local function UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
-    Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+    if Private.regions[id] and Private.regions[id].region then
+      Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+    end
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
@@ -1989,6 +1985,9 @@ function BlindAuras.Delete(data)
   if Private.regions[id] then
     Private.regions[id].region:Collapse()
     Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+
+    -- Groups have a empty Collapse method so, we need to hide them here
+    Private.regions[id].region:Hide();
 
     Private.regions[id].region = nil
     Private.regions[id] = nil
@@ -2453,7 +2452,7 @@ end
 function Private.AddMany(tbl, takeSnapshots)
   --- @type table<auraId, auraData>
   local idtable = {};
-  --- @type table<auraId, boolean> The anchoring targetes of other auras
+  --- @type table<auraId, auraId> The anchoring targets of other auras, key is the anchor, value is the aura that is anchoring
   local anchorTargets = {}
   for _, data in ipairs(tbl) do
     -- There was an unfortunate bug in update.lua in 2022 that resulted
@@ -2465,7 +2464,23 @@ function Private.AddMany(tbl, takeSnapshots)
     end
     idtable[data.id] = data;
     if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame and data.anchorFrameFrame:sub(1, 10) == "BlindAuras:" then
-      anchorTargets[data.anchorFrameFrame:sub(11)] = true
+      anchorTargets[data.anchorFrameFrame:sub(11)] = data.id
+    end
+  end
+
+  -- Now fix up anchors, see #3971, where aura p was anchored to aura c and where c was a child of p, thus c was anchored to p
+  -- The game used to detect such anchoring circles. We can't detect all of them, but at least detect the one from the ticket.
+  for target, source in pairs(anchorTargets) do
+    -- We walk up the parent's of target, to check for source
+    local parent = target
+    if idtable[target] then
+      while(parent) do
+        if parent == source then
+          BlindAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(target, source))
+          idtable[source].anchorFrameType = "SCREEN"
+        end
+        parent = idtable[parent].parent
+      end
     end
   end
 
@@ -2797,6 +2812,7 @@ function Private.UpdateSoundIcon(data)
 end
 
 function BlindAuras.PreAdd(data)
+  if not data then return end
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     Private.validate(data, oldDataStub)
@@ -2879,7 +2895,7 @@ local function pAdd(data, simpleChange)
   else
     Private.DebugLog.SetEnabled(data.uid, data.information.debugLog)
 
-    if (data.controlledChildren) then
+    if Private.IsGroupType(data) then
       Private.ClearAuraEnvironment(id);
       for parent in Private.TraverseParents(data) do
         Private.ClearAuraEnvironment(parent.id);
@@ -2892,6 +2908,8 @@ local function pAdd(data, simpleChange)
       loadEvents["GROUP"] = loadEvents["GROUP"] or {}
       loadEvents["GROUP"][id] = true
     else -- Non group aura
+      -- Make sure that we don't have a controlledChildren member.
+      data.controlledChildren = nil
       local visible
       if (BlindAuras.IsOptionsOpen()) then
         visible = Private.FakeStatesFor(id, false)
@@ -4183,6 +4201,12 @@ local function startStopTimers(id, cloneId, triggernum, state)
             if (state.show ~= false and state.show ~= nil) then
               state.show = false;
               state.changed = true;
+
+              -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
+              if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
+                Private.AddToWatchedTriggerDelay(id, triggernum)
+              end
+
               Private.UpdatedTriggerState(id);
             end
           end,
@@ -4326,6 +4350,15 @@ function Private.AddToWatchedTriggerDelay(id, triggernum)
   delayed_watched_trigger[id] = delayed_watched_trigger[id] or {}
   tinsert(delayed_watched_trigger[id], triggernum)
 end
+
+Private.callbacks:RegisterCallback("Delete", function(_, uid, id)
+  delayed_watched_trigger[id] = nil
+end)
+
+Private.callbacks:RegisterCallback("Rename", function(_, uid, oldId, newId)
+  delayed_watched_trigger[newId] = delayed_watched_trigger[oldId]
+  delayed_watched_trigger[oldId] = nil
+end)
 
 function Private.SendDelayedWatchedTriggers()
   for id in pairs(delayed_watched_trigger) do
@@ -5339,6 +5372,17 @@ local function GetAnchorFrame(data, region, parent)
       if (frame_name == id) then
         return parent;
       end
+
+      local targetData = BlindAuras.GetData(frame_name)
+      if targetData then
+        for parentData in Private.TraverseParents(targetData) do
+          if parentData.id == data.id then
+            BlindAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(frame_name, data.id))
+            return parent
+          end
+        end
+      end
+
       if(Private.regions[frame_name]) then
         return Private.regions[frame_name].region;
       end

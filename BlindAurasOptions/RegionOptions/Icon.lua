@@ -465,4 +465,7 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
-BlindAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"], createThumbnail, modifyThumbnail, L["Shows a spell icon with an optional cooldown overlay"], templates, GetAnchors);
+BlindAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"],
+                                createThumbnail, modifyThumbnail,
+                                L["Shows a spell icon with an optional cooldown overlay"],
+                                templates, GetAnchors);
