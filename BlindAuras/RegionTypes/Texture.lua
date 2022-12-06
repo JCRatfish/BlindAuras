@@ -3,7 +3,6 @@ if not BlindAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local L = BlindAuras.L;
-local GetAtlasInfo = C_Texture and  C_Texture.GetAtlasInfo or GetAtlasInfo
 
 local default = {
   texture = "Interface\\Addons\\BlindAuras\\PowerAurasMedia\\Auras\\Aura3",
@@ -16,7 +15,7 @@ local default = {
   rotation = 0,
   discrete_rotation = 0,
   mirror = false,
-  rotate = true,
+  rotate = false,
   selfPoint = "CENTER",
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -100,7 +99,6 @@ local function modify(parent, region, data)
   region.scalex = 1;
   region.scaley = 1;
   region.texture:SetBlendMode(data.blendMode);
-  --region.texture:SetRotation((data.rotation / 180) * math.pi);
 
   local function GetRotatedPoints(degrees)
     local angle = rad(135 - degrees);
@@ -113,7 +111,6 @@ local function modify(parent, region, data)
   region.mirror = data.mirror
 
   local function DoTexCoord()
-    if region.texture.IsAtlas then return end
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
     if(region.mirror) then
       mirror_h = not mirror_h;
@@ -147,7 +144,7 @@ local function modify(parent, region, data)
     end
   end
 
-  region.rotation = data.rotation;
+  region.rotation = data.rotation
   DoTexCoord();
 
   function region:Scale(scalex, scaley)
@@ -188,7 +185,7 @@ local function modify(parent, region, data)
 
   function region:Update()
     if region.state.texture then
-      BlindAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode);
+      BlindAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
     end
   end
 
@@ -225,18 +222,13 @@ local function modify(parent, region, data)
     region.texture:SetDesaturated(b);
   end
 
-  if data.rotate then
-    function region:Rotate(degrees)
-      region.rotation = degrees;
-      DoTexCoord();
-    end
+  function region:Rotate(degrees)
+    region.rotation = degrees;
+    DoTexCoord();
+  end
 
-    function region:GetRotation()
-      return region.rotation;
-    end
-  else
-    region.Rotate = nil;
-    region.GetRotation = nil;
+  function region:GetRotation()
+    return region.rotation;
   end
 
   BlindAuras.regionPrototype.modifyFinish(parent, region, data);

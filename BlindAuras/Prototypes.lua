@@ -122,8 +122,15 @@ if BlindAuras.IsBCCOrWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
-      if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
+      if event == "PLAYER_TARGET_CHANGED" then
+        unit = "target"
+      end
+      if event == "UNIT_SPELLCAST_EMPOWER_START"
+      or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
+      or (event == "PLAYER_TARGET_CHANGED" and (select(10, UnitChannelInfo(unit)) or 0 > 0))
+      then
         cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
         cacheEmpowered[unit] = nil
@@ -891,6 +898,19 @@ local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
   end
 end
 
+function BlindAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
+  if IsPlayerSpell(spell) then
+    return true
+  end
+  local baseSpell = FindBaseSpellByID(spell)
+  if baseSpell and baseSpell ~= spell then
+    if FindSpellOverrideByID(baseSpell) == spell then
+      return IsPlayerSpell(baseSpell)
+    end
+  end
+  return false
+end
+
 function BlindAuras.IsSpellKnownForLoad(spell, exact)
   local result = IsPlayerSpell(spell)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
@@ -1119,6 +1139,17 @@ Private.load_prototype = {
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
+      name = "dragonriding",
+      display = L["Dragonriding"],
+      type = "tristate",
+      init = BlindAuras.IsRetail() and "arg" or nil,
+      width = BlindAuras.doubleWidth,
+      optional = true,
+      enable = BlindAuras.IsRetail(),
+      hidden = not BlindAuras.IsRetail(),
+      events = {"WA_DRAGONRIDING_UPDATE"}
+    },
+    {
       name = "ingroup",
       display = L["Group Type"],
       type = "multiselect",
@@ -1179,7 +1210,7 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "BlindAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1236,7 +1267,7 @@ Private.load_prototype = {
       display = BlindAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "BlindAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1295,7 +1326,7 @@ Private.load_prototype = {
       display = BlindAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = BlindAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
+      test = BlindAuras.IsRetail() and "BlindAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "BlindAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if BlindAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -4562,7 +4593,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spellname == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       }
     },
     nameFunc = function(trigger)
@@ -4623,7 +4654,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spell == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       },
       {
         name = "direction",
@@ -5995,7 +6026,7 @@ Private.event_prototypes = {
           "PLAYER_TALENT_UPDATE"
         }
       elseif BlindAuras.IsRetail() then
-        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
+        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE", "PLAYER_SPECIALIZATION_CHANGED" }
       end
       return {
         ["events"] = events
@@ -6240,7 +6271,7 @@ Private.event_prototypes = {
             and trigger.use_talent == false
             and trigger.talent and type(trigger.talent.multi) == "table"
             then
-              local count, value = 0
+              local count, value = 0, nil
               for _, v in pairs(trigger.talent.multi) do
                 value = v
                 count = count + 1
@@ -9647,3 +9678,10 @@ Private.UnitEventList = {
   PLAYER_XP_UPDATE = true,
   PVP_TIMER_UPDATE = true
 }
+
+-- TODO: GetItemCooldown is missing on WOTLK PTR as now (04/12/2022)
+-- remove this once it's fixed
+if BlindAuras.IsWrathClassic() and GetItemCooldown == nil then
+  Private.event_prototypes["Cooldown Progress (Item)"] = nil
+  Private.event_prototypes["Cooldown Ready (Item)"] = nil
+end

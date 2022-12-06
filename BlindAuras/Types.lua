@@ -33,6 +33,7 @@ Private.glow_frame_types = {
   FRAMESELECTOR = L["Frame Selector"]
 }
 
+--- @type table<dynamicGroupCircularTypes, string>
 Private.circular_group_constant_factor_types = {
   RADIUS = L["Radius"],
   SPACING = L["Spacing"]
@@ -1347,6 +1348,11 @@ Private.orientation_with_circle_types = {
   ANTICLOCKWISE = L["Anticlockwise"]
 }
 
+Private.gradient_orientations = {
+  HORIZONTAL = L["Horizontal"],
+  VERTICAL = L["Vertical"]
+}
+
 Private.spec_types = {
   [1] = SPECIALIZATION.." 1",
   [2] = SPECIALIZATION.." 2",
@@ -2120,6 +2126,7 @@ Private.grow_types = {
 
 -- horizontal types: R (right), L (left)
 -- vertical types: U (up), D (down)
+--- @type table<dynamicGroupGridType, string>
 Private.grid_types = {
   RU = L["Right, then Up"],
   UR = L["Up, then Right"],
@@ -2139,6 +2146,22 @@ Private.grid_types = {
   RV = L["Right, then Centered Vertical"],
   HV = L["Centered Horizontal, then Centered Vertical"],
   VH = L["Centered Vertical, then Centered Horizontal"]
+}
+
+--- @type table<dynamicGroupCenterType, string>
+Private.centered_types_h = {
+  LR = L["Left to Right"],
+  RL = L["Right to Left"],
+  CLR =L["Center, then alternating left and right"],
+  CRL = L["Center, then alternating right and left"]
+}
+
+--- @type table<dynamicGroupCenterType, string>
+Private.centered_types_v = {
+  LR = L["Bottom to Top"],
+  RL = L["Top to Bottom"],
+  CLR =L["Center, then alternating bottom and top"],
+  CRL = L["Center, then alternating top and bottom"]
 }
 
 Private.text_rotate_types = {

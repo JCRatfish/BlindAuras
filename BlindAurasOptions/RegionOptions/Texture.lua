@@ -27,9 +27,6 @@ local function createOptions(id, data)
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "texture",
           color = "color",
-          rotate = "rotate",
-          discrete_rotation = "discrete_rotation",
-          rotation = "rotation",
           mirror = "mirror",
           blendMode = "blendMode"
         }, OptionsPrivate.Private.texture_types);

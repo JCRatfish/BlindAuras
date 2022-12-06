@@ -430,4 +430,5 @@ if BlindAuras.IsRetail() then
   })
 end
 
-BlindAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);
+BlindAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail,
+                                L["Shows a 3D model from the game files"], templates);
