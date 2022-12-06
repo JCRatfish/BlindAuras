@@ -1038,6 +1038,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     __order = metaOrder,
     width = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Width"],
       order = 60,
@@ -1049,6 +1050,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     height = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Height"],
       order = 61,
@@ -1193,6 +1195,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     xOffset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       name = L["X Offset"],
       order = 79,
       width = BlindAuras.normalWidth,
@@ -1212,6 +1215,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     yOffset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       name = L["Y Offset"],
       order = 80,
       width = BlindAuras.normalWidth,
@@ -1288,6 +1292,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderOffset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Border Offset"],
       order = order + 0.3,
@@ -1298,6 +1303,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderSize = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Border Size"],
       order = order + 0.4,
@@ -1308,6 +1314,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
     },
     borderInset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Border Inset"],
       order = order + 0.5,

@@ -30,6 +30,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     border_offset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Border Offset"],
       order = 5,
@@ -39,6 +40,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     border_size = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Border Size"],
       order = 6,

@@ -55,6 +55,7 @@ local function createOptions(id, data)
     },
     fontSize = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Size"],
       order = 46,
@@ -153,6 +154,7 @@ local function createOptions(id, data)
     },
     shadowXOffset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth - indentWidth,
       name = L["Shadow X Offset"],
       softMin = -15,
@@ -163,6 +165,7 @@ local function createOptions(id, data)
     },
     shadowYOffset = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Shadow Y Offset"],
       softMin = -15,
@@ -215,6 +218,7 @@ local function createOptions(id, data)
       width = BlindAuras.normalWidth,
       order = 49.1,
       type = "range",
+      control = "BlindAurasSpinBox",
       min = 1,
       softMax = screenWidth,
       bigStep = 1,

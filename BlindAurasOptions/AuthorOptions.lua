@@ -606,6 +606,7 @@ typeControlAdders = {
     }
     args[prefix .. "length"] = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = name(option, "length", L["Length"]),
       desc = desc(option, "length"),
@@ -692,6 +693,7 @@ typeControlAdders = {
     step = option.step
     args[prefix .. "default"] = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = name(option, "default", L["Default"]),
       desc = desc(option, "default"),
@@ -958,6 +960,7 @@ typeControlAdders = {
 
     args[prefix .. "height"] = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       order = order(),
       name = name(option, "height", L["Height"]),
@@ -1220,6 +1223,7 @@ typeControlAdders = {
       }
       args[prefix .. "size"] = {
         type = "range",
+        control = "BlindAurasSpinBox",
         name = name(option, "limitType", option.limitType == "max" and L["Entry limit"] or L["Number of Entries"]),
         desc = desc(option, "limitType"),
         order = order(),
@@ -1864,6 +1868,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
 
   args[prefix .. "width"] = {
     type = "range",
+    control = "BlindAurasSpinBox",
     width = BlindAuras.normalWidth,
     name = name(option, "width", L["Width"]),
     desc = desc(option, "width"),

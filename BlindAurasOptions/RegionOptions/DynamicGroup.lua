@@ -212,6 +212,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Start Angle"],
       order = 5,
@@ -229,6 +230,7 @@ local function createOptions(id, data)
     },
     arcLength = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Total Angle"],
       order = 8,
@@ -240,6 +242,7 @@ local function createOptions(id, data)
     },
     radius = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Radius"],
       order = 9,
@@ -265,6 +268,7 @@ local function createOptions(id, data)
     },
     gridWidth = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = function()
         if not data.gridType then return "" end
@@ -282,6 +286,7 @@ local function createOptions(id, data)
     },
     rowSpace = {
       type = "range",
+      control = "BlindAurasSpinBox",
       name = L["Row Space"],
       width = BlindAuras.normalWidth,
       order = 10,
@@ -292,6 +297,7 @@ local function createOptions(id, data)
     },
     columnSpace = {
       type = "range",
+      control = "BlindAurasSpinBox",
       name = L["Column Space"],
       width = BlindAuras.normalWidth,
       order = 11,
@@ -303,6 +309,7 @@ local function createOptions(id, data)
     -- generic grow options
     space = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Space"],
       order = 7,
@@ -317,6 +324,7 @@ local function createOptions(id, data)
     },
     stagger = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Stagger"],
       order = 8,
@@ -392,6 +400,7 @@ local function createOptions(id, data)
     },
     limit = {
       type = "range",
+      control = "BlindAurasSpinBox",
       order = 26,
       width = BlindAuras.normalWidth,
       name = L["Limit"],
@@ -409,6 +418,7 @@ local function createOptions(id, data)
     },
     scale = {
       type = "range",
+      control = "BlindAurasSpinBox",
       width = BlindAuras.normalWidth,
       name = L["Group Scale"],
       order = 28,

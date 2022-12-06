@@ -92,4 +92,6 @@ AceGUI-Widgets\AceGUIContainer-BlindAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasExpandAnchor.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasSpacer.lua
 AceGUI-Widgets\AceGuiWidget-BlindAurasProgressBar.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasSpinBox.lua
 AceGUI-Widgets\AceGUIWidget-BlindAurasMiniTalent_Wrath.lua
+AceGUI-Widgets\AceGUIWidget-BlindAurasScrollArea.lua

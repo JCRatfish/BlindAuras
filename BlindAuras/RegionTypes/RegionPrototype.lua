@@ -4,7 +4,7 @@ local AddonName, Private = ...
 
 local BlindAuras = BlindAuras;
 local L = BlindAuras.L;
-local GetAtlasInfo = BlindAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
 
 BlindAuras.regionPrototype = {};
 
@@ -975,7 +975,9 @@ function BlindAuras.regionPrototype.AddExpandFunction(data, region, cloneId, par
 end
 
 function BlindAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  if type(path) == "string" and GetAtlasInfo(path) then
+  texture.IsAtlas = type(path) == "string" and GetAtlasInfo(path) ~= nil
+  if texture.IsAtlas then
+    texture:SetTexCoord(0, 1, 0, 1)
     return texture:SetAtlas(path);
   else
     if (texture.wrapModeH and texture.wrapModeH ~= wrapModeH) or (texture.wrapModeV and texture.wrapModeV ~= wrapModeV) then
